@@ -90,6 +90,14 @@
   );
 
   const meritCategories = $derived.by(() => ['All', ...new Set(meritsLibrary.map((m) => m.category))]);
+  const wizardHeroTitle = $derived.by(() =>
+    wizardStep === 5 && draft.splat === 'BEAST' ? 'The Soul’s Desires' : 'Character Composition'
+  );
+  const wizardHeroSubtitle = $derived.by(() =>
+    wizardStep === 5 && draft.splat === 'BEAST'
+      ? 'Choose your Hunger and Horror'
+      : 'Shape the dossier of your dark persona'
+  );
 
   onMount(async () => {
     const savedTheme = localStorage.getItem(THEME_KEY);
@@ -251,12 +259,28 @@
     if (!selected) return;
     selected.merits.splice(index, 1);
   }
+
+  function filledHealthCount(character: Character) {
+    return character.derivedStats.healthBoxes.filter((b) => b !== 'EMPTY').length;
+  }
+
+  function healthPercent(character: Character) {
+    const max = Math.max(1, character.derivedStats.healthBoxes.length);
+    return (filledHealthCount(character) / max) * 100;
+  }
+
+  function pickBeastHunger(choice: (typeof beastHungerChoices)[number]) {
+    const matched = splatOptions.beastHungers.find(
+      (hunger) => hunger === choice.key || hunger === choice.title
+    );
+    draft.splatData.hunger = matched ?? choice.key;
+  }
 </script>
 
 <main class="app-root">
   {#if screen !== 'login'}
     <header class="topbar">
-      <div class="brand">The Eldritch Editorial</div>
+      <h1 class="brand">The Eldritch Editorial</h1>
       <nav class="topnav">
         <button class:active={screen === 'dashboard'} onclick={() => (screen = 'dashboard')}>Chronicle</button>
         <button class:active={screen === 'wizard'} onclick={() => (screen = 'wizard')}>Creator</button>
@@ -264,8 +288,8 @@
         <button class:active={screen === 'settings'} onclick={() => (screen = 'settings')}>Settings</button>
       </nav>
       <div class="top-actions">
-        <span>◎</span>
-        <span>✶</span>
+        <span aria-hidden="true">◎</span>
+        <span aria-hidden="true">✶</span>
         <span class="avatar">EE</span>
       </div>
     </header>
@@ -280,8 +304,8 @@
       <div class="login-panel">
         <p class="kicker">Volume V: Nocturnal</p>
         <h1>Enter the Archive</h1>
-        <label>Initiate Username<input placeholder="V.TEPES" /></label>
-        <label>Cipher Key<input type="password" placeholder="••••••••" /></label>
+        <label><span>Initiate Username</span><input placeholder="V.TEPES" /></label>
+        <label><span>Cipher Key</span><input type="password" placeholder="••••••••" /></label>
         <button class="primary" onclick={() => (screen = 'dashboard')}>Finalize Grimoire</button>
       </div>
     </section>
@@ -321,9 +345,9 @@
               <p class="meta">{character.chronicle || 'No chronicle'} • {new Date(character.createdAt).toLocaleDateString()}</p>
               <div class="track-line">
                 <strong>Health</strong>
-                <span>{character.derivedStats.healthBoxes.filter((b) => b !== 'EMPTY').length}/{character.derivedStats.healthBoxes.length}</span>
+                <span>{filledHealthCount(character)}/{character.derivedStats.healthBoxes.length}</span>
               </div>
-              <div class="track"><span style={`width: ${(character.derivedStats.healthBoxes.filter((b) => b !== 'EMPTY').length / Math.max(1, character.derivedStats.healthBoxes.length)) * 100}%`}></span></div>
+              <div class="track"><span style={`width: ${healthPercent(character)}%`}></span></div>
             </div>
           </button>
         {/each}
@@ -381,8 +405,8 @@
       <div class="wizard-main">
         <header class="page-head compact">
           <div>
-            <h2>{wizardStep === 5 && draft.splat === 'BEAST' ? "The Soul's Desires" : 'Character Composition'}</h2>
-            <p>{wizardStep === 5 && draft.splat === 'BEAST' ? 'Choose your Hunger and Horror' : 'Shape the dossier of your dark persona'}</p>
+            <h2>{wizardHeroTitle}</h2>
+            <p>{wizardHeroSubtitle}</p>
           </div>
         </header>
 
@@ -475,8 +499,8 @@
                 {#each beastHungerChoices as choice}
                   <button
                     class="hunger-card"
-                    class:active={String(draft.splatData.hunger ?? '') === choice.title}
-                    onclick={() => (draft.splatData.hunger = choice.title)}
+                    class:active={[choice.key, choice.title].includes(String(draft.splatData.hunger ?? ''))}
+                    onclick={() => pickBeastHunger(choice)}
                   >
                     <h4>{choice.title}</h4>
                     <p>{choice.body}</p>

@@ -12,7 +12,7 @@ Spring Boot + Svelte 5 (Runes) web app scaffold for the Chronicles of Darkness c
 ## Run backend
 
 ```bash
-cd /home/runner/work/CoD-innoproj/CoD-innoproj/backend
+cd backend
 mvn spring-boot:run
 ```
 
@@ -21,7 +21,7 @@ Backend URL: `http://localhost:8080`
 ## Run frontend
 
 ```bash
-cd /home/runner/work/CoD-innoproj/CoD-innoproj/frontend
+cd frontend
 npm install
 npm run dev
 ```
@@ -31,6 +31,6 @@ Frontend URL: `http://localhost:5173`
 ## Validation
 
 ```bash
-cd /home/runner/work/CoD-innoproj/CoD-innoproj/backend && mvn test
-cd /home/runner/work/CoD-innoproj/CoD-innoproj/frontend && npm run check && npm run build
+cd backend && mvn test
+cd ../frontend && npm run check && npm run build
 ```

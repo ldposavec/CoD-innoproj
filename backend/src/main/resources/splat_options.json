@@ -1,0 +1,30 @@
+{
+  "vampireClans": [
+    "Daeva",
+    "Gangrel",
+    "Mekhet",
+    "Nosferatu",
+    "Ventrue"
+  ],
+  "vampireCovenants": [
+    "Carthian Movement",
+    "Circle of the Crone",
+    "Invictus",
+    "Lancea et Sanctum",
+    "Ordo Dracul"
+  ],
+  "beastFamilies": [
+    "Anakim",
+    "Eshmaki",
+    "Makara",
+    "Namtaru",
+    "Ugallu"
+  ],
+  "beastHungers": [
+    "Collector",
+    "Nemesis",
+    "Predator",
+    "Ravager",
+    "Tyrant"
+  ]
+}

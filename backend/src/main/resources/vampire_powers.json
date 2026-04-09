@@ -1,0 +1,873 @@
+[
+  {
+    "id": "animalism-feral-whispers",
+    "name": "Feral Whispers",
+    "type": "discipline",
+    "description": "To those she would command, a vampire must first make herself understood. So it is with beasts as well as men. A vampire using Feral Whispers overpowers the animal’s instinctive reactions and forces it to understand. She can ask questions of a creature and it must respond as best it can, and with a further slight nudge, she can compel it to obey her. A canny vampire can use magpies and crows to spy on her victims from above, or command a gangster’s mastiffs to savage their owner.\n\tThe vampire talks to the animal, either using human words or, much more frequently, by making animal sounds of her own. She can command groups of animals, such as a flock of birds or a swarm of rats, as long as she is close enough that the animals can all hear her, and she can see all of them.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Feral Whispers",
+        "effect": "To those she would command, a vampire must first make herself understood. So it is with beasts as well as men. A vampire using Feral Whispers overpowers the animal’s instinctive reactions and forces it to understand. She can ask questions of a creature and it must respond as best it can, and with a further slight nudge, she can compel it to obey her. A canny vampire can use magpies and crows to spy on her victims from above, or command a gangster’s mastiffs to savage their owner.\n\tThe vampire talks to the animal, either using human words or, much more frequently, by making animal sounds of her own. She can command groups of animals, such as a flock of birds or a swarm of rats, as long as she is close enough that the animals can all hear her, and she can see all of them."
+      }
+    ]
+  },
+  {
+    "id": "animalism-raise-the-familiar",
+    "name": "Raise the Familiar",
+    "type": "discipline",
+    "description": "True beasts cannot be Embraced. They have never had the necessary Humanity. With this power, though, the vampire can complete the process halfway. By feeding a drained animal some of her Vitae, a vampire can infuse it with a fragment of the Kindred’s twilight life. It looks as it did when it died, though if appropriate, it might gain retractable fangs like a vampire. But the fangs are a lie — its true tragedy is that it cannot transubstantiate blood into Vitae. If it was wounded in death, it retains signs of the injuries, but its body functions fully. A coyote crushed by an SUV has a tire track running across it but no crushed bones, and a crow with a busted wing has bone jutting out of the wound but can still fly.\n\tIt doesn’t act like a normal animal — it doesn’t hunt for food, nor is it spooked by loud noises. It sleeps throughout the day, but becomes active at night. A human observing such an animal might be able to tell something’s wrong, but only the most grievous wounds usually make them take the time to look.",
+    "dotLevels": [
+      {
+        "dots": 2,
+        "power": "Raise the Familiar",
+        "effect": "True beasts cannot be Embraced. They have never had the necessary Humanity. With this power, though, the vampire can complete the process halfway. By feeding a drained animal some of her Vitae, a vampire can infuse it with a fragment of the Kindred’s twilight life. It looks as it did when it died, though if appropriate, it might gain retractable fangs like a vampire. But the fangs are a lie — its true tragedy is that it cannot transubstantiate blood into Vitae. If it was wounded in death, it retains signs of the injuries, but its body functions fully. A coyote crushed by an SUV has a tire track running across it but no crushed bones, and a crow with a busted wing has bone jutting out of the wound but can still fly.\n\tIt doesn’t act like a normal animal — it doesn’t hunt for food, nor is it spooked by loud noises. It sleeps throughout the day, but becomes active at night. A human observing such an animal might be able to tell something’s wrong, but only the most grievous wounds usually make them take the time to look."
+      }
+    ]
+  },
+  {
+    "id": "animalism-summon-the-hunt",
+    "name": "Summon the Hunt",
+    "type": "discipline",
+    "description": "The vampire infuses some of her Vitae with the essence of her prey, making it irresistible to other predators and scavenging beasts. Wherever she spills her blood — on the ground, over an object, or even splashing it on another person — the animals she calls will try to consume it. Her blood only loses potency once the summoned animals destroy whatever she poured it over or once the sun rises, at which point the Vitae burns away as though it were never present.\n\tShe can focus her Beast’s call on one kind of creature, for example summoning just birds or rats. Prey animals in the affected area rightly shy away, afraid of the power of a vampire’s Beast.",
+    "dotLevels": [
+      {
+        "dots": 3,
+        "power": "Summon the Hunt",
+        "effect": "The vampire infuses some of her Vitae with the essence of her prey, making it irresistible to other predators and scavenging beasts. Wherever she spills her blood — on the ground, over an object, or even splashing it on another person — the animals she calls will try to consume it. Her blood only loses potency once the summoned animals destroy whatever she poured it over or once the sun rises, at which point the Vitae burns away as though it were never present.\n\tShe can focus her Beast’s call on one kind of creature, for example summoning just birds or rats. Prey animals in the affected area rightly shy away, afraid of the power of a vampire’s Beast."
+      }
+    ]
+  },
+  {
+    "id": "animalism-feral-infection",
+    "name": "Feral Infection",
+    "type": "discipline",
+    "description": "The vampire floods the area with her predatory aura, infecting everything around her with the ravings of her Beast. The scent of her blood inspires rage in animals, and can drive men mad, especially those who have recently touched her blood. Other Kindred witnessing the effects of Feral Infection recognize the Beast unchained, likening the victims’ actions to their own moments of frenzy. The vampire using this Discipline can exert a measure of control over her victims’ madness, focusing her own Beast against some victim she wants to crush, or a goal she wants to conquer.",
+    "dotLevels": [
+      {
+        "dots": 4,
+        "power": "Feral Infection",
+        "effect": "The vampire floods the area with her predatory aura, infecting everything around her with the ravings of her Beast. The scent of her blood inspires rage in animals, and can drive men mad, especially those who have recently touched her blood. Other Kindred witnessing the effects of Feral Infection recognize the Beast unchained, likening the victims’ actions to their own moments of frenzy. The vampire using this Discipline can exert a measure of control over her victims’ madness, focusing her own Beast against some victim she wants to crush, or a goal she wants to conquer."
+      }
+    ]
+  },
+  {
+    "id": "animalism-lord-of-the-land",
+    "name": "Lord of the Land",
+    "type": "discipline",
+    "description": "The vampire marks her territory with Vitae, in much the same way that animals use urine or feces. She must encircle her territory in a ring of Vitae, claiming it as her own — assuming she has driven off any prior residents. When encircling the territory, she must walk the whole border. Some Kindred open wounds on their hands and arms and walk at a stately pace, dripping a slow stream of thick blood behind them. Others run wild, smearing blood and bodily fluids on surfaces like a feral beast.\n\tOnce she has established her territory, the vampire is privy to everything that happens within it. She can command animals, summon or banish people, and provoke other vampires to leave her lair. Most vampires establish their territory in small places, like a brownstone or small public garden. A powerful vampire might claim a whole public park or castle, but he must make sure that nothing interrupts his claim — more than one vampire has discovered that his territory is already claimed by an angry pack of werewolves halfway through claiming it.",
+    "dotLevels": [
+      {
+        "dots": 5,
+        "power": "Lord of the Land",
+        "effect": "The vampire marks her territory with Vitae, in much the same way that animals use urine or feces. She must encircle her territory in a ring of Vitae, claiming it as her own — assuming she has driven off any prior residents. When encircling the territory, she must walk the whole border. Some Kindred open wounds on their hands and arms and walk at a stately pace, dripping a slow stream of thick blood behind them. Others run wild, smearing blood and bodily fluids on surfaces like a feral beast.\n\tOnce she has established her territory, the vampire is privy to everything that happens within it. She can command animals, summon or banish people, and provoke other vampires to leave her lair. Most vampires establish their territory in small places, like a brownstone or small public garden. A powerful vampire might claim a whole public park or castle, but he must make sure that nothing interrupts his claim — more than one vampire has discovered that his territory is already claimed by an angry pack of werewolves halfway through claiming it."
+      }
+    ]
+  },
+  {
+    "id": "auspex-beast-s-hackles",
+    "name": "Beast’s Hackles",
+    "type": "discipline",
+    "description": "The Beast focuses on danger and weakness. A vampire who borrows her Beast’s senses can use that focus to know if someone is about to attack her, or to pinpoint the weakest person in the room. The Beast is sensitive to things that other people cannot normally perceive; using this Discipline can pierce Obfuscate (see “Clash of Wills,” p.125).",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Beast’s Hackles",
+        "effect": "The Beast focuses on danger and weakness. A vampire who borrows her Beast’s senses can use that focus to know if someone is about to attack her, or to pinpoint the weakest person in the room. The Beast is sensitive to things that other people cannot normally perceive; using this Discipline can pierce Obfuscate (see “Clash of Wills,” p.125)."
+      }
+    ]
+  },
+  {
+    "id": "auspex-uncanny-perception",
+    "name": "Uncanny Perception",
+    "type": "discipline",
+    "description": "The vampire focuses on a single victim, peeling back the layers of lies and misdirection to reveal the truth underneath. The Beast sniffs out the victim’s dark secrets, things that she doesn’t want anyone else to know. What the vampire does with that information is up to him.",
+    "dotLevels": [
+      {
+        "dots": 2,
+        "power": "Uncanny Perception",
+        "effect": "The vampire focuses on a single victim, peeling back the layers of lies and misdirection to reveal the truth underneath. The Beast sniffs out the victim’s dark secrets, things that she doesn’t want anyone else to know. What the vampire does with that information is up to him."
+      }
+    ]
+  },
+  {
+    "id": "auspex-the-spirit-s-touch",
+    "name": "The Spirit’s Touch",
+    "type": "discipline",
+    "description": "A vampire can turn his Beast’s senses on an object or place, uncovering secrets and destroying lies just as surely as if he had focused on a person. A vampire can only use this Discipline on a particular object once per scene.",
+    "dotLevels": [
+      {
+        "dots": 3,
+        "power": "The Spirit’s Touch",
+        "effect": "A vampire can turn his Beast’s senses on an object or place, uncovering secrets and destroying lies just as surely as if he had focused on a person. A vampire can only use this Discipline on a particular object once per scene."
+      }
+    ]
+  },
+  {
+    "id": "auspex-lay-open-the-mind",
+    "name": "Lay Open the Mind",
+    "type": "discipline",
+    "description": "The Mekhet focuses on bringing her thoughts in line with her victim. He begins to think like her, and soon hears her thoughts in his mind. By concentrating and gently changing his own thoughts, he can project ideas or memories into the victim’s mind. With a little practice, the vampire can communicate without words, or project full memories to overwhelm the victim’s senses. He can even stimulate memories by thinking of a time, place, or emotion that causes the victim to remember — even if the victim had blocked it out or had it removed by magic.",
+    "dotLevels": [
+      {
+        "dots": 4,
+        "power": "Lay Open the Mind",
+        "effect": "The Mekhet focuses on bringing her thoughts in line with her victim. He begins to think like her, and soon hears her thoughts in his mind. By concentrating and gently changing his own thoughts, he can project ideas or memories into the victim’s mind. With a little practice, the vampire can communicate without words, or project full memories to overwhelm the victim’s senses. He can even stimulate memories by thinking of a time, place, or emotion that causes the victim to remember — even if the victim had blocked it out or had it removed by magic."
+      }
+    ]
+  },
+  {
+    "id": "auspex-twilight-projection",
+    "name": "Twilight Projection",
+    "type": "discipline",
+    "description": "The vampire unshackles his mind, leaving his body and projecting his senses throughout the world. His astral form exists in a twilight state, with no real physical or spiritual substance to it, but still in the world and noticeable only by other vampires with Auspex. The vampire can move at incredible speeds, traveling to any point within the moon’s orbit — an area that some Kindred call the “lunar sphere.” While his senses and consciousness travel the world the vampire’s body appears to be a normal corpse, albeit one that does not decay.",
+    "dotLevels": [
+      {
+        "dots": 5,
+        "power": "Twilight Projection",
+        "effect": "The vampire unshackles his mind, leaving his body and projecting his senses throughout the world. His astral form exists in a twilight state, with no real physical or spiritual substance to it, but still in the world and noticeable only by other vampires with Auspex. The vampire can move at incredible speeds, traveling to any point within the moon’s orbit — an area that some Kindred call the “lunar sphere.” While his senses and consciousness travel the world the vampire’s body appears to be a normal corpse, albeit one that does not decay."
+      }
+    ]
+  },
+  {
+    "id": "celerity-celerity",
+    "name": "Celerity",
+    "type": "discipline",
+    "description": "Unleashing her Beast, a vampire can cross vast distances in the blink of an eye, catch a thrown punch before her attacker has even moved a muscle, or snatch a gun barrel away from a man’s temple before he can pull the trigger. Celerity makes a vampire so fast that it’s as if she never has to move at all.\n\tLike other physical Disciplines, Celerity has two kinds of effects: persistent and active. Persistent effects are always on, and have no cost. Active effects are reflexive and cost one Vitae per effect.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Celerity",
+        "effect": "Unleashing her Beast, a vampire can cross vast distances in the blink of an eye, catch a thrown punch before her attacker has even moved a muscle, or snatch a gun barrel away from a man’s temple before he can pull the trigger. Celerity makes a vampire so fast that it’s as if she never has to move at all.\n\tLike other physical Disciplines, Celerity has two kinds of effects: persistent and active. Persistent effects are always on, and have no cost. Active effects are reflexive and cost one Vitae per effect."
+      }
+    ]
+  },
+  {
+    "id": "dominate-mesmerize",
+    "name": "Mesmerize",
+    "type": "discipline",
+    "description": "All a vampire has to do is meet her victim’s eye to catch him in her thrall. Her control isn’t obvious; she just asks him to do something and her victim acquiesces. He could unlock a door, pass her a gun — or forget ever meeting her. Some cruel vampires mesmerize passers-by just to take the rap for their crimes.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Mesmerize",
+        "effect": "All a vampire has to do is meet her victim’s eye to catch him in her thrall. Her control isn’t obvious; she just asks him to do something and her victim acquiesces. He could unlock a door, pass her a gun — or forget ever meeting her. Some cruel vampires mesmerize passers-by just to take the rap for their crimes."
+      }
+    ]
+  },
+  {
+    "id": "dominate-iron-edict",
+    "name": "Iron Edict",
+    "type": "discipline",
+    "description": "Once she’s got a hotline into her victim’s mind, the vampire can take some time to play with his thoughts and memories. While it takes more of her power to relay complex commands, she goes from jerking her victim’s strings to controlling him like a puppeteer, making his every movement dance to her tune.",
+    "dotLevels": [
+      {
+        "dots": 2,
+        "power": "Iron Edict",
+        "effect": "Once she’s got a hotline into her victim’s mind, the vampire can take some time to play with his thoughts and memories. While it takes more of her power to relay complex commands, she goes from jerking her victim’s strings to controlling him like a puppeteer, making his every movement dance to her tune."
+      }
+    ]
+  },
+  {
+    "id": "dominate-entombed-command",
+    "name": "Entombed Command",
+    "type": "discipline",
+    "description": "The vampire has enough control over her meat-puppet to implant a subconscious trigger, a specific set of conditions that will turn him into her slave when he encounters them. She can force her victim into a suggestible state when he points a gun at her, make him transfer all of his money into her account when he hears Beethoven’s Ninth Symphony, or only allow him to remember his son when he smells lilacs.",
+    "dotLevels": [
+      {
+        "dots": 3,
+        "power": "Entombed Command",
+        "effect": "The vampire has enough control over her meat-puppet to implant a subconscious trigger, a specific set of conditions that will turn him into her slave when he encounters them. She can force her victim into a suggestible state when he points a gun at her, make him transfer all of his money into her account when he hears Beethoven’s Ninth Symphony, or only allow him to remember his son when he smells lilacs."
+      }
+    ]
+  },
+  {
+    "id": "dominate-the-lying-mind",
+    "name": "The Lying Mind",
+    "type": "discipline",
+    "description": "A mistress of Dominate can dance through her victim’s memories, sculpting them to her whims. He might not remember his family — or she might force him to remember the tragic death of a son who never existed. She can subtly alter his memories, replacing his wife’s face with her own, or moving his memory of a vacation from Paris to London. Beyond necessary generalities, this does not allow the vampire to read the original memories.",
+    "dotLevels": [
+      {
+        "dots": 4,
+        "power": "The Lying Mind",
+        "effect": "A mistress of Dominate can dance through her victim’s memories, sculpting them to her whims. He might not remember his family — or she might force him to remember the tragic death of a son who never existed. She can subtly alter his memories, replacing his wife’s face with her own, or moving his memory of a vacation from Paris to London. Beyond necessary generalities, this does not allow the vampire to read the original memories."
+      }
+    ]
+  },
+  {
+    "id": "dominate-possession",
+    "name": "Possession",
+    "type": "discipline",
+    "description": "Controlling a victim’s memories and actions is one thing, but for some vampires the truest expression of control comes from suppressing the victim’s will entirely, taking complete control of his body. The vampire moves her mind into the victim, using his body instead of her own.",
+    "dotLevels": [
+      {
+        "dots": 5,
+        "power": "Possession",
+        "effect": "Controlling a victim’s memories and actions is one thing, but for some vampires the truest expression of control comes from suppressing the victim’s will entirely, taking complete control of his body. The vampire moves her mind into the victim, using his body instead of her own."
+      }
+    ]
+  },
+  {
+    "id": "majesty-awe",
+    "name": "Awe",
+    "type": "discipline",
+    "description": "Awe shines a spotlight on the vampire even in a crowded room. He’s the most important person around and people want to be around him. Awe creates an aura of power, a sense that the vampire’s important, like a billionaire playboy or a movie star. He could be wearing tattered clothes, with open wounds and his face caked in shit but people still think he’s cooler than them, and they want to be around him.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Awe",
+        "effect": "Awe shines a spotlight on the vampire even in a crowded room. He’s the most important person around and people want to be around him. Awe creates an aura of power, a sense that the vampire’s important, like a billionaire playboy or a movie star. He could be wearing tattered clothes, with open wounds and his face caked in shit but people still think he’s cooler than them, and they want to be around him."
+      }
+    ]
+  },
+  {
+    "id": "majesty-confidant",
+    "name": "Confidant",
+    "type": "discipline",
+    "description": "The vampire doesn’t have to shout to be heard, and in a crowd that he’s already Awed, sometimes speaking quietly is the best way to get attention. With little more than a soft voice and a knowing look, the vampire brings someone new into the fold and becomes her trusted confidant.",
+    "dotLevels": [
+      {
+        "dots": 2,
+        "power": "Confidant",
+        "effect": "The vampire doesn’t have to shout to be heard, and in a crowd that he’s already Awed, sometimes speaking quietly is the best way to get attention. With little more than a soft voice and a knowing look, the vampire brings someone new into the fold and becomes her trusted confidant."
+      }
+    ]
+  },
+  {
+    "id": "majesty-green-eyes",
+    "name": "Green Eyes",
+    "type": "discipline",
+    "description": "To a victim of this level of Majesty, the vampire’s attention feels so good that it’s addictive. His inner circle craves his attention like a crackhead craves a rock or a writer needs coffee. That craving first becomes desperation and then jealousy as other people attract the vampire’s gaze, if only for a minute.",
+    "dotLevels": [
+      {
+        "dots": 3,
+        "power": "Green Eyes",
+        "effect": "To a victim of this level of Majesty, the vampire’s attention feels so good that it’s addictive. His inner circle craves his attention like a crackhead craves a rock or a writer needs coffee. That craving first becomes desperation and then jealousy as other people attract the vampire’s gaze, if only for a minute."
+      }
+    ]
+  },
+  {
+    "id": "majesty-loyalty",
+    "name": "Loyalty",
+    "type": "discipline",
+    "description": "Among his inner circle, the vampire praises some more than others, bringing them even closer to him. With a few words he can inflame their love for him. Beyond jealousy and obsession comes complete loyalty. A victim will do absolutely anything for him — and just thinking about crossing the vampire is traumatic. She ignores her other friends and her family. Her vampire is all that matters.",
+    "dotLevels": [
+      {
+        "dots": 4,
+        "power": "Loyalty",
+        "effect": "Among his inner circle, the vampire praises some more than others, bringing them even closer to him. With a few words he can inflame their love for him. Beyond jealousy and obsession comes complete loyalty. A victim will do absolutely anything for him — and just thinking about crossing the vampire is traumatic. She ignores her other friends and her family. Her vampire is all that matters."
+      }
+    ]
+  },
+  {
+    "id": "majesty-idol",
+    "name": "Idol",
+    "type": "discipline",
+    "description": "More than just a celebrity, a vampire who can play with people’s desires becomes a king or a star, the kind of person who wouldn’t ever be so crass as to demand people’s loyalty. People around him give it willingly, pledging to do whatever he wants if he’ll only notice them, look at them, or smile in their direction.",
+    "dotLevels": [
+      {
+        "dots": 5,
+        "power": "Idol",
+        "effect": "More than just a celebrity, a vampire who can play with people’s desires becomes a king or a star, the kind of person who wouldn’t ever be so crass as to demand people’s loyalty. People around him give it willingly, pledging to do whatever he wants if he’ll only notice them, look at them, or smile in their direction."
+      }
+    ]
+  },
+  {
+    "id": "nightmare-dread-presence",
+    "name": "Dread Presence",
+    "type": "discipline",
+    "description": "Everyone around the vampire feels the world go slightly wrong as she exudes a deeply unsettling aura. Even if they barely notice her, they feel a wave of fear and uncertainty. The world seems colder, everything’s just that bit more distant. People feel like someone’s watching them even when they’re otherwise alone, and for just a second they see horrible truths manifest in the world around them.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Dread Presence",
+        "effect": "Everyone around the vampire feels the world go slightly wrong as she exudes a deeply unsettling aura. Even if they barely notice her, they feel a wave of fear and uncertainty. The world seems colder, everything’s just that bit more distant. People feel like someone’s watching them even when they’re otherwise alone, and for just a second they see horrible truths manifest in the world around them."
+      }
+    ]
+  },
+  {
+    "id": "nightmare-face-of-the-beast",
+    "name": "Face of the Beast",
+    "type": "discipline",
+    "description": "All it takes is a glance, and the vampire can magnify one of his victim’s fears to truly horrifying levels. If she knows what sort of things her victim fears, she can choose to enhance that fear specifically; otherwise she inspires an unguided terror that flares up in the victim’s heart without her knowing precisely what he’s afraid of. Whatever the case, the victim flees immediately.",
+    "dotLevels": [
+      {
+        "dots": 2,
+        "power": "Face of the Beast",
+        "effect": "All it takes is a glance, and the vampire can magnify one of his victim’s fears to truly horrifying levels. If she knows what sort of things her victim fears, she can choose to enhance that fear specifically; otherwise she inspires an unguided terror that flares up in the victim’s heart without her knowing precisely what he’s afraid of. Whatever the case, the victim flees immediately."
+      }
+    ]
+  },
+  {
+    "id": "nightmare-the-grand-delusion",
+    "name": "The Grand Delusion",
+    "type": "discipline",
+    "description": "Touching her victim’s mind, the vampire sparks a delusion that only she fully understands. What she makes him believe doesn’t match up with the world as he knows it, and that discrepancy sparks a gut-wrenching fear in her victim.",
+    "dotLevels": [
+      {
+        "dots": 3,
+        "power": "The Grand Delusion",
+        "effect": "Touching her victim’s mind, the vampire sparks a delusion that only she fully understands. What she makes him believe doesn’t match up with the world as he knows it, and that discrepancy sparks a gut-wrenching fear in her victim."
+      }
+    ]
+  },
+  {
+    "id": "nightmare-waking-nightmare",
+    "name": "Waking Nightmare",
+    "type": "discipline",
+    "description": "Having altered her victims’ beliefs and stoked their fears, the vampire can now spark disturbing hallucinations of a kind that all vampires suffer in torpor. These awful visions adhere to nightmarish logic, even the most apparently innocent vision turning sinister when the victim has time to focus on it.",
+    "dotLevels": [
+      {
+        "dots": 4,
+        "power": "Waking Nightmare",
+        "effect": "Having altered her victims’ beliefs and stoked their fears, the vampire can now spark disturbing hallucinations of a kind that all vampires suffer in torpor. These awful visions adhere to nightmarish logic, even the most apparently innocent vision turning sinister when the victim has time to focus on it."
+      }
+    ]
+  },
+  {
+    "id": "nightmare-mortal-terror",
+    "name": "Mortal Terror",
+    "type": "discipline",
+    "description": "The Nosferatu can summon horrific visions from the depths of a victim’s soul. She twists everything around her victim to present one of his worst fears made flesh. Her victim can’t sleep, his hair turns white from terror, and in some cases his heart stops dead. She can’t conjure pure fear out of nothing — her victim must already be afraid.",
+    "dotLevels": [
+      {
+        "dots": 5,
+        "power": "Mortal Terror",
+        "effect": "The Nosferatu can summon horrific visions from the depths of a victim’s soul. She twists everything around her victim to present one of his worst fears made flesh. Her victim can’t sleep, his hair turns white from terror, and in some cases his heart stops dead. She can’t conjure pure fear out of nothing — her victim must already be afraid."
+      }
+    ]
+  },
+  {
+    "id": "obfuscate-face-in-the-crowd",
+    "name": "Face in the Crowd",
+    "type": "discipline",
+    "description": "The vampire can turn his predatory aura inwards, walking through crowds of people who pay him no heed. As long as he doesn’t do anything to obviously draw attention to himself, nobody notices him. He’s just one more person on the street, part of the city’s nightlife.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Face in the Crowd",
+        "effect": "The vampire can turn his predatory aura inwards, walking through crowds of people who pay him no heed. As long as he doesn’t do anything to obviously draw attention to himself, nobody notices him. He’s just one more person on the street, part of the city’s nightlife."
+      }
+    ]
+  },
+  {
+    "id": "obfuscate-touch-of-shadow",
+    "name": "Touch of Shadow",
+    "type": "discipline",
+    "description": "With just a touch, the vampire can extend the muted attentions of Face in the Crowd to an object or animal, rather than himself. People subconsciously register that it’s there, but they won’t actively notice it unless forced to interact.",
+    "dotLevels": [
+      {
+        "dots": 2,
+        "power": "Touch of Shadow",
+        "effect": "With just a touch, the vampire can extend the muted attentions of Face in the Crowd to an object or animal, rather than himself. People subconsciously register that it’s there, but they won’t actively notice it unless forced to interact."
+      }
+    ]
+  },
+  {
+    "id": "obfuscate-cloak-of-night",
+    "name": "Cloak of Night",
+    "type": "discipline",
+    "description": "With a thought, the vampire slips from both sight and mind. He leaves no scent and makes no sound. Can extend effect to others via Touch of Shadow.",
+    "dotLevels": [
+      {
+        "dots": 3,
+        "power": "Cloak of Night",
+        "effect": "With a thought, the vampire slips from both sight and mind. He leaves no scent and makes no sound. Can extend effect to others via Touch of Shadow."
+      }
+    ]
+  },
+  {
+    "id": "obfuscate-the-familiar-stranger",
+    "name": "The Familiar Stranger",
+    "type": "discipline",
+    "description": "The vampire can adjust how people perceive him. He can appear as a frail old woman, a young lothario, or even a specific person. Also works on objects via Touch of Shadow.",
+    "dotLevels": [
+      {
+        "dots": 4,
+        "power": "The Familiar Stranger",
+        "effect": "The vampire can adjust how people perceive him. He can appear as a frail old woman, a young lothario, or even a specific person. Also works on objects via Touch of Shadow."
+      }
+    ]
+  },
+  {
+    "id": "obfuscate-oubliette",
+    "name": "Oubliette",
+    "type": "discipline",
+    "description": "The vampire creates a hidden realm, scrambling perceptions and hiding a location from mundane senses. Can turn alleys into mazes or small houses into manor-like structures. The vampire must mark boundaries with Vitae and slumber for a day to claim the area.",
+    "dotLevels": [
+      {
+        "dots": 5,
+        "power": "Oubliette",
+        "effect": "The vampire creates a hidden realm, scrambling perceptions and hiding a location from mundane senses. Can turn alleys into mazes or small houses into manor-like structures. The vampire must mark boundaries with Vitae and slumber for a day to claim the area."
+      }
+    ]
+  },
+  {
+    "id": "protean-unmarked-grave",
+    "name": "Unmarked Grave",
+    "type": "discipline",
+    "description": "With a silent command, the vampire merges with the earth, becoming immune to almost any harm. She can remain interred indefinitely, waiting in a cocoon of soil or concrete. Her Kindred senses continue to function, and she can absorb Vitae spilled on the ground. Only damage to the material can harm her, and lethal damage forces her to emerge.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Unmarked Grave",
+        "effect": "With a silent command, the vampire merges with the earth, becoming immune to almost any harm. She can remain interred indefinitely, waiting in a cocoon of soil or concrete. Her Kindred senses continue to function, and she can absorb Vitae spilled on the ground. Only damage to the material can harm her, and lethal damage forces her to emerge."
+      }
+    ]
+  },
+  {
+    "id": "protean-predatory-aspect",
+    "name": "Predatory Aspect",
+    "type": "discipline",
+    "description": "The vampire partially manifests her Beast, warping her body with monstrous traits inspired by predatory or scavenging animals. She can spend Vitae to manifest a selection of adaptations for the scene.",
+    "dotLevels": [
+      {
+        "dots": 2,
+        "power": "Predatory Aspect",
+        "effect": "The vampire partially manifests her Beast, warping her body with monstrous traits inspired by predatory or scavenging animals. She can spend Vitae to manifest a selection of adaptations for the scene."
+      }
+    ]
+  },
+  {
+    "id": "protean-beast-s-skin",
+    "name": "Beast's Skin",
+    "type": "discipline",
+    "description": "The vampire’s flesh warps to resemble an animal she has consumed. Must consume the animal first. Forms must be predatory or carrion-eating creatures. Multiple forms can be prepared equal to Protean dots; adding or replacing a form requires feeding and a day in Unmarked Grave.",
+    "dotLevels": [
+      {
+        "dots": 3,
+        "power": "Beast's Skin",
+        "effect": "The vampire’s flesh warps to resemble an animal she has consumed. Must consume the animal first. Forms must be predatory or carrion-eating creatures. Multiple forms can be prepared equal to Protean dots; adding or replacing a form requires feeding and a day in Unmarked Grave."
+      }
+    ]
+  },
+  {
+    "id": "protean-unnatural-aspect",
+    "name": "Unnatural Aspect",
+    "type": "discipline",
+    "description": "The vampire manifests a truly horrific adaptation from the Beast itself, in addition to her Predatory Aspect.",
+    "dotLevels": [
+      {
+        "dots": 4,
+        "power": "Unnatural Aspect",
+        "effect": "The vampire manifests a truly horrific adaptation from the Beast itself, in addition to her Predatory Aspect."
+      }
+    ]
+  },
+  {
+    "id": "protean-primeval-miasma",
+    "name": "Primeval Miasma",
+    "type": "discipline",
+    "description": "The vampire dissolves into a cloud of hungry smoke, taking a formless state. She can feed through the smoke and pass through nearly anything that isn’t airtight. Sunlight, fire, or similar effects can harm her.",
+    "dotLevels": [
+      {
+        "dots": 5,
+        "power": "Primeval Miasma",
+        "effect": "The vampire dissolves into a cloud of hungry smoke, taking a formless state. She can feed through the smoke and pass through nearly anything that isn’t airtight. Sunlight, fire, or similar effects can harm her."
+      }
+    ]
+  },
+  {
+    "id": "resilience-resilience",
+    "name": "Resilience",
+    "type": "discipline",
+    "description": "The Kindred are walking corpses, free of mortal frailty. Resilience harnesses the Beast to bolster the vampire’s endurance, allowing them to shrug off grievous injuries or continue fighting when their body has been reduced to little more than bone and tendon.\n\tLike other physical Disciplines, Resilience has two kinds of effects: persistent and active. Persistent effects are always on, and have no cost. Active effects are reflexive and cost one Vitae per effect.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Resilience",
+        "effect": "The Kindred are walking corpses, free of mortal frailty. Resilience harnesses the Beast to bolster the vampire’s endurance, allowing them to shrug off grievous injuries or continue fighting when their body has been reduced to little more than bone and tendon.\n\tLike other physical Disciplines, Resilience has two kinds of effects: persistent and active. Persistent effects are always on, and have no cost. Active effects are reflexive and cost one Vitae per effect."
+      }
+    ]
+  },
+  {
+    "id": "vigor-vigor",
+    "name": "Vigor",
+    "type": "discipline",
+    "description": "Vigor tunes the vampire’s bones, tendons, and muscles to peak performance, letting her strike like a freight train or hurl objects too heavy for mortals. The Beast fuels bursts of extraordinary strength.\n\tLike other physical Disciplines, Vigor has two kinds of effects: persistent and active. Persistent effects are always on, and have no cost. Active effects are reflexive and cost one Vitae per effect.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Vigor",
+        "effect": "Vigor tunes the vampire’s bones, tendons, and muscles to peak performance, letting her strike like a freight train or hurl objects too heavy for mortals. The Beast fuels bursts of extraordinary strength.\n\tLike other physical Disciplines, Vigor has two kinds of effects: persistent and active. Persistent effects are always on, and have no cost. Active effects are reflexive and cost one Vitae per effect."
+      }
+    ]
+  },
+  {
+    "id": "body-of-will",
+    "name": "Body of Will",
+    "type": "devotion",
+    "description": "Kindred trained in this Devotion can push through pain, and find strength in pain and injury. On the outside, it looks like masochism; crippling blows empower and invigorate the vampire. But this Devotion transfers the energy of a wounding attack into the fuel for the vampire’s Vigor.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Body of Will",
+        "effect": "Kindred trained in this Devotion can push through pain, and find strength in pain and injury. On the outside, it looks like masochism; crippling blows empower and invigorate the vampire. But this Devotion transfers the energy of a wounding attack into the fuel for the vampire’s Vigor."
+      }
+    ]
+  },
+  {
+    "id": "chain-of-command",
+    "name": "Chain of Command",
+    "type": "devotion",
+    "description": "Dominate masters can implant suggestions and commands into their victims. With this Devotion, the vampire can force more of her own will into her victim, imparting a single use of her own Dominate for the victim to use later. She must clearly explain on whom he must use the gift, and how. She can give a general description, such as “the first person you see wearing red.” Or, she can be very specific: “Tell this to Gregor at 11:45 P.M. sharp.”",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Chain of Command",
+        "effect": "Dominate masters can implant suggestions and commands into their victims. With this Devotion, the vampire can force more of her own will into her victim, imparting a single use of her own Dominate for the victim to use later. She must clearly explain on whom he must use the gift, and how. She can give a general description, such as “the first person you see wearing red.” Or, she can be very specific: “Tell this to Gregor at 11:45 P.M. sharp.”"
+      }
+    ]
+  },
+  {
+    "id": "cloak-the-gathering",
+    "name": "Cloak the Gathering",
+    "type": "devotion",
+    "description": "The vampire slips from the mind as easily as blood dripping from an open wound, though rather than picking off his victims, he can make a whole group vanish at once. He might obscure his comrades — or pluck a group of unwilling victims from the minds of onlookers, leaving them scared and isolated.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Cloak the Gathering",
+        "effect": "The vampire slips from the mind as easily as blood dripping from an open wound, though rather than picking off his victims, he can make a whole group vanish at once. He might obscure his comrades — or pluck a group of unwilling victims from the minds of onlookers, leaving them scared and isolated."
+      }
+    ]
+  },
+  {
+    "id": "conditioning",
+    "name": "Conditioning",
+    "type": "devotion",
+    "description": "Over a period of weeks, the vampire pushes on her victim’s will, forcing him to repeat the same tasks until he cannot resist her voice. She slowly builds up control over her victim to the point where he can barely manifest his own thoughts or feelings. Instead, he’s an empty shell, waiting for his mistress’ next command.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Conditioning",
+        "effect": "Over a period of weeks, the vampire pushes on her victim’s will, forcing him to repeat the same tasks until he cannot resist her voice. She slowly builds up control over her victim to the point where he can barely manifest his own thoughts or feelings. Instead, he’s an empty shell, waiting for his mistress’ next command."
+      }
+    ]
+  },
+  {
+    "id": "cross-contamination",
+    "name": "Cross-Contamination",
+    "type": "devotion",
+    "description": "Majesty awes its victims; Nightmare unnerves them. This Devotion blends the two effects, creating a confusing aura where those affected rapidly shift between fear and elation.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Cross-Contamination",
+        "effect": "Majesty awes its victims; Nightmare unnerves them. This Devotion blends the two effects, creating a confusing aura where those affected rapidly shift between fear and elation."
+      }
+    ]
+  },
+  {
+    "id": "cult-of-personality",
+    "name": "Cult of Personality",
+    "type": "devotion",
+    "description": "Under normal circumstances, Loyalty inflicts a deep, overbearing sense of obedience on a single victim. With this Devotion, the vampire broadcasts her charm and overwhelms all in her presence. All but the strongest fall in line and worship her.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Cult of Personality",
+        "effect": "Under normal circumstances, Loyalty inflicts a deep, overbearing sense of obedience on a single victim. With this Devotion, the vampire broadcasts her charm and overwhelms all in her presence. All but the strongest fall in line and worship her."
+      }
+    ]
+  },
+  {
+    "id": "enchantment",
+    "name": "Enchantment",
+    "type": "devotion",
+    "description": "Majesty is a gift that draws attention and bends feelings toward the vampire. With this Devotion, and a bit of Obfuscate, the vampire can deflect those feelings to another person, or to a place or thing.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Enchantment",
+        "effect": "Majesty is a gift that draws attention and bends feelings toward the vampire. With this Devotion, and a bit of Obfuscate, the vampire can deflect those feelings to another person, or to a place or thing."
+      }
+    ]
+  },
+  {
+    "id": "enfeebling-aura",
+    "name": "Enfeebling Aura",
+    "type": "devotion",
+    "description": "Many Daeva masters of Celerity and Vigor claim that Majesty means nothing when you’re staring down a skull-crushing fist. This Devotion seeks to disprove that notion. It brings forth the vampire’s supernatural presence not to awe a crowd, but to cow and enfeeble a victim. While it won’t completely stop an assailant, it will even the playing field in a tussle.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Enfeebling Aura",
+        "effect": "Many Daeva masters of Celerity and Vigor claim that Majesty means nothing when you’re staring down a skull-crushing fist. This Devotion seeks to disprove that notion. It brings forth the vampire’s supernatural presence not to awe a crowd, but to cow and enfeeble a victim. While it won’t completely stop an assailant, it will even the playing field in a tussle."
+      }
+    ]
+  },
+  {
+    "id": "foul-grave",
+    "name": "Foul Grave",
+    "type": "devotion",
+    "description": "Usually, when interred in an Unmarked Grave, the vampire rests passively, barely aware of his surroundings, let alone able to influence them. With this Devotion, he can project his predatory aura on those near his resting place. Some vampires use this ability to divert pursuers or even as a stalling tactic when confronted by a mob of attackers.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Foul Grave",
+        "effect": "Usually, when interred in an Unmarked Grave, the vampire rests passively, barely aware of his surroundings, let alone able to influence them. With this Devotion, he can project his predatory aura on those near his resting place. Some vampires use this ability to divert pursuers or even as a stalling tactic when confronted by a mob of attackers."
+      }
+    ]
+  },
+  {
+    "id": "force-of-nature",
+    "name": "Force of Nature",
+    "type": "devotion",
+    "description": "Most of Protean’s gifts change the vampire subtly, or in small ways, in accordance with nature. Unnatural Aspect takes that a step further, moving into eldritch territory with a single mutation. When the vampire activates Force of Nature, her body becomes a mess of rapid change. She grows and loses limbs in the blink of an eye. Her skin becomes rock solid, then gelatinous within moments. She’s truly protean; she changes the way water flows. However, she needs the strength of Resilience to protect her form from collapsing in upon itself.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Force of Nature",
+        "effect": "Most of Protean’s gifts change the vampire subtly, or in small ways, in accordance with nature. Unnatural Aspect takes that a step further, moving into eldritch territory with a single mutation. When the vampire activates Force of Nature, her body becomes a mess of rapid change. She grows and loses limbs in the blink of an eye. Her skin becomes rock solid, then gelatinous within moments. She’s truly protean; she changes the way water flows. However, she needs the strength of Resilience to protect her form from collapsing in upon itself."
+      }
+    ]
+  },
+  {
+    "id": "gargoyle-s-vigilance",
+    "name": "Gargoyle’s Vigilance",
+    "type": "devotion",
+    "description": "This Devotion grants a patient and vigilant vampire the ability to oversee her haven with immense clarity. She becomes completely aware of every single inch, and can respond at a moment’s notice. When she moves against a trespasser, nothing can stop her. Her Resilience affords her senses a stoic patience, so she can divide her attention throughout her resting place.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Gargoyle’s Vigilance",
+        "effect": "This Devotion grants a patient and vigilant vampire the ability to oversee her haven with immense clarity. She becomes completely aware of every single inch, and can respond at a moment’s notice. When she moves against a trespasser, nothing can stop her. Her Resilience affords her senses a stoic patience, so she can divide her attention throughout her resting place."
+      }
+    ]
+  },
+  {
+    "id": "hint-of-fear",
+    "name": "Hint of Fear",
+    "type": "devotion",
+    "description": "Usually, using Face of the Beast takes extended eye contact, and none could confuse it for anything but an attempt to invoke pure terror. With a subtle application of Celerity, this Devotion allows the vampire to use a rapid, unnoticeable look to bring the Face of the Beast to bear. If the vampire doesn’t designate himself as the source of the fear, onlookers will be none the wiser.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Hint of Fear",
+        "effect": "Usually, using Face of the Beast takes extended eye contact, and none could confuse it for anything but an attempt to invoke pure terror. With a subtle application of Celerity, this Devotion allows the vampire to use a rapid, unnoticeable look to bring the Face of the Beast to bear. If the vampire doesn’t designate himself as the source of the fear, onlookers will be none the wiser."
+      }
+    ]
+  },
+  {
+    "id": "juggernaut-s-gait",
+    "name": "Juggernaut’s Gait",
+    "type": "devotion",
+    "description": "With this rare Devotion, an elder Kindred can temporarily render herself completely immune to harm. Her blood flows rapidly from her flesh, and coats her body to defend her. Even the strongest Kindred cannot maintain this ability for more than a few seconds at a time, but for those moments, they’re veritable gods of blood.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Juggernaut’s Gait",
+        "effect": "With this rare Devotion, an elder Kindred can temporarily render herself completely immune to harm. Her blood flows rapidly from her flesh, and coats her body to defend her. Even the strongest Kindred cannot maintain this ability for more than a few seconds at a time, but for those moments, they’re veritable gods of blood."
+      }
+    ]
+  },
+  {
+    "id": "quicken-sight",
+    "name": "Quicken Sight",
+    "type": "devotion",
+    "description": "With the preternatural awareness of Auspex and the remarkable speed of Celerity, the vampire gains a exceptional sense of time and the space around her. For a brief moment, she sees everything at a slow crawl, and can react thusly.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Quicken Sight",
+        "effect": "With the preternatural awareness of Auspex and the remarkable speed of Celerity, the vampire gains a exceptional sense of time and the space around her. For a brief moment, she sees everything at a slow crawl, and can react thusly."
+      }
+    ]
+  },
+  {
+    "id": "reason-s-salon",
+    "name": "Reason’s Salon",
+    "type": "devotion",
+    "description": "Animalism can draw bestial behavior out of a person, but with this Devotion, it can also suppress those behaviors. By spreading his Vitae about a building or gathering place, the vampire can keep Kindred from losing control and unleashing their Beasts for a short time. For this reason, it’s not uncommon to see a Gangrel Master of Elysium.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Reason’s Salon",
+        "effect": "Animalism can draw bestial behavior out of a person, but with this Devotion, it can also suppress those behaviors. By spreading his Vitae about a building or gathering place, the vampire can keep Kindred from losing control and unleashing their Beasts for a short time. For this reason, it’s not uncommon to see a Gangrel Master of Elysium."
+      }
+    ]
+  },
+  {
+    "id": "riot",
+    "name": "Riot",
+    "type": "devotion",
+    "description": "Feral Infection gives an Animalism user the power to move a small group of people to bestial rampages. Coupled with the pinnacle ability of Majesty, an elder can cause a large group of people to explode into complete bedlam, where they hurt each other, destroy property, and resort to other violent, antisocial behaviors. This Devotion brings the full weight of the vampire’s predatory aura to bear on her surroundings.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Riot",
+        "effect": "Feral Infection gives an Animalism user the power to move a small group of people to bestial rampages. Coupled with the pinnacle ability of Majesty, an elder can cause a large group of people to explode into complete bedlam, where they hurt each other, destroy property, and resort to other violent, antisocial behaviors. This Devotion brings the full weight of the vampire’s predatory aura to bear on her surroundings."
+      }
+    ]
+  },
+  {
+    "id": "shared-sight",
+    "name": "Shared Sight",
+    "type": "devotion",
+    "description": "While employing Dominate’s trance, a practitioner of this Devotion can extend to her subject some of her second sight. It’s a limited, less effective version of her Auspex, but it opens an otherwise uninitiated mind.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Shared Sight",
+        "effect": "While employing Dominate’s trance, a practitioner of this Devotion can extend to her subject some of her second sight. It’s a limited, less effective version of her Auspex, but it opens an otherwise uninitiated mind."
+      }
+    ]
+  },
+  {
+    "id": "shatter-the-shroud",
+    "name": "Shatter the Shroud",
+    "type": "devotion",
+    "description": "With Auspex, Kindred can see through the shrouds of Obfuscate and other Discipline effects (and supernatural powers) that others use in attempts to hide. This Devotion extends that ability with force, shattering those gifts and exposing their users for the world to see.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Shatter the Shroud",
+        "effect": "With Auspex, Kindred can see through the shrouds of Obfuscate and other Discipline effects (and supernatural powers) that others use in attempts to hide. This Devotion extends that ability with force, shattering those gifts and exposing their users for the world to see."
+      }
+    ]
+  },
+  {
+    "id": "stalwart-servant",
+    "name": "Stalwart Servant",
+    "type": "devotion",
+    "description": "This Devotion enables the Kindred to impart some of her preternatural toughness through her blood, making for stronger servants and bodyguards. The subject drinks of the Kindred’s Vitae, with normal ghouling, addiction, and blood bond effects, and then receives a hint of the vampire’s Resilience.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Stalwart Servant",
+        "effect": "This Devotion enables the Kindred to impart some of her preternatural toughness through her blood, making for stronger servants and bodyguards. The subject drinks of the Kindred’s Vitae, with normal ghouling, addiction, and blood bond effects, and then receives a hint of the vampire’s Resilience."
+      }
+    ]
+  },
+  {
+    "id": "subsume-the-lesser-beast",
+    "name": "Subsume the Lesser Beast",
+    "type": "devotion",
+    "description": "The vampire locks eyes with an animal and forces her mind into its body. She can only command a predator, a parasite, a carrion-eater, or a plague-bearer; she cannot affect a mere prey animal. She completely subsumes the animal’s consciousness, piloting it like a meat puppet. Her body falls into a state of torpor while she controls the beast.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Subsume the Lesser Beast",
+        "effect": "The vampire locks eyes with an animal and forces her mind into its body. She can only command a predator, a parasite, a carrion-eater, or a plague-bearer; she cannot affect a mere prey animal. She completely subsumes the animal’s consciousness, piloting it like a meat puppet. Her body falls into a state of torpor while she controls the beast."
+      }
+    ]
+  },
+  {
+    "id": "summoning-dominate",
+    "name": "Summoning (Dominate)",
+    "type": "devotion",
+    "description": "The vampire reaches out to someone whom he knows, anywhere in the world, and calls her to his side. Somehow, the victim knows that the vampire wants her to be with him, and she will go to be by his side come hell or high water. Summoning isn’t instant — it can’t account for natural disasters — but the victim will happily empty her bank accounts and steal from friends or family to make the trip. She knows who has called her and where to find him, but the urge to meet him is an emotional compulsion rather than a supernatural command, and she won’t put herself in unnecessary danger to make the journey — a vampire is still self-aware enough to seek shelter for the day even though he has been summoned. At the time of summoning, the vampire can impress upon his victim the need to bring something with her — weapons to defend her master from a nemesis, or a sacrifice for some strange Blood Sorcery. Kindred can develop this Devotion with the requisite level of either Dominate or Majesty. Its effects are the same, but the vampire must buy it related to one Discipline. The requirement and dice pool are set when the vampire develops the Devotion.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Summoning (Dominate)",
+        "effect": "The vampire reaches out to someone whom he knows, anywhere in the world, and calls her to his side. Somehow, the victim knows that the vampire wants her to be with him, and she will go to be by his side come hell or high water. Summoning isn’t instant — it can’t account for natural disasters — but the victim will happily empty her bank accounts and steal from friends or family to make the trip. She knows who has called her and where to find him, but the urge to meet him is an emotional compulsion rather than a supernatural command, and she won’t put herself in unnecessary danger to make the journey — a vampire is still self-aware enough to seek shelter for the day even though he has been summoned. At the time of summoning, the vampire can impress upon his victim the need to bring something with her — weapons to defend her master from a nemesis, or a sacrifice for some strange Blood Sorcery. Kindred can develop this Devotion with the requisite level of either Dominate or Majesty. Its effects are the same, but the vampire must buy it related to one Discipline. The requirement and dice pool are set when the vampire develops the Devotion."
+      }
+    ]
+  },
+  {
+    "id": "summoning-majesty",
+    "name": "Summoning (Majesty)",
+    "type": "devotion",
+    "description": "The vampire reaches out to someone whom he knows, anywhere in the world, and calls her to his side. Somehow, the victim knows that the vampire wants her to be with him, and she will go to be by his side come hell or high water. Summoning isn’t instant — it can’t account for natural disasters — but the victim will happily empty her bank accounts and steal from friends or family to make the trip. She knows who has called her and where to find him, but the urge to meet him is an emotional compulsion rather than a supernatural command, and she won’t put herself in unnecessary danger to make the journey — a vampire is still self-aware enough to seek shelter for the day even though he has been summoned. At the time of summoning, the vampire can impress upon his victim the need to bring something with her — weapons to defend her master from a nemesis, or a sacrifice for some strange Blood Sorcery. Kindred can develop this Devotion with the requisite level of either Dominate or Majesty. Its effects are the same, but the vampire must buy it related to one Discipline. The requirement and dice pool are set when the vampire develops the Devotion.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Summoning (Majesty)",
+        "effect": "The vampire reaches out to someone whom he knows, anywhere in the world, and calls her to his side. Somehow, the victim knows that the vampire wants her to be with him, and she will go to be by his side come hell or high water. Summoning isn’t instant — it can’t account for natural disasters — but the victim will happily empty her bank accounts and steal from friends or family to make the trip. She knows who has called her and where to find him, but the urge to meet him is an emotional compulsion rather than a supernatural command, and she won’t put herself in unnecessary danger to make the journey — a vampire is still self-aware enough to seek shelter for the day even though he has been summoned. At the time of summoning, the vampire can impress upon his victim the need to bring something with her — weapons to defend her master from a nemesis, or a sacrifice for some strange Blood Sorcery. Kindred can develop this Devotion with the requisite level of either Dominate or Majesty. Its effects are the same, but the vampire must buy it related to one Discipline. The requirement and dice pool are set when the vampire develops the Devotion."
+      }
+    ]
+  },
+  {
+    "id": "sun-s-brutal-dreamscape",
+    "name": "Sun’s Brutal Dreamscape",
+    "type": "devotion",
+    "description": "Nothing frightens Kindred worse than the vengeful rays of the sun or the heat of the fire. Most Kindred can manage short bursts in the daylight, but most avoid it whenever possible. This Devotion curses a sleeping victim to suffer all the burns the vampire experiences from the sun, and curses him with horrifying dreams of the sun’s purifying touch. These terrifying daymares leave the victim waking terrified and charred.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Sun’s Brutal Dreamscape",
+        "effect": "Nothing frightens Kindred worse than the vengeful rays of the sun or the heat of the fire. Most Kindred can manage short bursts in the daylight, but most avoid it whenever possible. This Devotion curses a sleeping victim to suffer all the burns the vampire experiences from the sun, and curses him with horrifying dreams of the sun’s purifying touch. These terrifying daymares leave the victim waking terrified and charred."
+      }
+    ]
+  },
+  {
+    "id": "touch-of-deprivation",
+    "name": "Touch of Deprivation",
+    "type": "devotion",
+    "description": "With this Devotion, the vampire can deny a victim her senses with only a touch. He chooses a single sense when activating the Devotion, and that sense becomes temporarily useless. Often, this Devotion serves to blind enemies or deafen a victim at a critical time.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Touch of Deprivation",
+        "effect": "With this Devotion, the vampire can deny a victim her senses with only a touch. He chooses a single sense when activating the Devotion, and that sense becomes temporarily useless. Often, this Devotion serves to blind enemies or deafen a victim at a critical time."
+      }
+    ]
+  },
+  {
+    "id": "undying-familiar",
+    "name": "Undying Familiar",
+    "type": "devotion",
+    "description": "Raise the Familiar awakens a dead animal to serve its Kindred master. However, the animal must be dead for that ability to take effect. This Devotion cuts out the middle man, and awakens a living, ghouled animal at its time of death.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Undying Familiar",
+        "effect": "Raise the Familiar awakens a dead animal to serve its Kindred master. However, the animal must be dead for that ability to take effect. This Devotion cuts out the middle man, and awakens a living, ghouled animal at its time of death."
+      }
+    ]
+  },
+  {
+    "id": "wet-dream",
+    "name": "Wet Dream",
+    "type": "devotion",
+    "description": "This Devotion blends the more subconscious effects of Majesty and Nightmare to plague the victim’s sleep. His dreams leave him both feeling dirty, and wanting more.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Wet Dream",
+        "effect": "This Devotion blends the more subconscious effects of Majesty and Nightmare to plague the victim’s sleep. His dreams leave him both feeling dirty, and wanting more."
+      }
+    ]
+  },
+  {
+    "id": "the-wish",
+    "name": "The Wish",
+    "type": "devotion",
+    "description": "“For three nights, you’ll be fast, you’ll be strong, you’ll be beautiful, and you’ll stand above the flock. After that, you’re mine. Do you understand?” This classic Daeva Devotion is a common fixture of the Serpent’s Embrace. The vampire finds someone she wishes to exalt, then makes him an offer for temporary supremacy. He gets a taste of power, and wants more. At the end of the deal, the victim becomes irrevocably attached to the vampire. It requires a great deal of Vitae to enact, but creates a loyal supplicant.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "The Wish",
+        "effect": "“For three nights, you’ll be fast, you’ll be strong, you’ll be beautiful, and you’ll stand above the flock. After that, you’re mine. Do you understand?” This classic Daeva Devotion is a common fixture of the Serpent’s Embrace. The vampire finds someone she wishes to exalt, then makes him an offer for temporary supremacy. He gets a taste of power, and wants more. At the end of the deal, the victim becomes irrevocably attached to the vampire. It requires a great deal of Vitae to enact, but creates a loyal supplicant."
+      }
+    ]
+  },
+  {
+    "id": "vermin-flood",
+    "name": "Vermin Flood",
+    "type": "devotion",
+    "description": "This Devotion takes the groundwork laid by Summon the Hunt, and increases it exponentially. Vermin Flood calls every small animal in the neighborhood to swarm en masse and pick apart every little thing in the chosen area. Not only do they feed on living things, but they wipe the space clean. While effective as an assault against groups, it sees some use in cleaning up crime scenes. Unlike Summon the Hunt, this Devotion never appears to be a coincidental event. The Vermin Flood is a plague of biblical proportions. While it tends to stretch the Masquerade, it also causes disbelief in onlookers. Those in the swarm do not survive to tell the tale.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Vermin Flood",
+        "effect": "This Devotion takes the groundwork laid by Summon the Hunt, and increases it exponentially. Vermin Flood calls every small animal in the neighborhood to swarm en masse and pick apart every little thing in the chosen area. Not only do they feed on living things, but they wipe the space clean. While effective as an assault against groups, it sees some use in cleaning up crime scenes. Unlike Summon the Hunt, this Devotion never appears to be a coincidental event. The Vermin Flood is a plague of biblical proportions. While it tends to stretch the Masquerade, it also causes disbelief in onlookers. Those in the swarm do not survive to tell the tale."
+      }
+    ]
+  },
+  {
+    "id": "wraith-s-presence",
+    "name": "Wraith’s Presence",
+    "type": "devotion",
+    "description": "With this Devotion, the vampire can make herself or something else vanish from the mind’s eye, but appear elsewhere. This diversion can distract a pursuer, or make someone rush after a false lead.",
+    "dotLevels": [
+      {
+        "dots": 1,
+        "power": "Wraith’s Presence",
+        "effect": "With this Devotion, the vampire can make herself or something else vanish from the mind’s eye, but appear elsewhere. This diversion can distract a pursuer, or make someone rush after a false lead."
+      }
+    ]
+  }
+]

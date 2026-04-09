@@ -4,7 +4,7 @@ import { ATTRIBUTE_GROUPS, defaultCharacter, SKILL_GROUPS, SPLATS, THEME_KEY } f
 import type { Character, DiceRollResult, LibraryMerit, Merit } from './types';
 import { cloneCharacter, cycleHealth, remainingXp, woundPenalty } from './utils';
 
-type Screen = 'login' | 'dashboard' | 'wizard' | 'sheet' | 'settings';
+type Screen = 'login' | 'dashboard' | 'wizard' | 'sheet' | 'chronicle' | 'settings';
 type SortMode = 'created' | 'name' | 'splat';
 type SheetTab = 'info' | 'attributes' | 'merits' | 'powers' | 'notes';
 type DiceHistoryItem = { id: string; at: string; input: string; output: string };
@@ -43,6 +43,7 @@ function createClientId() {
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('login');
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [characters, setCharacters] = useState<Character[]>([]);
   const [selected, setSelected] = useState<Character | null>(null);
   const [draft, setDraft] = useState<Character>(() => defaultCharacter());
@@ -112,6 +113,22 @@ export default function App() {
     wizardStep === 5 && draft.splat === 'BEAST'
       ? 'Choose your Hunger and Horror'
       : 'Shape the dossier of your dark persona';
+  const chronicleEvents = useMemo(() => {
+    const characterEvents = characters.slice(0, 6).map((character) => ({
+      id: character.id,
+      time: new Date(character.createdAt).toLocaleDateString(),
+      text: `${character.name} (${character.splat}) entered the archive.`,
+      note: character.chronicle || 'No chronicle assigned'
+    }));
+    const rollEvents = diceHistory.slice(0, 6).map((item) => ({
+      id: item.id,
+      time: item.at,
+      text: item.output,
+      note: item.input
+    }));
+
+    return [...rollEvents, ...characterEvents].slice(0, 8);
+  }, [characters, diceHistory]);
 
   async function loadCharacters() {
     try {
@@ -316,15 +333,18 @@ export default function App() {
             <button className={screen === 'dashboard' ? 'active' : ''} onClick={() => setScreen('dashboard')}>
               Chronicle
             </button>
-            <button className={screen === 'wizard' ? 'active' : ''} onClick={() => setScreen('wizard')}>
-              Creator
-            </button>
-            <button className={screen === 'sheet' ? 'active' : ''} onClick={() => selected && setScreen('sheet')} disabled={!selected}>
-              Sheet
-            </button>
-            <button className={screen === 'settings' ? 'active' : ''} onClick={() => setScreen('settings')}>
-              Settings
-            </button>
+              <button className={screen === 'wizard' ? 'active' : ''} onClick={() => setScreen('wizard')}>
+                Creator
+              </button>
+              <button className={screen === 'sheet' ? 'active' : ''} onClick={() => selected && setScreen('sheet')} disabled={!selected}>
+                Sheet
+              </button>
+              <button className={screen === 'chronicle' ? 'active' : ''} onClick={() => setScreen('chronicle')}>
+                Chronicle Log
+              </button>
+              <button className={screen === 'settings' ? 'active' : ''} onClick={() => setScreen('settings')}>
+                Settings
+              </button>
           </nav>
           <div className="top-actions">
             <span aria-hidden="true">◎</span>
@@ -342,10 +362,19 @@ export default function App() {
           </div>
           <div className="login-panel">
             <p className="kicker">Volume V: Nocturnal</p>
-            <h1>Enter the Archive</h1>
+            <h1>{authMode === 'login' ? 'Enter the Archive' : 'Register New Blood'}</h1>
             <label><span>Initiate Username</span><input placeholder="V.TEPES" /></label>
             <label><span>Cipher Key</span><input type="password" placeholder="••••••••" /></label>
-            <button className="primary" onClick={() => setScreen('dashboard')}>Finalize Grimoire</button>
+            {authMode === 'register' && <label><span>Confirm Cipher</span><input type="password" placeholder="••••••••" /></label>}
+            <button className="primary" onClick={() => setScreen('dashboard')}>
+              {authMode === 'login' ? 'Finalize Grimoire' : 'Seal Registration'}
+            </button>
+            <div className="login-footer">
+              <button onClick={() => setAuthMode((prev) => (prev === 'login' ? 'register' : 'login'))}>
+                {authMode === 'login' ? 'Register' : 'Back to Login'}
+              </button>
+              <button className="ghost-button">Recover Lost Script</button>
+            </div>
           </div>
         </section>
       )}
@@ -385,6 +414,12 @@ export default function App() {
                 </div>
               </button>
             ))}
+            <button className="dossier-card empty" onClick={beginWizard}>
+              <div className="dossier-body">
+                <h3>Forge New Identity</h3>
+                <p className="concept">Start a new chronicle</p>
+              </div>
+            </button>
           </div>
 
           <section className="dice-panel">
@@ -406,6 +441,28 @@ export default function App() {
             </div>
             {diceResult && <p className="dice-result">Dice: {diceResult.dice.join(', ')} • Successes: {diceResult.successes}</p>}
             <ul className="history-list">{diceHistory.map((item) => <li key={item.id}>{item.at} — {item.input} — {item.output}</li>)}</ul>
+          </section>
+
+          <section className="activity-grid">
+            <article className="info-card">
+              <div className="section-head"><h3>Recent Activity</h3></div>
+              <ul className="history-list">
+                {chronicleEvents.map((event) => (
+                  <li key={event.id}>
+                    <strong>{event.time}</strong> — {event.text}
+                    <br />
+                    <span className="muted">{event.note}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+            <article className="editorial-note">
+              <h3>The Editorial Note</h3>
+              <p>
+                “The shadows are deepening. New dossiers and traces continue to gather in the archive.”
+              </p>
+              <span>{characters.length} active dossiers</span>
+            </article>
           </section>
 
           {errorMessage && <p className="error">{errorMessage}</p>}
@@ -621,6 +678,41 @@ export default function App() {
             </section>
           </div>
           <div className="head-actions left"><button onClick={() => setScreen('dashboard')}>Back</button></div>
+        </section>
+      )}
+
+      {screen === 'chronicle' && (
+        <section className="page with-topbar">
+          <div className="page-head compact">
+            <div>
+              <h2>Chronicle Log</h2>
+              <p>The Silent City • Session records and archive traces</p>
+            </div>
+          </div>
+          <section className="chronicle-layout">
+            <article className="info-card">
+              <div className="section-head"><h3>Session Timeline</h3></div>
+              <ul className="history-list">
+                {chronicleEvents.map((event) => (
+                  <li key={`chronicle-${event.id}`}>
+                    <strong>{event.time}</strong> — {event.text}
+                    <br />
+                    <span className="muted">{event.note}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+            <article className="info-card">
+              <div className="section-head"><h3>Archivist Notes</h3></div>
+              <label>
+                Session Summary
+                <textarea
+                  rows={12}
+                  defaultValue="Tonight's thread binds old grudges with new omens. Track supernatural interference, preserve witness details, and mark consequences for each pact."
+                />
+              </label>
+            </article>
+          </section>
         </section>
       )}
     </main>

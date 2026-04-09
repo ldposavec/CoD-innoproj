@@ -685,6 +685,65 @@ textarea {
   margin-top: 0.8rem;
 }
 
+.login-footer {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.ghost-button {
+  border-color: var(--outline);
+  color: var(--muted);
+  background: transparent;
+}
+
+.dossier-card.empty {
+  border: 2px dashed color-mix(in srgb, var(--outline) 80%, transparent);
+  display: grid;
+  place-items: center;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.editorial-note {
+  background: var(--primary-container);
+  color: var(--primary-ink);
+  padding: 1rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.editorial-note h3 {
+  font-family: Inter, system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+}
+
+.editorial-note p {
+  font-family: 'Noto Serif', serif;
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.4;
+}
+
+.editorial-note span {
+  text-transform: uppercase;
+  font-size: 0.66rem;
+  letter-spacing: 0.11em;
+}
+
+.chronicle-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
 @media (max-width: 1100px) {
   .wizard-shell {
     grid-template-columns: 1fr;
@@ -704,6 +763,10 @@ textarea {
   }
 
   .horror-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -9,9 +9,9 @@
   --text: #e5e2e1;
   --muted: #b7aeb6;
   --outline: #5b403d55;
-  --primary: #d8b4ff;
-  --primary-container: #7a1fa2;
-  --primary-ink: #f3e5f5;
+  --primary: #ffb3b1;
+  --primary-container: #d42b3b;
+  --primary-ink: #fff2f1;
   --accent: #7bd1f8;
   color: var(--text);
   font-family: Inter, system-ui, sans-serif;
@@ -27,8 +27,8 @@
   --text: #2b2320;
   --muted: #65565a;
   --outline: #8b7a6c55;
-  --primary: #8d2ec7;
-  --primary-container: #a33ae2;
+  --primary: #bb152c;
+  --primary-container: #d42b3b;
   --primary-ink: #fff;
   --accent: #0b4e6e;
 }
@@ -88,7 +88,7 @@ button:disabled {
 }
 
 button.primary {
-  background: linear-gradient(135deg, #7a1fa2, #4a148c);
+  background: linear-gradient(135deg, #ffb3b1, #d42b3b);
   color: var(--primary-ink);
 }
 
@@ -117,7 +117,7 @@ textarea {
 
 .app-root {
   min-height: 100vh;
-  background: radial-gradient(circle at 20% 0%, #1d1a22 0%, var(--bg) 45%);
+  background: radial-gradient(circle at 20% 0%, #1d1a1a 0%, var(--bg) 45%);
 }
 
 .topbar {

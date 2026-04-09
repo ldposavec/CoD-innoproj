@@ -26,4 +26,14 @@ public class LibraryController {
     public List<Map<String, Object>> vampireDisciplines() {
         return service.vampireDisciplines();
     }
+
+    @GetMapping("/skills")
+    public Map<String, Object> skills() {
+        return service.skills();
+    }
+
+    @GetMapping("/splat-options")
+    public Map<String, Object> splatOptions() {
+        return service.splatOptions();
+    }
 }

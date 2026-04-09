@@ -18,6 +18,22 @@
   let sortMode = $state<SortMode>('created');
   let meritsLibrary = $state<LibraryMerit[]>([]);
   let meritCategory = $state('All');
+  let skillsLibrary = $state<{ physical: string[]; social: string[]; mental: string[] }>({
+    physical: [],
+    social: [],
+    mental: []
+  });
+  let splatOptions = $state<{
+    vampireClans: string[];
+    vampireCovenants: string[];
+    beastFamilies: string[];
+    beastHungers: string[];
+  }>({
+    vampireClans: [],
+    vampireCovenants: [],
+    beastFamilies: [],
+    beastHungers: []
+  });
   let sheetEdit = $state(false);
   let sheetTab = $state<SheetTab>('info');
   let theme = $state<'dark' | 'light'>('dark');
@@ -60,7 +76,7 @@
     }
     applyTheme();
 
-    await Promise.all([loadCharacters(), loadMerits()]);
+    await Promise.all([loadCharacters(), loadMerits(), loadSkills(), loadSplatOptions()]);
   });
 
   async function loadCharacters() {
@@ -77,6 +93,22 @@
       meritsLibrary = await api.listMerits();
     } catch {
       meritsLibrary = [];
+    }
+  }
+
+  async function loadSkills() {
+    try {
+      skillsLibrary = await api.listSkills();
+    } catch {
+      skillsLibrary = { physical: [], social: [], mental: [] };
+    }
+  }
+
+  async function loadSplatOptions() {
+    try {
+      splatOptions = await api.listSplatOptions();
+    } catch {
+      splatOptions = { vampireClans: [], vampireCovenants: [], beastFamilies: [], beastHungers: [] };
     }
   }
 
@@ -311,8 +343,8 @@
         {#each Object.entries(SKILL_GROUPS) as [group, keys]}
           <h3>{group}</h3>
           <div class="grid three">
-            {#each keys as key}
-              <label>{key}<input type="number" min="0" max="5" bind:value={draft.skills[key]} /></label>
+            {#each keys as key, skillIndex}
+              <label>{skillsLibrary[group.toLowerCase() as 'physical' | 'social' | 'mental'][skillIndex] ?? key}<input type="number" min="0" max="5" bind:value={draft.skills[key]} /></label>
             {/each}
           </div>
         {/each}
@@ -348,6 +380,58 @@
 
       {#if wizardStep === 5}
         {#if draft.splat !== 'MORTAL'}
+          {#if draft.splat === 'VAMPIRE'}
+            <div class="grid two">
+              <label>Clan
+                <select
+                  value={String(draft.splatData.clan ?? '')}
+                  oninput={(e) => (draft.splatData.clan = (e.currentTarget as HTMLSelectElement).value)}
+                >
+                  <option value="">Select Clan</option>
+                  {#each splatOptions.vampireClans as clan}
+                    <option value={clan}>{clan}</option>
+                  {/each}
+                </select>
+              </label>
+              <label>Covenant
+                <select
+                  value={String(draft.splatData.covenant ?? '')}
+                  oninput={(e) => (draft.splatData.covenant = (e.currentTarget as HTMLSelectElement).value)}
+                >
+                  <option value="">Select Covenant</option>
+                  {#each splatOptions.vampireCovenants as covenant}
+                    <option value={covenant}>{covenant}</option>
+                  {/each}
+                </select>
+              </label>
+            </div>
+          {/if}
+          {#if draft.splat === 'BEAST'}
+            <div class="grid two">
+              <label>Family
+                <select
+                  value={String(draft.splatData.family ?? '')}
+                  oninput={(e) => (draft.splatData.family = (e.currentTarget as HTMLSelectElement).value)}
+                >
+                  <option value="">Select Family</option>
+                  {#each splatOptions.beastFamilies as family}
+                    <option value={family}>{family}</option>
+                  {/each}
+                </select>
+              </label>
+              <label>Hunger
+                <select
+                  value={String(draft.splatData.hunger ?? '')}
+                  oninput={(e) => (draft.splatData.hunger = (e.currentTarget as HTMLSelectElement).value)}
+                >
+                  <option value="">Select Hunger</option>
+                  {#each splatOptions.beastHungers as hunger}
+                    <option value={hunger}>{hunger}</option>
+                  {/each}
+                </select>
+              </label>
+            </div>
+          {/if}
           <label>Powers / Abilities
             <textarea
               rows="6"

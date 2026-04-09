@@ -40,5 +40,14 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(input)
     }),
-  listMerits: () => request<LibraryMerit[]>('/libraries/merits')
+  listMerits: () => request<LibraryMerit[]>('/libraries/merits'),
+  listSkills: () =>
+    request<{ physical: string[]; social: string[]; mental: string[] }>('/libraries/skills'),
+  listSplatOptions: () =>
+    request<{
+      vampireClans: string[];
+      vampireCovenants: string[];
+      beastFamilies: string[];
+      beastHungers: string[];
+    }>('/libraries/splat-options')
 };

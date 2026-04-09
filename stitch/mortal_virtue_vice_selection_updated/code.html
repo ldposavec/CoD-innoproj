@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Mortal Soul - Character Creation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Inter:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#064c6b",
+                    "error-container": "#93000a",
+                    "tertiary": "#6e8aa8",
+                    "tertiary-fixed-dim": "#6e8aa8",
+                    "surface-tint": "#a4b5cc",
+                    "surface-container-lowest": "#0a0c0e",
+                    "primary-container": "#1a2a3a",
+                    "primary": "#5C7C99",
+                    "inverse-surface": "#e1e3e5",
+                    "secondary-fixed-dim": "#7c91a8",
+                    "on-error": "#690005",
+                    "on-surface": "#e1e3e5",
+                    "error": "#ffb4ab",
+                    "surface-dim": "#0d0f11",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#1a2a3a",
+                    "inverse-primary": "#5C7C99",
+                    "tertiary-fixed": "#c7d8e8",
+                    "on-background": "#e1e3e5",
+                    "on-tertiary": "#0d1f2d",
+                    "outline-variant": "#3d4852",
+                    "surface-container": "#15181b",
+                    "on-tertiary-container": "#e8eff7",
+                    "on-secondary-fixed": "#0a131c",
+                    "on-primary-container": "#d1e1f0",
+                    "inverse-on-surface": "#2a2d30",
+                    "tertiary-container": "#2d455e",
+                    "secondary-container": "#1a2a3a",
+                    "surface-container-highest": "#2a2e33",
+                    "surface-bright": "#33383e",
+                    "surface": "#0d0f11",
+                    "primary-fixed-dim": "#5C7C99",
+                    "on-tertiary-fixed": "#0a131c",
+                    "outline": "#7e8b99",
+                    "on-tertiary-fixed-variant": "#1a2a3a",
+                    "surface-container-high": "#212529",
+                    "surface-container-low": "#111417",
+                    "on-secondary-container": "#7c91a8",
+                    "on-primary-fixed-variant": "#1a2a3a",
+                    "background": "#0d0f11",
+                    "surface-variant": "#2a2e33",
+                    "secondary": "#7c91a8",
+                    "on-surface-variant": "#a4b5cc",
+                    "secondary-fixed": "#d1e1f0",
+                    "primary-fixed": "#d1e1f0",
+                    "on-error-container": "#ffdad6",
+                    "on-primary-fixed": "#0a131c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(21, 24, 27, 0.7);
+            backdrop-filter: blur(16px);
+        }
+        .vignette {
+            background: radial-gradient(circle, transparent 20%, rgba(13, 15, 17, 0.8) 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/20">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-surface shadow-lg border-b border-white/5">
+<div class="flex items-center gap-4">
+<span class="font-noto-serif italic text-primary text-xl tracking-tight">The Eldritch Editorial</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-gray-500 hover:text-primary transition-colors duration-200 scale-95 material-symbols-outlined">menu</button>
+<button class="text-gray-500 hover:text-primary transition-colors duration-200 scale-95 material-symbols-outlined">settings</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant/20 grayscale hover:grayscale-0 transition-all duration-500">
+<img alt="Character Portrait" class="w-full h-full object-cover" data-alt="close-up portrait of a weary man in a dark trench coat under flickering streetlights in a rainy noir setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAHii15LSq5pMYG-dc48R_kW6IuBQha_V74Ol6iM9jNpgfeQIoHWYOyeU1ERGX2QSGm-lV3W6A0mZfOkU3HN4cSbQ8QfRn_juOaVbjtp8WTZifZE8x5Mgs6wkV5sKLvOZ8jB1ydVDVyfjwR8ejIrRwdKMtuTmdKhwjHu6vmQLpZkQOviVVhIZR03XMtY0Oj2cms6w2m_Pd8vdvaR2yNLbUeKjm61mYxYwZ_z_13XJHcfkgFcNoolt0o-m_k4i1m3OsSnKMO3cv5CUO"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 flex flex-col py-8 bg-surface-container-low border-r border-white/5 z-40">
+<div class="px-6 mb-8">
+<h2 class="font-noto-serif text-white text-lg">Character Scribe</h2>
+<p class="text-[10px] font-inter uppercase tracking-widest font-bold text-gray-500">Chronicles of Darkness</p>
+</div>
+<nav class="flex-1 flex flex-col gap-1">
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-3 hover:bg-surface-container hover:text-white transition-all translate-x-1 duration-300 cursor-pointer">
+<span class="material-symbols-outlined">person_edit</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Concept</span>
+</div>
+<div class="flex items-center gap-3 text-primary border-l-2 border-primary pl-4 py-3 bg-surface-container translate-x-1 duration-300 cursor-default">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Attributes</span>
+</div>
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-3 hover:bg-surface-container hover:text-white transition-all translate-x-1 duration-300 cursor-pointer">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Skills</span>
+</div>
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-3 hover:bg-surface-container hover:text-white transition-all translate-x-1 duration-300 cursor-pointer">
+<span class="material-symbols-outlined">military_tech</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Merits</span>
+</div>
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-3 hover:bg-surface-container hover:text-white transition-all translate-x-1 duration-300 cursor-pointer">
+<span class="material-symbols-outlined">done_all</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Finishing Touches</span>
+</div>
+</nav>
+<div class="px-6 mt-auto border-t border-outline-variant/10 pt-6">
+<button class="w-full py-3 bg-primary/5 text-primary border border-primary/20 font-inter uppercase tracking-widest text-[10px] font-bold hover:bg-primary/20 hover:border-primary/40 transition-all">
+                Save Progress
+            </button>
+<div class="mt-6 flex flex-col gap-2">
+<div class="flex items-center gap-3 text-gray-500 hover:text-white cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-sm">auto_stories</span>
+<span class="text-[9px] uppercase tracking-tighter">Lore Archive</span>
+</div>
+<div class="flex items-center gap-3 text-gray-500 hover:text-white cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-sm">casino</span>
+<span class="text-[9px] uppercase tracking-tighter">Dice Roller</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen bg-surface">
+<div class="max-w-6xl mx-auto px-12 py-16">
+<!-- Header Section -->
+<header class="mb-16">
+<div class="flex items-baseline gap-4 mb-2">
+<span class="font-inter text-primary text-sm font-bold tracking-[0.2em] uppercase">Step 02</span>
+<h1 class="font-headline text-5xl font-bold italic tracking-tight text-on-surface">The Mortal Soul</h1>
+</div>
+<div class="w-32 h-1 bg-primary/40 mb-6"></div>
+<p class="font-headline text-xl text-on-surface-variant max-w-2xl leading-relaxed italic opacity-80">
+                    "A human heart is defined by the tension between its noblest aspirations and its deepest flaws."
+                </p>
+</header>
+<!-- Willpower Explanation - Glassmorphism -->
+<section class="mb-16 glass-panel rounded-lg p-8 border border-white/5 relative overflow-hidden">
+<div class="absolute -right-16 -top-16 opacity-5 pointer-events-none text-primary">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div>
+<h3 class="font-inter text-xs font-bold tracking-[0.2em] uppercase text-primary mb-4">Willpower Mechanics</h3>
+<p class="text-on-surface-variant leading-relaxed text-sm">
+                            Acting in accordance with your internal compass restores your inner strength. 
+                            Fulfilling your <span class="text-white font-bold">Virtue</span> once per chapter restores all spent Willpower. 
+                            Indulging your <span class="text-white font-bold">Vice</span> once per scene restores one point of spent Willpower.
+                        </p>
+</div>
+<div class="flex justify-end gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-sm border-b-2 border-primary w-32 text-center">
+<span class="block text-2xl font-headline font-bold italic">Full</span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Virtue Recovery</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-sm border-b-2 border-primary/40 w-32 text-center">
+<span class="block text-2xl font-headline font-bold italic">1 pt</span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-gray-500">Vice Recovery</span>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Virtues & Vices Selection -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Virtue Selection -->
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-outline-variant/10 pb-2">
+<h2 class="font-headline text-2xl italic">Virtue</h2>
+<span class="text-[10px] font-bold text-primary/60 tracking-widest uppercase">Select One</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Virtue Card: Ambitious -->
+<div class="bg-surface-container-low p-6 rounded-sm hover:bg-surface-container transition-all border-l border-transparent hover:border-primary/50 cursor-pointer group">
+<h4 class="font-headline font-bold text-lg mb-2 group-hover:text-primary transition-colors italic">Ambitious</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-4">Regain Willpower when you put yourself at risk to achieve a major goal.</p>
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity">Select</span>
+</div>
+<!-- Virtue Card: Courageous -->
+<div class="bg-surface-container p-6 rounded-sm border-l-2 border-primary cursor-default relative overflow-hidden">
+<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline font-bold text-lg italic text-primary">Courageous</h4>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="text-xs text-on-surface leading-relaxed mb-4">Regain Willpower when you face a fear or a dangerous situation for the sake of others.</p>
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary">Active</span>
+</div>
+</div>
+<!-- Virtue Card: Generous -->
+<div class="bg-surface-container-low p-6 rounded-sm hover:bg-surface-container transition-all border-l border-transparent hover:border-primary/50 cursor-pointer group">
+<h4 class="font-headline font-bold text-lg mb-2 group-hover:text-primary transition-colors italic">Generous</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-4">Regain Willpower when you provide significant help at great personal cost.</p>
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity">Select</span>
+</div>
+</div>
+</div>
+<!-- Vice Selection -->
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-outline-variant/10 pb-2">
+<h2 class="font-headline text-2xl italic text-on-surface-variant">Vice</h2>
+<span class="text-[10px] font-bold text-primary/60 tracking-widest uppercase">Select One</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Vice Card: Greedy -->
+<div class="bg-surface-container-low p-6 rounded-sm hover:bg-surface-container transition-all border-l border-transparent hover:border-primary/50 cursor-pointer group">
+<h4 class="font-headline font-bold text-lg mb-2 group-hover:text-primary transition-colors italic">Greedy</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-4">Regain Willpower when you prioritize material gain over your better nature.</p>
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity">Select</span>
+</div>
+<!-- Vice Card: Lustful -->
+<div class="bg-surface-container-low p-6 rounded-sm hover:bg-surface-container transition-all border-l border-transparent hover:border-primary/50 cursor-pointer group">
+<h4 class="font-headline font-bold text-lg mb-2 group-hover:text-primary transition-colors italic">Lustful</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed mb-4">Regain Willpower when you fulfill a desire instead of doing the right thing.</p>
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity">Select</span>
+</div>
+<!-- Vice Card: Arrogant -->
+<div class="bg-surface-container p-6 rounded-sm border-l-2 border-primary cursor-default relative overflow-hidden">
+<div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-2">
+<h4 class="font-headline font-bold text-lg italic text-primary">Arrogant</h4>
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<p class="text-xs text-on-surface leading-relaxed mb-4">Regain Willpower when your ego gets in the way of a logical or safe course of action.</p>
+<span class="text-[10px] uppercase font-bold tracking-widest text-primary">Active</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Aspirations Column - Asymmetric Layout -->
+<div class="lg:col-span-4 space-y-6">
+<div class="bg-surface-container-low p-8 h-full flex flex-col border border-white/5">
+<div class="mb-8">
+<h2 class="font-headline text-3xl font-bold mb-2">Aspirations</h2>
+<p class="text-xs text-gray-500 uppercase tracking-widest font-bold">Life's Intentions</p>
+</div>
+<div class="space-y-8 flex-1">
+<!-- Short Term -->
+<div class="space-y-4">
+<h3 class="font-inter text-[10px] font-bold tracking-[0.2em] uppercase text-primary border-b border-primary/20 pb-1">Short-Term (Select 2)</h3>
+<div class="space-y-3">
+<div class="group">
+<label class="text-xs text-gray-400 mb-1 block">Goal 01</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant/30 text-on-surface font-headline italic text-lg focus:ring-0 focus:border-primary transition-all p-0 pb-1" type="text" value="Secure the inheritance papers"/>
+</div>
+<div class="group">
+<label class="text-xs text-gray-400 mb-1 block">Goal 02</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant/30 text-on-surface font-headline italic text-lg focus:ring-0 focus:border-primary transition-all p-0 pb-1" placeholder="Add a short term goal..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Long Term -->
+<div class="space-y-4">
+<h3 class="font-inter text-[10px] font-bold tracking-[0.2em] uppercase text-primary border-b border-primary/20 pb-1">Long-Term (Select 1)</h3>
+<div class="group">
+<label class="text-xs text-gray-400 mb-1 block">Ultimate Goal</label>
+<input class="w-full bg-transparent border-0 border-b border-outline-variant/30 text-on-surface font-headline italic text-lg focus:ring-0 focus:border-primary transition-all p-0 pb-1" type="text" value="Clear my father's name in the occult circle"/>
+</div>
+</div>
+</div>
+<!-- Tip -->
+<div class="mt-12 p-4 bg-surface-container-lowest text-[11px] leading-relaxed text-on-surface-variant italic border-l-2 border-primary/20">
+                            Aspirations are your primary source of Experience Points. When you resolve an Aspiration, you earn a Beat.
+                        </div>
+</div>
+</div>
+</div>
+<!-- Navigation Footer -->
+<footer class="mt-24 pt-8 border-t border-outline-variant/10 flex justify-between items-center">
+<button class="flex items-center gap-3 text-gray-500 hover:text-white transition-all group">
+<span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Step 01: Attributes</span>
+</button>
+<div class="flex items-center gap-8">
+<div class="text-right">
+<span class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-1">Current Progress</span>
+<div class="w-48 h-1 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="w-[40%] h-full bg-primary/60 shadow-[0_0_12px_rgba(92,124,153,0.3)]"></div>
+</div>
+</div>
+<button class="px-10 py-4 bg-primary text-on-primary font-noto-serif italic font-bold text-lg hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(92,124,153,0.2)] transition-all active:scale-95">
+                        Commit Soul
+                    </button>
+</div>
+</footer>
+</div>
+</main>
+<!-- Aesthetic Ambient Elements -->
+<div class="fixed top-0 right-0 w-1/3 h-screen bg-gradient-to-l from-primary/10 to-transparent pointer-events-none z-0"></div>
+<div class="fixed top-0 left-0 w-full h-full vignette pointer-events-none z-10"></div>
+<div class="fixed bottom-0 left-0 w-full h-48 bg-gradient-to-t from-surface to-transparent pointer-events-none z-10"></div>
+</body></html>

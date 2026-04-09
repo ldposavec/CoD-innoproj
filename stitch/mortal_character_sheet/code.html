@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Character Scribe - Sarah Miller</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#064c6b",
+                        "error-container": "#93000a",
+                        "tertiary": "#7bd1f8",
+                        "tertiary-fixed-dim": "#7bd1f8",
+                        "surface-tint": "#ffb3b1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-container": "#d42b3b",
+                        "primary": "#ffb3b1",
+                        "inverse-surface": "#e5e2e1",
+                        "secondary-fixed-dim": "#98cdf2",
+                        "on-error": "#690005",
+                        "on-surface": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "surface-dim": "#131313",
+                        "on-primary": "#680011",
+                        "on-secondary": "#00344c",
+                        "inverse-primary": "#bb152c",
+                        "tertiary-fixed": "#bee9ff",
+                        "on-background": "#e5e2e1",
+                        "on-tertiary": "#003546",
+                        "outline-variant": "#5b403d",
+                        "surface-container": "#201f1f",
+                        "on-tertiary-container": "#e9f7ff",
+                        "on-secondary-fixed": "#001e2e",
+                        "on-primary-container": "#fff2f1",
+                        "inverse-on-surface": "#313030",
+                        "tertiary-container": "#00799c",
+                        "secondary-container": "#0b4e6e",
+                        "surface-container-highest": "#353534",
+                        "surface-bright": "#393939",
+                        "surface": "#131313",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "on-tertiary-fixed": "#001f2a",
+                        "outline": "#ab8985",
+                        "on-tertiary-fixed-variant": "#004d65",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary-container": "#8abfe4",
+                        "on-primary-fixed-variant": "#92001c",
+                        "background": "#131313",
+                        "surface-variant": "#353534",
+                        "secondary": "#98cdf2",
+                        "on-surface-variant": "#e4beba",
+                        "secondary-fixed": "#c7e7ff",
+                        "primary-fixed": "#ffdad8",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#410007"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .dot-filled { font-variation-settings: 'FILL' 1; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #353534; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-[#131313] border-none shadow-none">
+<div class="flex items-center gap-4">
+<span class="font-noto-serif italic text-red-600 dark:text-red-500 text-xl">The Eldritch Editorial</span>
+</div>
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-sm font-label text-xs uppercase tracking-widest hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+                Export PDF
+            </button>
+<div class="flex items-center gap-4 text-gray-500">
+<span class="material-symbols-outlined hover:text-red-400 transition-colors cursor-pointer">menu</span>
+<span class="material-symbols-outlined hover:text-red-400 transition-colors cursor-pointer">settings</span>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest border border-outline-variant/15">
+<img alt="Character Portrait" class="w-full h-full object-cover" data-alt="professional portrait of a determined woman with glasses and sharp features in soft office lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDntrIZ9ND_Ff1Qeyd0mMnvWINaJ65iTn00a8FZtkSZC0UThGGtubftVScMWzeM_sr1O-gd6r_-kqAxNT7ybtkUiS1ANNpqSsSBO1vpucpy92MK2TrCyWDWpgT5K-zmhxr1fq6pXtnY-XKMMveGry_ZkrzFbaVjqifAR_dcbULuVYHV_F1gJlMedPgsTv1mH_DiLFH_n_q1sI4vuTLK3JbtOgEtjL5_V2geAL3hI7b4ZwEN9I-UirM18byjlaVoj2IX9qrja02nbpP1"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 flex flex-col py-8 bg-[#1C1B1B] shadow-[40px_0px_40px_0px_rgba(0,0,0,0.4)]">
+<div class="px-6 mb-10">
+<h2 class="font-noto-serif text-white text-xl">Character Scribe</h2>
+<p class="font-inter uppercase tracking-widest text-[10px] font-bold text-gray-500 mt-1">Chronicles of Darkness</p>
+</div>
+<nav class="flex-1">
+<div class="flex items-center gap-3 text-red-400 border-l-2 border-red-600 pl-4 py-3 bg-[#201F1F] translate-x-1 duration-300">
+<span class="material-symbols-outlined" data-icon="person_edit">person_edit</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Concept</span>
+</div>
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-3 hover:bg-[#201F1F] hover:text-white transition-all">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Attributes</span>
+</div>
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-3 hover:bg-[#201F1F] hover:text-white transition-all">
+<span class="material-symbols-outlined" data-icon="fitness_center">fitness_center</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Skills</span>
+</div>
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-3 hover:bg-[#201F1F] hover:text-white transition-all">
+<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Merits</span>
+</div>
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-3 hover:bg-[#201F1F] hover:text-white transition-all">
+<span class="material-symbols-outlined" data-icon="done_all">done_all</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Finishing Touches</span>
+</div>
+</nav>
+<div class="mt-auto px-4 space-y-2">
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-2 hover:text-white cursor-pointer">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Lore Archive</span>
+</div>
+<div class="flex items-center gap-3 text-gray-400 pl-4 py-2 hover:text-white cursor-pointer">
+<span class="material-symbols-outlined" data-icon="casino">casino</span>
+<span class="font-inter uppercase tracking-widest text-[10px] font-bold">Dice Roller</span>
+</div>
+<button class="w-full mt-4 bg-primary-container text-on-primary-container py-3 rounded-sm font-inter uppercase tracking-widest text-[10px] font-bold hover:brightness-110 transition-all">
+                Save Progress
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-8 min-h-screen">
+<div class="max-w-6xl mx-auto">
+<!-- Hero Header Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+<div class="md:col-span-2 flex flex-col justify-end pb-4 border-b border-outline-variant/15">
+<h1 class="font-headline text-6xl font-bold tracking-tight mb-2">Sarah Miller</h1>
+<div class="flex items-center gap-8">
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Concept</span>
+<span class="text-xl font-headline italic">Investigative Journalist</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold">Chronicle</span>
+<span class="text-xl font-headline italic">The Silent City</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 flex flex-col justify-between">
+<div class="grid grid-cols-2 gap-4">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold block mb-1">Virtue</span>
+<span class="text-lg font-headline">Honest</span>
+</div>
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold block mb-1">Vice</span>
+<span class="text-lg font-headline">Curious</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant/10">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold block mb-2">Faction / Organization</span>
+<span class="text-sm font-body opacity-80 italic">The Independent Press Collective</span>
+</div>
+</div>
+</section>
+<!-- Attributes Grid -->
+<section class="mb-12">
+<div class="flex items-center gap-4 mb-6">
+<h2 class="font-headline text-2xl italic">Attributes</h2>
+<div class="h-px flex-1 bg-gradient-to-r from-outline-variant/30 to-transparent"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-1">
+<!-- Mental -->
+<div class="bg-surface-container-low p-6 space-y-4">
+<span class="font-label text-[10px] uppercase tracking-widest text-primary font-bold block mb-2">Mental</span>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-primary transition-colors">Intelligence</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-primary transition-colors">Wits</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-primary transition-colors">Resolve</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+</div>
+<!-- Physical -->
+<div class="bg-surface-container p-6 space-y-4">
+<span class="font-label text-[10px] uppercase tracking-widest text-secondary font-bold block mb-2">Physical</span>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-secondary transition-colors">Strength</span>
+<div class="flex gap-1 text-secondary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-secondary transition-colors">Dexterity</span>
+<div class="flex gap-1 text-secondary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-secondary transition-colors">Stamina</span>
+<div class="flex gap-1 text-secondary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+</div>
+<!-- Social -->
+<div class="bg-surface-container-low p-6 space-y-4">
+<span class="font-label text-[10px] uppercase tracking-widest text-tertiary font-bold block mb-2">Social</span>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-tertiary transition-colors">Presence</span>
+<div class="flex gap-1 text-tertiary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-tertiary transition-colors">Manipulation</span>
+<div class="flex gap-1 text-tertiary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-body text-sm uppercase tracking-wide group-hover:text-tertiary transition-colors">Composure</span>
+<div class="flex gap-1 text-tertiary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Skills & Health Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
+<!-- Skills Column (Mental Focused) -->
+<div class="lg:col-span-4 space-y-6">
+<div class="flex items-center gap-4 mb-2">
+<h2 class="font-headline text-xl italic">Mental Skills</h2>
+<div class="h-px flex-1 bg-gradient-to-r from-outline-variant/20 to-transparent"></div>
+</div>
+<div class="bg-surface-container-low p-6 rounded-none space-y-3">
+<div class="flex justify-between text-xs font-label uppercase tracking-widest opacity-60">
+<span>Skill</span>
+<span>Rating</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm">Academics</span>
+<div class="flex gap-0.5 text-secondary">
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px]">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm">Computer</span>
+<div class="flex gap-0.5 text-secondary">
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm font-bold text-primary italic">Investigation</span>
+<div class="flex gap-0.5 text-primary">
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm">Politics</span>
+<div class="flex gap-0.5 text-secondary">
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px]">circle</span>
+<span class="material-symbols-outlined text-[10px]">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm">Science</span>
+<div class="flex gap-0.5 text-secondary">
+<span class="material-symbols-outlined text-[10px] dot-filled">circle</span>
+<span class="material-symbols-outlined text-[10px]">circle</span>
+<span class="material-symbols-outlined text-[10px]">circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Center: Health and Willpower -->
+<div class="lg:col-span-5 space-y-8">
+<div class="bg-[#1C1B1B] p-8 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary shadow-[2px_0px_10px_rgba(212,43,59,0.4)]"></div>
+<h2 class="font-label text-[10px] uppercase tracking-[0.2em] text-primary font-bold mb-6">Vitality Matrix</h2>
+<!-- Health Track -->
+<div class="space-y-3 mb-10">
+<div class="flex justify-between items-end">
+<span class="font-headline italic text-lg">Health</span>
+<span class="text-xs font-label opacity-60">7 / 7</span>
+</div>
+<div class="flex gap-2">
+<div class="w-full h-8 bg-surface-container-highest flex items-center justify-center border border-primary/10"></div>
+<div class="w-full h-8 bg-surface-container-highest flex items-center justify-center border border-primary/10"></div>
+<div class="w-full h-8 bg-surface-container-highest flex items-center justify-center border border-primary/10"></div>
+<div class="w-full h-8 bg-surface-container-highest flex items-center justify-center border border-primary/10"></div>
+<div class="w-full h-8 bg-surface-container-highest flex items-center justify-center border border-primary/10"></div>
+<div class="w-full h-8 bg-surface-container-highest flex items-center justify-center border border-primary/10"></div>
+<div class="w-full h-8 bg-surface-container-highest flex items-center justify-center border border-primary/10"></div>
+</div>
+</div>
+<!-- Willpower Track -->
+<div class="space-y-3">
+<div class="flex justify-between items-end">
+<span class="font-headline italic text-lg">Willpower</span>
+<span class="text-xs font-label opacity-60">5 / 5</span>
+</div>
+<div class="flex gap-2">
+<div class="w-full h-8 bg-surface-container border border-tertiary/20 flex items-center justify-center relative">
+<div class="absolute inset-1 bg-tertiary/20 backdrop-blur-sm"></div>
+</div>
+<div class="w-full h-8 bg-surface-container border border-tertiary/20 flex items-center justify-center relative">
+<div class="absolute inset-1 bg-tertiary/20 backdrop-blur-sm"></div>
+</div>
+<div class="w-full h-8 bg-surface-container border border-tertiary/20 flex items-center justify-center relative">
+<div class="absolute inset-1 bg-tertiary/20 backdrop-blur-sm"></div>
+</div>
+<div class="w-full h-8 bg-surface-container border border-tertiary/20 flex items-center justify-center"></div>
+<div class="w-full h-8 bg-surface-container border border-tertiary/20 flex items-center justify-center"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4">
+<span class="font-label text-[10px] uppercase tracking-widest opacity-60 block mb-2">Integrity</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+<span class="material-symbols-outlined text-xs">circle</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 flex flex-col justify-center items-center">
+<span class="font-label text-[10px] uppercase tracking-widest opacity-60 block mb-1">Initiative</span>
+<span class="text-3xl font-headline italic">7</span>
+</div>
+</div>
+</div>
+<!-- Social/Physical Skills Column -->
+<div class="lg:col-span-3 space-y-6">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-tertiary font-bold block mb-4">Other Skills</span>
+<div class="space-y-3 bg-surface-container-lowest p-6">
+<div class="flex justify-between items-center group">
+<span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">Athletics</span>
+<span class="text-xs font-mono">••</span>
+</div>
+<div class="flex justify-between items-center group">
+<span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">Drive</span>
+<span class="text-xs font-mono">•</span>
+</div>
+<div class="flex justify-between items-center group">
+<span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">Empathy</span>
+<span class="text-xs font-mono text-tertiary">•••</span>
+</div>
+<div class="flex justify-between items-center group">
+<span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">Expression</span>
+<span class="text-xs font-mono text-tertiary">•••</span>
+</div>
+<div class="flex justify-between items-center group">
+<span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">Persuasion</span>
+<span class="text-xs font-mono text-tertiary">••</span>
+</div>
+<div class="flex justify-between items-center group">
+<span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">Socialize</span>
+<span class="text-xs font-mono">••</span>
+</div>
+<div class="flex justify-between items-center group">
+<span class="text-sm opacity-80 group-hover:opacity-100 transition-opacity">Stealth</span>
+<span class="text-xs font-mono text-primary">••</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Merits & Lore Section -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<h2 class="font-headline text-2xl italic">Merits</h2>
+<div class="h-px flex-1 bg-gradient-to-r from-outline-variant/30 to-transparent"></div>
+</div>
+<div class="space-y-1">
+<div class="bg-surface-container-low p-4 flex justify-between items-center hover:bg-surface-container transition-colors">
+<div>
+<span class="font-headline text-sm">Professional Training (Journalism)</span>
+<span class="block text-[10px] text-primary uppercase font-bold tracking-tighter">Asset</span>
+</div>
+<span class="text-primary">•••</span>
+</div>
+<div class="bg-surface-container-low p-4 flex justify-between items-center hover:bg-surface-container transition-colors">
+<div>
+<span class="font-headline text-sm">Contacts (Police, City Hall)</span>
+<span class="block text-[10px] text-primary uppercase font-bold tracking-tighter">Asset</span>
+</div>
+<span class="text-primary">••</span>
+</div>
+<div class="bg-surface-container-low p-4 flex justify-between items-center hover:bg-surface-container transition-colors">
+<div>
+<span class="font-headline text-sm">Library (Local History)</span>
+<span class="block text-[10px] text-primary uppercase font-bold tracking-tighter">Asset</span>
+</div>
+<span class="text-primary">•</span>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<h2 class="font-headline text-2xl italic">Lore Notes</h2>
+<div class="h-px flex-1 bg-gradient-to-r from-outline-variant/30 to-transparent"></div>
+</div>
+<div class="bg-surface-container-low p-6 h-full border-l-2 border-outline-variant/20 italic text-sm text-on-surface-variant leading-relaxed">
+                        "The truth doesn't just sit there waiting to be found. It hides. It buries itself under layers of bureaucracy and polite lies. I've seen enough redacted files to know that 'The Silent City' isn't just a metaphor—it's a warning."
+                    </div>
+</div>
+</section>
+</div>
+</main>
+<!-- Contextual FAB (Hidden as per instructions for Details/Character Sheet pages) -->
+<footer class="ml-64 p-8 border-t border-outline-variant/5 text-center opacity-40">
+<p class="text-[10px] font-label uppercase tracking-[0.3em]">The Eldritch Editorial • Chronicles of Darkness • MMXXIV</p>
+</footer>
+</body></html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Eldritch Editorial - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&amp;family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#131313",
+                        "on-primary-fixed-variant": "#92001c",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary-container": "#8abfe4",
+                        "surface-container-high": "#2a2a2a",
+                        "on-primary-fixed": "#410007",
+                        "secondary-fixed": "#c7e7ff",
+                        "primary-fixed": "#ffdad8",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#e4beba",
+                        "surface-variant": "#353534",
+                        "secondary": "#98cdf2",
+                        "secondary-container": "#0b4e6e",
+                        "tertiary-container": "#00799c",
+                        "inverse-on-surface": "#313030",
+                        "outline": "#ab8985",
+                        "on-tertiary-fixed-variant": "#004d65",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "on-tertiary-fixed": "#001f2a",
+                        "surface": "#131313",
+                        "surface-container-highest": "#353534",
+                        "surface-bright": "#393939",
+                        "on-tertiary": "#003546",
+                        "tertiary-fixed": "#bee9ff",
+                        "on-background": "#e5e2e1",
+                        "inverse-primary": "#bb152c",
+                        "on-secondary": "#00344c",
+                        "on-tertiary-container": "#e9f7ff",
+                        "on-secondary-fixed": "#001e2e",
+                        "on-primary-container": "#fff2f1",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#5b403d",
+                        "secondary-fixed-dim": "#98cdf2",
+                        "inverse-surface": "#e5e2e1",
+                        "primary": "#ffb3b1",
+                        "tertiary-fixed-dim": "#7bd1f8",
+                        "surface-tint": "#ffb3b1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-container": "#d42b3b",
+                        "tertiary": "#7bd1f8",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#064c6b",
+                        "on-primary": "#680011",
+                        "surface-dim": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(28, 27, 27, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .blood-pulse {
+            background: linear-gradient(135deg, #ffb3b1 0%, #d42b3b 100%);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Artistic Sidebar Hero -->
+<div class="hidden lg:block lg:w-3/5 h-full relative overflow-hidden bg-surface-container-lowest">
+<img alt="Stylized silhouette in rain" class="absolute inset-0 object-cover w-full h-full opacity-60 mix-blend-luminosity" data-alt="Cinematic wide shot of a dark stylized silhouette standing in a rainy gothic city street at night with neon red reflections in puddles" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFQ2B4TqMMt3QGJI85BO8uLjmLbz5YR9ceml_rABsWWIVQzS2faSFm5E7qne8aK7UHADVCx0S-SBGZ3z70qs_wojNZo6Oftmi0zFaDvoYwpU1wwgXwW4eSPUee7v2U70PMqimhp0Fl0rk2mGft22Ze826T6AeQop7aFvjo2JUF_fc5Isc64IAlYOScI2XOUDZRSTX6eYC-bUpj9TG1JXc3VCE10WqSbs0Tp8j4aRG98kSk8OahjPUYyQNPRlxN0pcx1e6BjelA0mMX"/>
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-surface"></div>
+<div class="absolute bottom-12 left-12 max-w-lg z-10">
+<h2 class="font-headline italic text-5xl text-on-surface tracking-tight leading-tight">
+                    "Truth is a shadow <br/>waiting to be cast."
+                </h2>
+<div class="mt-6 flex items-center gap-4">
+<div class="h-px w-12 bg-primary"></div>
+<p class="font-label text-[10px] uppercase tracking-[0.2rem] text-primary">The Eldritch Editorial</p>
+</div>
+</div>
+</div>
+<!-- Login Canvas -->
+<main class="w-full lg:w-2/5 h-full flex items-center justify-center relative p-6">
+<!-- Background Mobile Image Fallback -->
+<div class="lg:hidden absolute inset-0 z-0">
+<img alt="Mobile background" class="object-cover w-full h-full opacity-20" data-alt="Dark moody rainy city street at night with dramatic red highlights and shadowy figures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrqcXEfjcjRjQ_qn2OZ3BM7IJHhYZNB7vupscfGFcO1POOlae7vTH9qwHXUeq70L3D6jHEJT5G_4LPIiqq9IlEwEH-3-VelhWvqfip-2EdA4EFkOJPkzbbLOSzP5-hWUy_n_6iPOZXgDQj4FvscPUGXcffQqEc9TvvxSBbnB-ByNzWh5LfHgXJ5VcOj1EUfGAKWL2Dp-vhVSsbzN2vhE0GR62Ni78iBgNASjqP0E-ht66hH6WxG03mGWeCOKLiyihlPdOxRtArXv6B"/>
+<div class="absolute inset-0 bg-surface/80"></div>
+</div>
+<!-- Login Card -->
+<div class="relative z-10 w-full max-w-md glass-panel p-8 lg:p-12 rounded-none border-l border-white/5 shadow-2xl">
+<header class="mb-12">
+<p class="font-label text-[10px] uppercase tracking-[0.3rem] text-on-surface-variant mb-4">Volume V: Nocturnal</p>
+<h1 class="font-headline italic text-4xl text-on-surface tracking-tight">ENTER THE ARCHIVE</h1>
+</header>
+<form class="space-y-10">
+<!-- Username Field -->
+<div class="group">
+<label class="block font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-2 transition-colors group-focus-within:text-primary" for="username">
+                            Initiate Username
+                        </label>
+<input class="w-full bg-transparent border-t-0 border-x-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body text-lg py-2 transition-all px-0" id="username" name="username" placeholder="V.TEPES" type="text"/>
+</div>
+<!-- Password Field -->
+<div class="group">
+<label class="block font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-2 transition-colors group-focus-within:text-primary" for="password">
+                            Cipher Key
+                        </label>
+<input class="w-full bg-transparent border-t-0 border-x-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body text-lg py-2 transition-all px-0" id="password" name="password" placeholder="••••••••" type="password"/>
+</div>
+<div class="pt-4">
+<button class="w-full blood-pulse text-on-primary font-label font-black text-xs uppercase tracking-[0.2rem] py-5 rounded-none shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-3" type="submit">
+<span>Finalize Grimoire</span>
+<span class="material-symbols-outlined text-sm">login</span>
+</button>
+</div>
+</form>
+<footer class="mt-16 flex flex-col items-center gap-6">
+<a class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-sm">key</span>
+                        Recover Lost Script
+                    </a>
+<div class="flex items-center gap-4 w-full">
+<div class="h-px flex-1 bg-outline-variant opacity-30"></div>
+<span class="font-label text-[9px] uppercase text-outline-variant">New Blood</span>
+<div class="h-px flex-1 bg-outline-variant opacity-30"></div>
+</div>
+<button class="w-full border border-outline-variant text-on-surface-variant font-label text-[10px] uppercase tracking-[0.15rem] py-4 hover:bg-surface-container transition-all">
+                        Register
+                    </button>
+</footer>
+</div>
+<!-- Branding Accent -->
+<div class="absolute bottom-6 right-6 opacity-10">
+<span class="font-label font-black text-6xl tracking-tighter text-on-surface select-none">EE</span>
+</div>
+</main>
+</div>
+</body></html>

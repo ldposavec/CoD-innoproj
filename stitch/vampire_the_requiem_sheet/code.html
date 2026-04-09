@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Eldritch Editorial - Character Sheet</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#ffb3b1",
+                    "tertiary": "#7bd1f8",
+                    "inverse-on-surface": "#313030",
+                    "primary": "#ffb3b1",
+                    "on-secondary": "#00344c",
+                    "on-tertiary-fixed-variant": "#004d65",
+                    "primary-fixed": "#ffdad8",
+                    "on-primary-fixed-variant": "#92001c",
+                    "outline": "#ab8985",
+                    "surface-dim": "#131313",
+                    "on-tertiary": "#003546",
+                    "primary-container": "#d42b3b",
+                    "error-container": "#93000a",
+                    "tertiary-container": "#00799c",
+                    "surface-container-lowest": "#0e0e0e",
+                    "tertiary-fixed-dim": "#7bd1f8",
+                    "secondary-container": "#0b4e6e",
+                    "on-secondary-container": "#8abfe4",
+                    "secondary": "#98cdf2",
+                    "on-tertiary-fixed": "#001f2a",
+                    "surface-container-high": "#2a2a2a",
+                    "tertiary-fixed": "#bee9ff",
+                    "surface-variant": "#353534",
+                    "surface-container-highest": "#353534",
+                    "on-background": "#e5e2e1",
+                    "surface-bright": "#393939",
+                    "on-secondary-fixed-variant": "#064c6b",
+                    "error": "#ffb4ab",
+                    "background": "#131313",
+                    "on-primary-fixed": "#410007",
+                    "on-surface-variant": "#e4beba",
+                    "outline-variant": "#5b403d",
+                    "on-secondary-fixed": "#001e2e",
+                    "surface-container-low": "#1c1b1b",
+                    "secondary-fixed-dim": "#98cdf2",
+                    "on-primary-container": "#fff2f1",
+                    "on-error": "#690005",
+                    "on-surface": "#e5e2e1",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed": "#c7e7ff",
+                    "inverse-primary": "#bb152c",
+                    "surface-container": "#201f1f",
+                    "inverse-surface": "#e5e2e1",
+                    "primary-fixed-dim": "#ffb3b1",
+                    "surface": "#131313",
+                    "on-tertiary-container": "#e9f7ff",
+                    "on-primary": "#680011"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .dot-filled { font-variation-settings: 'FILL' 1; }
+        .glass-panel {
+            background: rgba(53, 53, 52, 0.6);
+            backdrop-filter: blur(16px);
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #d42b3b; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-8 bg-[#131313] rounded-none w-64 shadow-[40px_0px_40px_0px_rgba(255,255,255,0.06)] z-[60]">
+<div class="px-6 mb-12">
+<h1 class="font-['Noto_Serif'] text-2xl font-bold text-[#D32F2F] uppercase tracking-wider">The Eldritch Editorial</h1>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest mt-1">Vampire: The Requiem</p>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-4 transition-all duration-300 py-3 text-[#FFB3B1] font-bold border-l-4 border-[#D32F2F] pl-4" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 transition-all duration-300 py-3 text-[#353534] hover:text-[#FFB3B1] pl-4" href="#">
+<span class="material-symbols-outlined" data-icon="auto_fix_high">auto_fix_high</span>
+<span class="font-label">Character Creator</span>
+</a>
+<a class="flex items-center gap-4 transition-all duration-300 py-3 text-[#353534] hover:text-[#FFB3B1] pl-4" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-label">Grimoire</span>
+</a>
+<a class="flex items-center gap-4 transition-all duration-300 py-3 text-[#353534] hover:text-[#FFB3B1] pl-4" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-label">Chronicle Log</span>
+</a>
+<a class="flex items-center gap-4 transition-all duration-300 py-3 text-[#353534] hover:text-[#FFB3B1] pl-4" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto space-y-4">
+<button class="w-full py-3 bg-primary-container text-on-primary-container rounded-sm font-bold uppercase tracking-widest text-xs hover:bg-opacity-90 transition-all">
+                New Character
+            </button>
+<div class="pt-6 border-t border-outline-variant/20 flex flex-col gap-2">
+<a class="flex items-center gap-3 text-sm text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="help_outline">help_outline</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 text-sm text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="logout">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-50 flex justify-between items-center px-8 h-16 bg-[#131313]/60 backdrop-blur-xl">
+<nav class="flex gap-8">
+<a class="font-['Inter'] text-sm font-medium tracking-tight text-[#D32F2F] border-b-2 border-[#D32F2F] pb-1" href="#">Attributes</a>
+<a class="font-['Inter'] text-sm font-medium tracking-tight text-[#353534] hover:text-[#FFB3B1]" href="#">Skills</a>
+<a class="font-['Inter'] text-sm font-medium tracking-tight text-[#353534] hover:text-[#FFB3B1]" href="#">Merits</a>
+<a class="font-['Inter'] text-sm font-medium tracking-tight text-[#353534] hover:text-[#FFB3B1]" href="#">Powers</a>
+</nav>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<input class="bg-surface-container-low border-none rounded-sm text-xs py-2 pl-4 pr-10 focus:ring-1 focus:ring-[#D42B3B] w-48 transition-all" placeholder="Search Chronicle..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm" data-icon="search">search</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary" data-icon="notifications">notifications</span>
+<img alt="Character Avatar" class="w-8 h-8 rounded-full border border-primary/30 object-cover" data-alt="Close up dramatic portrait of a man with pale skin, intense dark eyes and sharp jawline in gothic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3GmUnPosHwC_8XZ1jnI7aUu46gcmoC7cTN01i0udm93iCozJgPBYc_IlvsVL7BdPyUtEBw3fX7vrloXm11NofXkqzH4BrYoTbtAZLWaE1awmaEGGr040iIjo5bCP2ZNDX4kVIZSYQsTxNuS4fZExLuK0G5cePNS0R5_u4_8LEHj8F605NitAWUxbG6lANTkYioGadf6pOpF5jNcPgYIPwgbZRwUowBw3Kq0scx6EKmmVST5W4RImelR29-0LmJV3mrsoEZiohX4Qu"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-12 pb-12 min-h-screen space-y-12">
+<!-- Header Info Hero -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="md:col-span-2 flex gap-8 items-end">
+<div class="relative h-48 w-48 flex-shrink-0 group">
+<div class="absolute inset-0 bg-primary-container/20 rounded-none transform translate-x-2 translate-y-2 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform"></div>
+<img alt="Julien Vane" class="relative h-full w-full object-cover grayscale brightness-75 hover:grayscale-0 transition-all duration-700" data-alt="Cinematic portrait of a brooding male vampire with slicked black hair wearing a Victorian coat, dark atmospheric library background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAk41qvO_KtddFC4Qk5zFTdp7Xij6l2yCtvaEoNWxdCuJPV7f-aRARB8JGDn0bUZkWP9dJrHzbLROWtJS4P7T5gLlwIXadeFkNeCOleTsNozKeGMlc_OA0hRjjTLvaPBgDFfsABQmPuKBf-sEO3i_vJj361DL-DlCgVgleuyDdtda303oV4PzJ4EM3y1oTQMkeB3X5YUD8OpiDl8rygym0QA_IOph-DhZemFx5YtFbd-vy1SmHvvuPCNzLLlJMlW12UfZtU5vRcCd1"/>
+</div>
+<div class="space-y-2 mb-2">
+<h2 class="font-headline text-5xl font-bold text-on-surface tracking-tight">Julien Vane</h2>
+<div class="flex gap-4 items-center">
+<span class="bg-primary-container/20 text-primary px-3 py-1 text-[10px] uppercase font-bold tracking-[0.2em] rounded-sm">Ventrue</span>
+<span class="bg-surface-container-high text-on-surface-variant px-3 py-1 text-[10px] uppercase font-bold tracking-[0.2em] rounded-sm">Invictus</span>
+<span class="text-on-surface-variant text-[10px] uppercase font-bold tracking-[0.2em]">6th Generation</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-6 space-y-4 flex flex-col justify-center">
+<div class="space-y-1">
+<label class="font-label text-[9px] uppercase tracking-[0.2em] text-on-surface-variant">Concept</label>
+<p class="font-headline italic text-lg">The Disgraced Diplomat</p>
+</div>
+<div class="space-y-1">
+<label class="font-label text-[9px] uppercase tracking-[0.2em] text-on-surface-variant">Chronicle</label>
+<p class="font-headline text-lg">Crimson Veins of London</p>
+</div>
+</div>
+</section>
+<!-- Resource Tracks -->
+<section class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+<!-- Health -->
+<div class="bg-surface-container-low p-6">
+<div class="flex justify-between items-center mb-4">
+<label class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Health</label>
+<span class="text-xs font-bold text-primary">7 / 7</span>
+</div>
+<div class="flex gap-1">
+<div class="h-6 flex-1 bg-primary-container relative">
+<div class="absolute inset-0 bg-white/10 shadow-[inset_0_0_8px_rgba(255,255,255,0.2)]"></div>
+</div>
+<div class="h-6 flex-1 bg-primary-container"></div>
+<div class="h-6 flex-1 bg-primary-container"></div>
+<div class="h-6 flex-1 bg-primary-container"></div>
+<div class="h-6 flex-1 bg-primary-container"></div>
+<div class="h-6 flex-1 bg-primary-container"></div>
+<div class="h-6 flex-1 bg-primary-container"></div>
+<div class="h-6 flex-1 bg-surface-container-highest"></div>
+<div class="h-6 flex-1 bg-surface-container-highest opacity-30"></div>
+</div>
+</div>
+<!-- Willpower -->
+<div class="bg-surface-container-low p-6 border-l border-primary/10">
+<div class="flex justify-between items-center mb-4">
+<label class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Willpower</label>
+<span class="text-xs font-bold text-secondary">5 / 6</span>
+</div>
+<div class="flex gap-1">
+<div class="h-6 flex-1 bg-secondary-container"></div>
+<div class="h-6 flex-1 bg-secondary-container"></div>
+<div class="h-6 flex-1 bg-secondary-container"></div>
+<div class="h-6 flex-1 bg-secondary-container"></div>
+<div class="h-6 flex-1 bg-secondary-container"></div>
+<div class="h-6 flex-1 bg-surface-container-highest"></div>
+</div>
+</div>
+<!-- Vitae -->
+<div class="bg-surface-container-low p-6 border-l border-primary/10">
+<div class="flex justify-between items-center mb-4">
+<label class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Vitae</label>
+<span class="text-xs font-bold text-primary">12 / 15</span>
+</div>
+<div class="flex flex-wrap gap-1">
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-primary-container"></div>
+<div class="w-3 h-6 bg-surface-container-highest"></div>
+<div class="w-3 h-6 bg-surface-container-highest"></div>
+<div class="w-3 h-6 bg-surface-container-highest"></div>
+</div>
+</div>
+<!-- Humanity -->
+<div class="bg-surface-container-low p-6 border-l border-primary/10">
+<div class="flex justify-between items-center mb-4">
+<label class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Humanity</label>
+<span class="text-xs font-bold text-on-surface">7</span>
+</div>
+<div class="flex gap-1 justify-between">
+<div class="flex items-center justify-center w-full bg-surface-container-highest h-6 text-[10px] font-bold text-primary">VII</div>
+</div>
+</div>
+</section>
+<!-- Attributes Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Mental -->
+<div class="space-y-6">
+<h3 class="font-label text-[11px] uppercase tracking-[0.3em] text-primary border-b border-primary/20 pb-2">Mental</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Intelligence</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Wits</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Resolve</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Physical -->
+<div class="space-y-6">
+<h3 class="font-label text-[11px] uppercase tracking-[0.3em] text-primary border-b border-primary/20 pb-2">Physical</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Strength</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Dexterity</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Stamina</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Social -->
+<div class="space-y-6">
+<h3 class="font-label text-[11px] uppercase tracking-[0.3em] text-primary border-b border-primary/20 pb-2">Social</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Presence</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Manipulation</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Composure</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-sm text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Skills Section -->
+<section class="bg-surface-container-low p-8 rounded-none">
+<h3 class="font-label text-[11px] uppercase tracking-[0.3em] text-primary mb-8 border-l-4 border-primary pl-4">Skills</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-6">
+<!-- Mental Skills -->
+<div class="space-y-3">
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Academics</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Investigation</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Politics</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+</div>
+<!-- Physical Skills -->
+<div class="space-y-3">
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Athletics</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Firearms</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Stealth</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+</div>
+<!-- Social Skills -->
+<div class="space-y-3">
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Empathy</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Persuasion</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center group">
+<span class="font-label text-xs text-on-surface-variant">Socialize</span>
+<div class="flex gap-0.5">
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-primary/80" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-[10px] text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Powers & Merits Grid -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+<!-- Disciplines -->
+<div class="space-y-6">
+<h3 class="font-label text-[11px] uppercase tracking-[0.3em] text-primary border-b border-primary/20 pb-2">Disciplines</h3>
+<div class="space-y-4">
+<div class="bg-surface-container p-4 rounded-sm border-l-2 border-primary-container">
+<div class="flex justify-between items-center mb-1">
+<span class="font-headline text-lg font-bold">Dominate</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-xs dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-xs text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-xs text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<p class="text-[10px] text-on-surface-variant italic">Commanding the thoughts and actions of mortals.</p>
+</div>
+<div class="bg-surface-container p-4 rounded-sm">
+<div class="flex justify-between items-center mb-1">
+<span class="font-headline text-lg font-bold">Resilience</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-xs dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-xs dot-filled text-primary" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-xs text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-xs text-surface-container-highest" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-xs text-surface-container-highest" data-icon="circle">circle</span>
+</div>
+</div>
+<p class="text-[10px] text-on-surface-variant italic">Unnatural toughness and supernatural fortitude.</p>
+</div>
+</div>
+</div>
+<!-- Merits -->
+<div class="space-y-6">
+<h3 class="font-label text-[11px] uppercase tracking-[0.3em] text-primary border-b border-primary/20 pb-2">Merits</h3>
+<div class="grid grid-cols-1 gap-4">
+<div class="flex justify-between items-center bg-surface-container-low px-4 py-3 border-r-4 border-surface-container-highest">
+<span class="font-label text-sm">Luxury Penthouse (Haven)</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[10px] dot-filled text-on-surface" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-on-surface" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-on-surface" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-surface-container-low px-4 py-3 border-r-4 border-surface-container-highest">
+<span class="font-label text-sm">Professional Ties (Politics)</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[10px] dot-filled text-on-surface" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-[10px] dot-filled text-on-surface" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-surface-container-low px-4 py-3 border-r-4 border-surface-container-highest">
+<span class="font-label text-sm">Language (Latin)</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-[10px] dot-filled text-on-surface" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Experience & Meta footer -->
+<footer class="pt-8 border-t border-outline-variant/10 flex justify-between items-center">
+<div class="flex gap-12">
+<div>
+<label class="font-label text-[9px] uppercase tracking-widest text-on-surface-variant block mb-1">Beats</label>
+<div class="flex gap-1">
+<span class="w-3 h-3 border border-primary/40"></span>
+<span class="w-3 h-3 border border-primary/40"></span>
+<span class="w-3 h-3 border border-primary/40 bg-primary/20"></span>
+<span class="w-3 h-3 border border-primary/40 bg-primary/20"></span>
+<span class="w-3 h-3 border border-primary/40 bg-primary/20"></span>
+</div>
+</div>
+<div>
+<label class="font-label text-[9px] uppercase tracking-widest text-on-surface-variant block mb-1">Experience</label>
+<span class="font-headline text-2xl font-bold text-primary">14</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label text-[10px] text-on-surface-variant tracking-widest uppercase mb-1 italic">Last edited 14 mins ago</p>
+<button class="bg-surface-container hover:bg-surface-bright text-on-surface text-[10px] font-bold px-4 py-2 uppercase tracking-widest transition-all">Export PDF</button>
+</div>
+</footer>
+</main>
+<!-- Floating Action Button suppressed as per rules for Details/Settings screens -->
+</body></html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Eldritch Editorial - Define the Hunger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&amp;family=Inter:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ffb4ab",
+                    "surface-dim": "#110e13",
+                    "on-error-container": "#ffdad6",
+                    "secondary-fixed": "#e9def8",
+                    "on-primary-fixed": "#2e004d",
+                    "surface-container-highest": "#332f37",
+                    "secondary-container": "#4a4458",
+                    "on-surface-variant": "#ccc4cf",
+                    "surface-tint": "#d0bcff",
+                    "surface-variant": "#49454f",
+                    "on-primary": "#381e72",
+                    "primary-fixed-dim": "#d0bcff",
+                    "on-secondary-fixed": "#1d192b",
+                    "on-secondary-fixed-variant": "#4a4458",
+                    "error-container": "#93000a",
+                    "secondary": "#ccc2dc",
+                    "inverse-on-surface": "#313033",
+                    "on-error": "#601410",
+                    "tertiary-fixed": "#ffd8e4",
+                    "on-secondary": "#332d41",
+                    "on-tertiary-fixed": "#31111d",
+                    "tertiary-container": "#633b48",
+                    "inverse-primary": "#6750a4",
+                    "tertiary-fixed-dim": "#efb8c8",
+                    "outline-variant": "#49454f",
+                    "surface-container-lowest": "#0c0a0d",
+                    "surface-container-low": "#1d1a20",
+                    "on-secondary-container": "#e8def8",
+                    "tertiary": "#efb8c8",
+                    "surface-bright": "#3b383e",
+                    "surface-container-high": "#2b292f",
+                    "primary-fixed": "#eaddff",
+                    "primary-container": "#7a1fa2",
+                    "inverse-surface": "#e6e1e5",
+                    "on-tertiary": "#492532",
+                    "primary": "#d0bcff",
+                    "on-primary-fixed-variant": "#4f378b",
+                    "on-primary-container": "#f3e5f5",
+                    "outline": "#938f99",
+                    "on-tertiary-fixed-variant": "#633b48",
+                    "surface-container": "#211f26",
+                    "background": "#0c0a0d",
+                    "secondary-fixed-dim": "#ccc2dc",
+                    "surface": "#1d1a22",
+                    "on-surface": "#e6e1e5",
+                    "on-tertiary-container": "#ffd8e4",
+                    "on-background": "#e6e1e5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(33, 31, 38, 0.7);
+            backdrop-filter: blur(12px);
+        }
+        .monstrous-pulse {
+            background: linear-gradient(135deg, #7a1fa2 0%, #4a148c 100%);
+        }
+        ::selection {
+            background-color: #7a1fa2;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#0c0a0d] text-[#d0bcff] font-noto-serif italic tracking-tight shadow-[0px_40px_40px_0px_rgba(12,10,13,0.3)] flex justify-between items-center w-full px-6 h-16 border-b border-white/5">
+<div class="text-2xl font-noto-serif italic text-[#d0bcff]">The Eldritch Editorial</div>
+<nav class="hidden md:flex space-x-8 h-full items-center">
+<a class="text-[#A6A6A6] hover:text-[#d0bcff] transition-colors duration-300" href="#">Grimoire</a>
+<a class="text-[#d0bcff] font-bold border-b-2 border-[#d0bcff] pb-1" href="#">Chronicle</a>
+<a class="text-[#A6A6A6] hover:text-[#d0bcff] transition-colors duration-300" href="#">Library</a>
+<a class="text-[#A6A6A6] hover:text-[#d0bcff] transition-colors duration-300" href="#">Archives</a>
+</nav>
+<div class="flex items-center space-x-4">
+<span class="material-symbols-outlined cursor-pointer hover:text-[#d0bcff] transition-colors duration-300 scale-95 active:duration-150" data-icon="menu_book">menu_book</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-[#d0bcff] transition-colors duration-300 scale-95 active:duration-150" data-icon="settings">settings</span>
+<div class="w-8 h-8 rounded-sm overflow-hidden bg-surface-container border border-outline-variant/15">
+<img alt="Character Avatar" data-alt="High-contrast black and white portrait of a mysterious figure in a hooded cloak with glowing crimson eyes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDy4AKTm4AtTS6xaKzf1chC1vtUTIld8lGTAtK6YB0vz4rdYaJAPOhbMvi5QxjPz1fR3Qo2IruXUHki5xh6qAAQEmC4BpyFekeJP19FGT5SzKPULWO1R1kNA1BaS_Ak5b2rUFAM9pIGNsdXhbMcD03HirtBwDvhdLvV3lJZBZbfa0knnTRQEtlG-Ps0E2Oxq3KWLS4TP51rpSOUPgre8z4wFznjz7wg5bH4VLpReyUtSfOBdckZyHPew47K-Dj_45a3Q7kYH3TaEzd2"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 bg-[#1d1a20] text-[#d0bcff] font-inter text-sm tracking-wider uppercase flex flex-col py-8 z-40 transition-all duration-200 ease-in-out border-r border-white/5">
+<div class="px-6 mb-8">
+<h2 class="text-lg font-noto-serif text-[#d0bcff] normal-case tracking-normal">Character Creator</h2>
+<p class="text-[#A6A6A6] text-xs mt-1 lowercase italic">Step 2: Define the Hunger</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-[#A6A6A6] hover:bg-surface-container-highest/30 hover:text-[#d0bcff] transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="pets">pets</span>
+            The Beast
+        </a>
+<a class="flex items-center px-6 py-3 text-[#d0bcff] font-bold bg-[#211f26] rounded-sm transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="restaurant" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+            The Hunger
+        </a>
+<a class="flex items-center px-6 py-3 text-[#A6A6A6] hover:bg-surface-container-highest/30 hover:text-[#d0bcff] transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="psychology">psychology</span>
+            The Horror
+        </a>
+<a class="flex items-center px-6 py-3 text-[#A6A6A6] hover:bg-surface-container-highest/30 hover:text-[#d0bcff] transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="castle">castle</span>
+            Lair
+        </a>
+<a class="flex items-center px-6 py-3 text-[#A6A6A6] hover:bg-surface-container-highest/30 hover:text-[#d0bcff] transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="list_alt">list_alt</span>
+            Traits
+        </a>
+</nav>
+<div class="px-6 mt-auto pt-8 border-t border-outline-variant/10 space-y-4">
+<a class="flex items-center text-[#A6A6A6] hover:text-[#d0bcff] lowercase italic transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-sm mr-2" data-icon="auto_stories">auto_stories</span>
+            Rules Reference
+        </a>
+<a class="flex items-center text-[#A6A6A6] hover:text-[#d0bcff] lowercase italic transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined text-sm mr-2" data-icon="casino">casino</span>
+            Dice Roller
+        </a>
+<button class="w-full py-3 mt-4 text-xs font-bold tracking-[0.2em] uppercase bg-primary-container text-on-primary-container rounded-sm shadow-lg hover:brightness-110 active:scale-95 transition-all">
+            Finalize Legend
+        </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen bg-surface">
+<div class="max-w-5xl mx-auto px-12 py-12">
+<!-- Header Section -->
+<header class="mb-12 ml-4">
+<h1 class="font-headline text-5xl font-bold text-on-surface tracking-tight mb-2 italic">The Soul's Desires</h1>
+<p class="font-body text-primary-fixed-dim text-lg">Choose your Hunger and Horror</p>
+</header>
+<!-- The Hunger Selection Grid -->
+<section class="mb-16">
+<div class="flex items-center justify-between mb-8 border-b border-outline-variant/15 pb-2">
+<h2 class="font-label text-xs uppercase tracking-widest font-bold text-on-surface-variant">The Hunger</h2>
+<span class="text-[10px] text-outline italic">Select one Primordial Yearning</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Hunger Card 1 -->
+<div class="group relative bg-surface-container-low hover:bg-surface-bright transition-colors p-6 cursor-pointer border-l-2 border-transparent hover:border-primary">
+<div class="mb-4">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="filter_vintage">filter_vintage</span>
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-3">Hunger for the Prey</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">You are the predator in the tall grass. You hunger for the thrill of the chase and the moment of total dominance.</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-high text-[10px] uppercase font-bold tracking-tighter px-2 py-1 text-on-surface-variant rounded-sm">Stalking</span>
+<span class="bg-surface-container-high text-[10px] uppercase font-bold tracking-tighter px-2 py-1 text-on-surface-variant rounded-sm">Terror</span>
+</div>
+</div>
+<!-- Hunger Card 2: Selected State -->
+<div class="group relative bg-surface-container-high p-6 border-l-2 border-primary ring-1 ring-primary/20">
+<div class="absolute top-4 right-4">
+<span class="material-symbols-outlined text-primary scale-110" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="mb-4">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-3 italic">Hunger for the Power</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">You crave the weight of authority and the submission of those who consider themselves masters. You devour status.</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-primary-container text-[10px] uppercase font-bold tracking-tighter px-2 py-1 text-on-primary-container rounded-sm">Command</span>
+<span class="bg-primary-container text-[10px] uppercase font-bold tracking-tighter px-2 py-1 text-on-primary-container rounded-sm">Submission</span>
+</div>
+</div>
+<!-- Hunger Card 3 -->
+<div class="group relative bg-surface-container-low hover:bg-surface-bright transition-colors p-6 cursor-pointer border-l-2 border-transparent hover:border-primary">
+<div class="mb-4">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="eye_tracking">eye_tracking</span>
+</div>
+<h3 class="font-headline text-xl text-on-surface mb-3">Hunger for the Forbidden</h3>
+<p class="text-sm text-on-surface-variant leading-relaxed mb-6">You seek the truths that were never meant for mortal minds. You feed on the unraveling of sanity and secrets.</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-high text-[10px] uppercase font-bold tracking-tighter px-2 py-1 text-on-surface-variant rounded-sm">Secrets</span>
+<span class="bg-surface-container-high text-[10px] uppercase font-bold tracking-tighter px-2 py-1 text-on-surface-variant rounded-sm">Madness</span>
+</div>
+</div>
+</div>
+</section>
+<!-- The Horror Section -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-20">
+<div class="lg:col-span-5">
+<div class="sticky top-24">
+<div class="flex items-center mb-6 border-b border-outline-variant/15 pb-2">
+<h2 class="font-label text-xs uppercase tracking-widest font-bold text-on-surface-variant">The Horror</h2>
+</div>
+<h3 class="font-headline text-3xl mb-4 italic leading-tight">Manifest the Nightmare Soul</h3>
+<p class="text-on-surface-variant leading-relaxed mb-8">Your Horror is the truth hidden beneath the skin. It is the vast, dark thing that stares through your eyes when the Hunger takes hold.</p>
+<div class="space-y-4">
+<h4 class="font-label text-[10px] uppercase text-primary tracking-widest font-bold">Inspirational Echoes</h4>
+<ul class="space-y-3">
+<li class="flex items-start text-sm text-on-surface italic">
+<span class="text-primary-container mr-2 px-1">/</span> "A thousand-eyed beast made of shifting obsidian glass."
+                            </li>
+<li class="flex items-start text-sm text-on-surface italic">
+<span class="text-primary-container mr-2 px-1">/</span> "A silent, freezing void that smells of old earth and ozone."
+                            </li>
+<li class="flex items-start text-sm text-on-surface italic">
+<span class="text-primary-container mr-2 px-1">/</span> "A titan of rusted iron and weeping gears."
+                            </li>
+</ul>
+</div>
+</div>
+</div>
+<div class="lg:col-span-7">
+<div class="bg-surface-container-lowest p-8 min-h-[400px] flex flex-col border border-outline-variant/10 shadow-inner">
+<label class="font-label text-[10px] uppercase text-outline tracking-widest mb-4 block" for="horror-desc">Visual Description &amp; Manifestation</label>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 text-lg font-body text-on-surface placeholder:text-surface-container-highest resize-none" id="horror-desc" placeholder="Describe the shape your soul takes in the darkness..."></textarea>
+<div class="mt-8 flex items-center justify-between">
+<div class="flex space-x-2">
+<button class="p-2 hover:bg-surface-container text-on-surface-variant rounded-sm transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="ink_pen">ink_pen</span>
+</button>
+<button class="p-2 hover:bg-surface-container text-on-surface-variant rounded-sm transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="auto_awesome">auto_awesome</span>
+</button>
+</div>
+<span class="text-[10px] font-label text-outline uppercase tracking-tighter">Drafting Essence</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Action Bar -->
+<footer class="flex items-center justify-between pt-12 border-t border-outline-variant/15">
+<button class="flex items-center px-6 py-3 font-label text-xs uppercase tracking-widest text-[#A6A6A6] hover:text-[#d0bcff] transition-all group">
+<span class="material-symbols-outlined mr-2 group-hover:-translate-x-1 transition-transform" data-icon="arrow_back">arrow_back</span>
+                Previous
+            </button>
+<button class="monstrous-pulse px-10 py-4 font-label text-sm uppercase tracking-[0.25em] font-bold text-white shadow-[0_10px_20px_-10px_rgba(122,31,162,0.5)] hover:scale-[1.02] active:scale-95 transition-all">
+                Commit Essence
+            </button>
+</footer>
+</div>
+</main>
+<!-- Floating Decoration Element -->
+<div class="fixed bottom-8 right-8 pointer-events-none opacity-20 hidden xl:block">
+<span class="material-symbols-outlined text-[120px] text-primary select-none" data-icon="blur_on">blur_on</span>
+</div>
+</body></html>

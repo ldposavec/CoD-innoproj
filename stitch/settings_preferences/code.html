@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Settings | THE ELDRITCH EDITORIAL</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Inter:wght@300;400;600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#131313",
+                        "on-primary-fixed-variant": "#92001c",
+                        "surface-container-low": "#1c1b1b",
+                        "on-secondary-container": "#8abfe4",
+                        "surface-container-high": "#2a2a2a",
+                        "on-primary-fixed": "#410007",
+                        "secondary-fixed": "#c7e7ff",
+                        "primary-fixed": "#ffdad8",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#e4beba",
+                        "surface-variant": "#353534",
+                        "secondary": "#98cdf2",
+                        "secondary-container": "#0b4e6e",
+                        "tertiary-container": "#00799c",
+                        "inverse-on-surface": "#313030",
+                        "outline": "#ab8985",
+                        "on-tertiary-fixed-variant": "#004d65",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "on-tertiary-fixed": "#001f2a",
+                        "surface": "#131313",
+                        "surface-container-highest": "#353534",
+                        "surface-bright": "#393939",
+                        "on-tertiary": "#003546",
+                        "tertiary-fixed": "#bee9ff",
+                        "on-background": "#e5e2e1",
+                        "inverse-primary": "#bb152c",
+                        "on-secondary": "#00344c",
+                        "on-tertiary-container": "#e9f7ff",
+                        "on-secondary-fixed": "#001e2e",
+                        "on-primary-container": "#fff2f1",
+                        "surface-container": "#201f1f",
+                        "outline-variant": "#5b403d",
+                        "secondary-fixed-dim": "#98cdf2",
+                        "inverse-surface": "#e5e2e1",
+                        "primary": "#ffb3b1",
+                        "tertiary-fixed-dim": "#7bd1f8",
+                        "surface-tint": "#ffb3b1",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-container": "#d42b3b",
+                        "tertiary": "#7bd1f8",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#064c6b",
+                        "on-primary": "#680011",
+                        "surface-dim": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #131313; color: #e5e2e1; }
+        .font-noto-serif { font-family: 'Noto Serif', serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopNavBar - Rendered based on JSON blueprint -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#131313]">
+<div class="flex items-center gap-8">
+<h1 class="text-2xl font-bold tracking-widest text-[#D32F2F] uppercase font-noto-serif italic tracking-tight">THE ELDRITCH EDITORIAL</h1>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-gray-500 hover:text-gray-300 transition-colors" href="#">Chronicle</a>
+<a class="text-gray-500 hover:text-gray-300 transition-colors" href="#">Archive</a>
+<a class="text-gray-500 hover:text-gray-300 transition-colors" href="#">Library</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-gray-500 hover:text-[#FFB3B1] transition-all duration-300">
+<span class="material-symbols-outlined">menu_book</span>
+</button>
+<button class="text-gray-500 hover:text-[#FFB3B1] transition-all duration-300">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+<div class="absolute bottom-[-4px] left-0 w-full bg-gradient-to-b from-[#1C1B1B] to-transparent h-1"></div>
+</header>
+<!-- SideNavBar - Content Context: Settings page maps to 'Settings' footer tab -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 flex flex-col border-r border-white/5 bg-[#1C1B1B] shadow-[10px_0_30px_rgba(0,0,0,0.5)]">
+<div class="p-6 border-b border-white/5 tonal shift bg-[#131313]">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-sm bg-surface-container overflow-hidden border border-primary/20">
+<img class="w-full h-full object-cover opacity-80" data-alt="Dark aesthetic silhouette of a gothic vampire portrait in a stylized high-contrast ink frame" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ2-go7bJnapKXMrvL2ucIuchFewO8dH6WpFVGVJkcKu8v9BXpjRzu26mK-zcUfPMR9A_sgUtpVmA14csAV4G0cPvEhhdt7ktRlLUbfbt0A074uaYPomV3irYctjH0qUjoe_BR4cvnAGjHSrpCLf6do7ilFizqyTJDC5CF2sPK3OdR8ctNmw-ap-ljG3tb0aufU5ZQrryfWiQw_MvL41-cWbnYT0oMgZvJFlpJXBWsh_4lvsLsboRXzsg0Rl_MPBGPTZpXnp0LzWGE"/>
+</div>
+<div>
+<p class="text-lg font-black text-[#D32F2F] font-inter uppercase tracking-[0.05rem] text-[10px]">NEW INITIATE</p>
+<p class="text-[10px] text-gray-500 tracking-widest font-inter uppercase">VTM 5TH EDITION</p>
+</div>
+</div>
+</div>
+<nav class="flex-grow py-4 overflow-y-auto">
+<a class="flex items-center gap-4 text-gray-500 p-4 hover:bg-[#201F1F] hover:translate-x-1 duration-200 font-inter uppercase tracking-[0.05rem] text-[10px]" href="#">
+<span class="material-symbols-outlined">history_edu</span> Origin
+            </a>
+<a class="flex items-center gap-4 text-gray-500 p-4 hover:bg-[#201F1F] hover:translate-x-1 duration-200 font-inter uppercase tracking-[0.05rem] text-[10px]" href="#">
+<span class="material-symbols-outlined">military_tech</span> Attributes
+            </a>
+<a class="flex items-center gap-4 text-gray-500 p-4 hover:bg-[#201F1F] hover:translate-x-1 duration-200 font-inter uppercase tracking-[0.05rem] text-[10px]" href="#">
+<span class="material-symbols-outlined">auto_fix_high</span> Disciplines
+            </a>
+<a class="flex items-center gap-4 text-gray-500 p-4 hover:bg-[#201F1F] hover:translate-x-1 duration-200 font-inter uppercase tracking-[0.05rem] text-[10px]" href="#">
+<span class="material-symbols-outlined">shield_moon</span> Virtues
+            </a>
+<a class="flex items-center gap-4 text-gray-500 p-4 hover:bg-[#201F1F] hover:translate-x-1 duration-200 font-inter uppercase tracking-[0.05rem] text-[10px]" href="#">
+<span class="material-symbols-outlined">fact_check</span> Review
+            </a>
+</nav>
+<div class="mt-auto p-4 border-t border-white/5 space-y-1">
+<a class="flex items-center gap-4 bg-[#D42B3B]/10 text-[#FFB3B1] border-r-4 border-[#D32F2F] p-4 transition-all font-inter uppercase tracking-[0.05rem] text-[10px]" href="#">
+<span class="material-symbols-outlined">settings</span> Settings
+            </a>
+<a class="flex items-center gap-4 text-gray-500 p-4 hover:bg-[#201F1F] hover:translate-x-1 duration-200 font-inter uppercase tracking-[0.05rem] text-[10px]" href="#">
+<span class="material-symbols-outlined">logout</span> Log Out
+            </a>
+<button class="w-full mt-4 bg-primary-container text-on-primary-container py-3 text-[10px] font-black tracking-widest uppercase rounded-sm hover:opacity-90 transition-opacity">
+                FINALIZE GRIMOIRE
+            </button>
+</div>
+</aside>
+<!-- Main Canvas Content -->
+<main class="ml-64 pt-24 pb-12 px-12 min-h-screen">
+<div class="max-w-4xl mx-auto">
+<!-- Header Section -->
+<header class="mb-12">
+<h2 class="text-4xl font-noto-serif italic text-on-surface mb-2 tracking-tight">The Archival Sanctum</h2>
+<p class="text-on-surface-variant font-label text-xs uppercase tracking-[0.2em]">Configure your digital grimoire experience</p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Theme Selection -->
+<section class="md:col-span-7 bg-surface-container-low p-8 rounded-none flex flex-col gap-8">
+<div>
+<h3 class="text-2xl font-noto-serif mb-6 text-primary">Aesthetic Alignment</h3>
+<div class="grid grid-cols-2 gap-6">
+<!-- Theme Option 1: Dark Gothic -->
+<div class="relative group cursor-pointer border border-primary/20 bg-surface-container p-4 rounded-sm transition-all hover:border-primary">
+<div class="aspect-video mb-4 bg-surface-container-lowest overflow-hidden rounded-sm">
+<div class="w-full h-full bg-gradient-to-br from-[#131313] via-[#1C1B1B] to-[#D42B3B]/20" data-alt="Abstract dark aesthetic gradient representing gothic theme with deep blacks and crimson highlights"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-xs uppercase tracking-widest text-on-primary-container">Dark Gothic</span>
+<div class="w-4 h-4 rounded-full border-2 border-primary bg-primary"></div>
+</div>
+</div>
+<!-- Theme Option 2: Light Parchment -->
+<div class="relative group cursor-pointer border border-outline-variant/15 bg-surface-container p-4 rounded-sm transition-all hover:border-outline">
+<div class="aspect-video mb-4 bg-[#F5F1E6] overflow-hidden rounded-sm">
+<div class="w-full h-full bg-gradient-to-br from-[#F5F1E6] to-[#E3DAC9]" data-alt="Soft parchment texture with subtle aged edges and warm cream tones"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Light Parchment</span>
+<div class="w-4 h-4 rounded-full border-2 border-outline-variant/30"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Red Accent Toggles -->
+<div class="space-y-6 pt-6 border-t border-white/5">
+<div class="flex justify-between items-center">
+<div>
+<p class="text-on-surface font-body font-semibold">Narrative Atmosphere</p>
+<p class="text-xs text-on-surface-variant">Enable subtle ambient animations and particle effects.</p>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-3 h-3 bg-on-primary-container rounded-full"></div>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<div>
+<p class="text-on-surface font-body font-semibold">Dynamic Shadows</p>
+<p class="text-xs text-on-surface-variant">Apply advanced tonal depth to character sheets.</p>
+</div>
+<div class="w-10 h-5 bg-primary-container rounded-full relative cursor-pointer">
+<div class="absolute right-1 top-1 w-3 h-3 bg-on-primary-container rounded-full"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Column: Export/Import & Account -->
+<div class="md:col-span-5 flex flex-col gap-8">
+<!-- Export/Import Section -->
+<section class="bg-surface-container p-8 rounded-none">
+<h3 class="text-xl font-noto-serif mb-6 text-on-surface">Data Transmutation</h3>
+<div class="space-y-4">
+<button class="w-full group flex items-center justify-between p-4 bg-surface-container-low hover:bg-surface-bright transition-colors rounded-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">download</span>
+<span class="font-label text-[10px] uppercase tracking-widest">Export Grimoire (JSON)</span>
+</div>
+<span class="material-symbols-outlined text-xs text-gray-500 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="w-full group flex items-center justify-between p-4 bg-surface-container-low hover:bg-surface-bright transition-colors rounded-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">upload_file</span>
+<span class="font-label text-[10px] uppercase tracking-widest">Import Chronicles</span>
+</div>
+<span class="material-symbols-outlined text-xs text-gray-500 group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+</div>
+<p class="mt-4 text-[10px] text-on-surface-variant italic leading-relaxed">
+                            Back up your character data locally. The Editorial does not retain records of your lineage in the cloud without specific ritual invocation.
+                        </p>
+</section>
+<!-- Account Settings -->
+<section class="bg-surface-container-low p-8 rounded-none">
+<h3 class="text-xl font-noto-serif mb-6 text-on-surface">Initiate Profile</h3>
+<div class="space-y-6">
+<div>
+<label class="block font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-2">Sanctum Name</label>
+<input class="w-full bg-transparent border-b border-outline-variant/20 py-2 focus:border-primary focus:ring-0 text-on-surface transition-all" type="text" value="Elder_Vampire_99"/>
+</div>
+<div>
+<label class="block font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-2">Email of Origin</label>
+<input class="w-full bg-transparent border-b border-outline-variant/20 py-2 focus:border-primary focus:ring-0 text-on-surface transition-all" type="email" value="nocturnal@grimoire.io"/>
+</div>
+<div class="pt-4">
+<button class="text-primary-fixed-dim font-label text-[10px] uppercase tracking-widest hover:text-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">lock_reset</span> Reset Security Cipher
+                                </button>
+</div>
+</div>
+</section>
+<!-- Danger Zone -->
+<section class="mt-4 p-4 border border-error-container/20 rounded-sm">
+<h4 class="font-label text-[10px] uppercase tracking-widest text-error mb-2">Final Oblivion</h4>
+<button class="text-xs text-on-surface-variant hover:text-error transition-colors underline decoration-error/30 underline-offset-4">
+                            Permanently erase this chronicle and all associated data.
+                        </button>
+</section>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual Success Message (Ghost Layer) -->
+<div class="fixed bottom-8 right-8 z-[100] backdrop-blur-xl bg-surface-variant/60 border border-white/5 p-4 flex items-center gap-4 shadow-2xl rounded-sm">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface">Auto-save ritual complete</p>
+</div>
+</body></html>

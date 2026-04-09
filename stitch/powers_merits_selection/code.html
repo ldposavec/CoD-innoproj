@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Powers &amp; Merits | The Eldritch Editorial</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#ffb3b1",
+                      "tertiary": "#7bd1f8",
+                      "inverse-on-surface": "#313030",
+                      "primary": "#ffb3b1",
+                      "on-secondary": "#00344c",
+                      "on-tertiary-fixed-variant": "#004d65",
+                      "primary-fixed": "#ffdad8",
+                      "on-primary-fixed-variant": "#92001c",
+                      "outline": "#ab8985",
+                      "surface-dim": "#131313",
+                      "on-tertiary": "#003546",
+                      "primary-container": "#d42b3b",
+                      "error-container": "#93000a",
+                      "tertiary-container": "#00799c",
+                      "surface-container-lowest": "#0e0e0e",
+                      "tertiary-fixed-dim": "#7bd1f8",
+                      "secondary-container": "#0b4e6e",
+                      "on-secondary-container": "#8abfe4",
+                      "secondary": "#98cdf2",
+                      "on-tertiary-fixed": "#001f2a",
+                      "surface-container-high": "#2a2a2a",
+                      "tertiary-fixed": "#bee9ff",
+                      "surface-variant": "#353534",
+                      "surface-container-highest": "#353534",
+                      "on-background": "#e5e2e1",
+                      "surface-bright": "#393939",
+                      "on-secondary-fixed-variant": "#064c6b",
+                      "error": "#ffb4ab",
+                      "background": "#131313",
+                      "on-primary-fixed": "#410007",
+                      "on-surface-variant": "#e4beba",
+                      "outline-variant": "#5b403d",
+                      "on-secondary-fixed": "#001e2e",
+                      "surface-container-low": "#1c1b1b",
+                      "secondary-fixed-dim": "#98cdf2",
+                      "on-primary-container": "#fff2f1",
+                      "on-error": "#690005",
+                      "on-surface": "#e5e2e1",
+                      "on-error-container": "#ffdad6",
+                      "secondary-fixed": "#c7e7ff",
+                      "inverse-primary": "#bb152c",
+                      "surface-container": "#201f1f",
+                      "inverse-surface": "#e5e2e1",
+                      "primary-fixed-dim": "#ffb3b1",
+                      "surface": "#131313",
+                      "on-tertiary-container": "#e9f7ff",
+                      "on-primary": "#680011"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "fontFamily": {
+                      "headline": ["Noto Serif"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #131313; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d42b3b; }
+        .glass-panel {
+            background: rgba(53, 53, 52, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Execution from JSON) -->
+<nav class="fixed left-0 top-0 h-full flex flex-col py-8 bg-[#131313] rounded-none w-64 shadow-[40px_0px_40px_0px_rgba(255,255,255,0.06)] z-[60]">
+<div class="px-8 mb-12">
+<h1 class="text-2xl font-bold text-[#D32F2F] font-['Noto_Serif'] uppercase tracking-wider">The Eldritch Editorial</h1>
+<p class="text-on-surface-variant text-xs font-['Inter'] mt-1 opacity-60">Vampire: The Requiem</p>
+</div>
+<div class="flex-1 space-y-2">
+<a class="flex items-center gap-4 transition-all duration-300 hover:bg-[#1C1B1B] hover:text-[#FFB3B1] pl-4 py-3 text-[#353534]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-['Inter'] text-sm font-medium tracking-tight">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 transition-all duration-300 hover:bg-[#1C1B1B] hover:text-[#FFB3B1] pl-4 py-3 text-[#353534]" href="#">
+<span class="material-symbols-outlined">auto_fix_high</span>
+<span class="font-['Inter'] text-sm font-medium tracking-tight">Character Creator</span>
+</a>
+<a class="flex items-center gap-4 transition-all duration-300 hover:bg-[#1C1B1B] hover:text-[#FFB3B1] pl-4 py-3 text-[#FFB3B1] font-bold border-l-4 border-[#D32F2F]" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-['Inter'] text-sm font-medium tracking-tight">Grimoire</span>
+</a>
+<a class="flex items-center gap-4 transition-all duration-300 hover:bg-[#1C1B1B] hover:text-[#FFB3B1] pl-4 py-3 text-[#353534]" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-['Inter'] text-sm font-medium tracking-tight">Chronicle Log</span>
+</a>
+<a class="flex items-center gap-4 transition-all duration-300 hover:bg-[#1C1B1B] hover:text-[#FFB3B1] pl-4 py-3 text-[#353534]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-['Inter'] text-sm font-medium tracking-tight">Settings</span>
+</a>
+</div>
+<div class="px-8 pt-8 border-t border-outline-variant/10">
+<button class="w-full bg-primary-container text-on-primary-container py-3 font-bold text-xs uppercase tracking-widest hover:brightness-110 transition-all rounded-none">
+                New Character
+            </button>
+</div>
+<div class="mt-auto flex flex-col space-y-1">
+<a class="flex items-center gap-4 hover:bg-[#1C1B1B] hover:text-[#FFB3B1] transition-colors duration-300 pl-4 py-2 text-[#353534]" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-['Inter'] text-sm font-medium tracking-tight">Support</span>
+</a>
+<a class="flex items-center gap-4 hover:bg-[#1C1B1B] hover:text-[#FFB3B1] transition-colors duration-300 pl-4 py-2 text-[#353534]" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-['Inter'] text-sm font-medium tracking-tight">Logout</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar (Execution from JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-50 flex justify-between items-center px-8 h-16 bg-[#131313]/60 backdrop-blur-xl transition-all">
+<div class="flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-[#353534] hover:text-[#FFB3B1] font-['Inter'] text-sm font-medium tracking-tight transition-all" href="#">Attributes</a>
+<a class="text-[#353534] hover:text-[#FFB3B1] font-['Inter'] text-sm font-medium tracking-tight transition-all" href="#">Skills</a>
+<a class="text-[#353534] hover:text-[#FFB3B1] font-['Inter'] text-sm font-medium tracking-tight transition-all" href="#">Merits</a>
+<a class="text-[#D32F2F] border-b-2 border-[#D32F2F] pb-1 font-['Inter'] text-sm font-medium tracking-tight" href="#">Powers</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-low border-none focus:ring-1 focus:ring-[#D42B3B] text-xs py-2 pl-10 pr-4 w-64 rounded-none placeholder:text-on-surface-variant/40" placeholder="Search the Grimoire..." type="text"/>
+</div>
+<div class="flex items-center gap-4 text-[#353534]">
+<span class="material-symbols-outlined hover:text-primary cursor-pointer transition-colors">notifications</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="close up atmospheric portrait of a mysterious man with pale skin and sharp features in dramatic low light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUO82X0opDXU_wTH_sHCDpEILjWA8GSfmaO5X8CdBElcTJoo6U4MYJuL_BQGABFA3Vc4CocuoqdUe9BAn35lmdncJhNT2oXiE9LFgzYRFz3GAWkpT6y31-cckXzMsVxX4Fz-scQEmSu6acW300cr_v3WDGr-DRvoj9rAqhez8HP7i6NslRGzqBuzrFcA0FCVCme5i7NvvHoTHvn1KLcIEIS7ukCtcabH-XELmJJAuwsExW6_L_gLHK85K47PUwi0JP5kb8apD-1mj5"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-12 px-12 min-h-screen">
+<!-- Header Section: XP & Point Management -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="md:col-span-2 flex flex-col justify-end">
+<h2 class="font-headline text-5xl font-bold text-on-surface tracking-tighter mb-2 italic">The Shadowed Grimoire</h2>
+<p class="text-on-surface-variant max-w-lg">Master the occult arts and refine your supernatural essence. Every dot spent is a piece of your humanity offered to the night.</p>
+</div>
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-l-4 border-primary">
+<div class="flex justify-between items-start">
+<div>
+<p class="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-1">XP ECONOMY</p>
+<h3 class="font-headline text-2xl font-bold">Reserves</h3>
+</div>
+<span class="material-symbols-outlined text-primary-container">bloodtype</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-8">
+<div>
+<span class="block text-3xl font-black text-primary">12</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant">Points Remaining</span>
+</div>
+<div class="text-right">
+<span class="block text-3xl font-black text-on-surface">145</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant">Total XP Spent</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Filters & Navigation -->
+<div class="flex gap-4 mb-8">
+<button class="bg-primary-container text-on-primary-container px-6 py-2 text-xs font-bold uppercase tracking-widest rounded-sm">All Disciplines</button>
+<button class="bg-surface-container-high text-on-surface-variant px-6 py-2 text-xs font-bold uppercase tracking-widest rounded-sm hover:bg-surface-bright transition-colors">Physical</button>
+<button class="bg-surface-container-high text-on-surface-variant px-6 py-2 text-xs font-bold uppercase tracking-widest rounded-sm hover:bg-surface-bright transition-colors">Mental</button>
+<button class="bg-surface-container-high text-on-surface-variant px-6 py-2 text-xs font-bold uppercase tracking-widest rounded-sm hover:bg-surface-bright transition-colors">Sorcery</button>
+<div class="flex-1"></div>
+<div class="flex items-center gap-2 text-on-surface-variant text-xs">
+<span class="font-bold">SORT:</span>
+<select class="bg-transparent border-none focus:ring-0 text-xs font-bold uppercase cursor-pointer">
+<option>By Hierarchy</option>
+<option>By Cost</option>
+<option>A-Z</option>
+</select>
+</div>
+</div>
+<!-- Content Grid: Asymmetric Editorial Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Featured Power Card -->
+<div class="col-span-12 lg:col-span-8 group">
+<div class="relative h-[400px] overflow-hidden bg-surface-container-lowest">
+<img class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700" data-alt="dramatic wide shot of a gothic cathedral silhouetted against a dark misty sky with deep red lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh56fRXIv1xeRG4TPYtKl6WMT0ph-nW_luAzx0dUqaokp28Naq0JT_tnM4K4_6Afg3hpFnDG9SAW_onRobtLoPz3iwpibOfMpNTAr-smIxtHHEGnRxcHJSHFkOgwkuWFKONOdDYVVo2sULiIe9Y0FomDl-95kJCB1DqTFJQ0J4ppwjFIQ0b9cEeHw3I-lB4Cf1ZFkZvKlbDLR8kvSdEdx4lD7QIBLZjYnPToOCaSOy_j03SvM9C4dKKEacyDENw_mDjhsmRyoqkKQ8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+<div class="absolute bottom-0 left-0 p-10 w-full flex justify-between items-end">
+<div class="max-w-xl">
+<div class="flex items-center gap-3 mb-4">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 text-[10px] font-black uppercase tracking-widest">Active Discipline</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm" data-weight="fill">fiber_manual_record</span>
+<span class="material-symbols-outlined text-primary text-sm" data-weight="fill">fiber_manual_record</span>
+<span class="material-symbols-outlined text-primary text-sm" data-weight="fill">fiber_manual_record</span>
+<span class="material-symbols-outlined text-surface-variant text-sm">fiber_manual_record</span>
+<span class="material-symbols-outlined text-surface-variant text-sm">fiber_manual_record</span>
+</div>
+</div>
+<h3 class="font-headline text-5xl font-bold mb-4">Celerity</h3>
+<p class="text-on-surface/80 leading-relaxed italic">"The world slows to a crawl as blood burns through your veins. You are the predator that exists between heartbeats."</p>
+</div>
+<button class="bg-surface/80 backdrop-blur-md p-4 rounded-full border border-primary/20 hover:bg-primary-container hover:text-on-primary-container transition-all group-hover:translate-x-2">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Side Cards -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Merit Card -->
+<div class="bg-surface-container-low p-8 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[120px]">shield_moon</span>
+</div>
+<p class="font-label text-[10px] uppercase tracking-widest text-primary mb-2">Social Merit</p>
+<h4 class="font-headline text-2xl font-bold mb-2">City Secrets</h4>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-3">Knowledge of the hidden tunnels and forgotten basements of the metropolis gives you an edge when evading capture.</p>
+<div class="flex justify-between items-center">
+<span class="font-black text-xl">••</span>
+<button class="text-xs font-bold uppercase tracking-widest text-on-surface hover:text-primary transition-colors">Invest XP</button>
+</div>
+</div>
+<!-- Another Merit Card -->
+<div class="bg-surface-container-low p-8 border-l border-outline-variant/20 hover:border-primary transition-colors cursor-pointer">
+<p class="font-label text-[10px] uppercase tracking-widest text-secondary mb-2">Mental Merit</p>
+<h4 class="font-headline text-2xl font-bold mb-2">Eidetic Memory</h4>
+<p class="text-sm text-on-surface-variant mb-6">You remember every drop of blood ever tasted, and every face ever seen.</p>
+<div class="flex justify-between items-center">
+<span class="font-black text-xl text-secondary">•••</span>
+<span class="material-symbols-outlined text-secondary opacity-40">memory</span>
+</div>
+</div>
+</div>
+<!-- Detailed Grid -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
+<!-- Power Detail Item -->
+<div class="bg-surface-container border-b-2 border-transparent hover:border-primary-container transition-all p-6">
+<div class="flex justify-between mb-4">
+<h5 class="font-headline text-xl font-bold">Dominate</h5>
+<div class="flex">
+<span class="material-symbols-outlined text-primary text-xs" data-weight="fill">fiber_manual_record</span>
+<span class="material-symbols-outlined text-primary text-xs" data-weight="fill">fiber_manual_record</span>
+<span class="material-symbols-outlined text-on-surface-variant/20 text-xs">fiber_manual_record</span>
+</div>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex justify-between items-center text-xs pb-2 border-b border-outline-variant/10">
+<span class="text-on-surface-variant">Level 1</span>
+<span class="font-bold">Command</span>
+</div>
+<div class="flex justify-between items-center text-xs pb-2 border-b border-outline-variant/10">
+<span class="text-on-surface-variant">Level 2</span>
+<span class="font-bold">Mesmerize</span>
+</div>
+<div class="flex justify-between items-center text-xs opacity-40">
+<span class="text-on-surface-variant">Level 3</span>
+<span class="font-bold italic">Locked</span>
+</div>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">The art of the crushing will. Bend the minds of mortals to your absolute whim with a single spoken word.</p>
+</div>
+<!-- Power Detail Item -->
+<div class="bg-surface-container border-b-2 border-transparent hover:border-primary-container transition-all p-6">
+<div class="flex justify-between mb-4">
+<h5 class="font-headline text-xl font-bold">Auspex</h5>
+<div class="flex">
+<span class="material-symbols-outlined text-primary text-xs" data-weight="fill">fiber_manual_record</span>
+<span class="material-symbols-outlined text-on-surface-variant/20 text-xs">fiber_manual_record</span>
+<span class="material-symbols-outlined text-on-surface-variant/20 text-xs">fiber_manual_record</span>
+</div>
+</div>
+<div class="space-y-3 mb-6">
+<div class="flex justify-between items-center text-xs pb-2 border-b border-outline-variant/10">
+<span class="text-on-surface-variant">Level 1</span>
+<span class="font-bold">Heightened Senses</span>
+</div>
+</div>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Expand your perception beyond the physical realm. Hear the racing hearts of your prey and see the colors of their souls.</p>
+</div>
+<!-- XP Progress CTA -->
+<div class="bg-primary-container/10 border border-primary-container/20 p-6 flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-primary-container text-4xl mb-4">bolt</span>
+<h5 class="font-headline text-lg font-bold mb-2">New Power Available</h5>
+<p class="text-xs text-on-surface-variant mb-6">You have enough XP to unlock Level 2 of Auspex or a new Physical Merit.</p>
+<button class="bg-primary-container text-on-primary-container w-full py-2 text-[10px] font-black uppercase tracking-widest rounded-sm">Explore Grimoire</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Suppressed on sub-pages but relevant for Powers Selection) -->
+<div class="fixed bottom-8 right-8 z-[100]">
+<button class="bg-[#D32F2F] text-white w-14 h-14 rounded-none flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</body></html>

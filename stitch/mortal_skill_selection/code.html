@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Inter:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#e5e2e1",
+                    "surface-bright": "#393939",
+                    "surface-container-high": "#2a2a2a",
+                    "on-secondary-container": "#8abfe4",
+                    "surface-tint": "#ffb3b1",
+                    "on-secondary": "#00344c",
+                    "secondary-fixed": "#c7e7ff",
+                    "on-primary": "#680011",
+                    "error": "#ffb4ab",
+                    "tertiary-container": "#00799c",
+                    "outline-variant": "#5b403d",
+                    "on-primary-fixed": "#410007",
+                    "on-surface-variant": "#e4beba",
+                    "surface-variant": "#353534",
+                    "outline": "#ab8985",
+                    "primary-container": "#0b4e6e",
+                    "primary": "#98cdf2",
+                    "surface-container-highest": "#353534",
+                    "tertiary": "#7bd1f8",
+                    "on-error": "#690005",
+                    "on-tertiary-container": "#e9f7ff",
+                    "on-error-container": "#ffdad6",
+                    "on-surface": "#e5e2e1",
+                    "primary-fixed-dim": "#98cdf2",
+                    "surface-container": "#201f1f",
+                    "on-secondary-fixed-variant": "#064c6b",
+                    "tertiary-fixed": "#bee9ff",
+                    "on-primary-fixed-variant": "#004d65",
+                    "inverse-primary": "#00668b",
+                    "on-tertiary-fixed-variant": "#004d65",
+                    "tertiary-fixed-dim": "#7bd1f8",
+                    "surface": "#131313",
+                    "secondary": "#98cdf2",
+                    "on-tertiary-fixed": "#001f2a",
+                    "inverse-surface": "#e5e2e1",
+                    "on-secondary-fixed": "#001e2e",
+                    "surface-dim": "#131313",
+                    "on-primary-container": "#e9f1ff",
+                    "primary-fixed": "#c7e7ff",
+                    "secondary-container": "#0b4e6e",
+                    "surface-container-lowest": "#0e0e0e",
+                    "secondary-fixed-dim": "#98cdf2",
+                    "on-tertiary": "#003546",
+                    "inverse-on-surface": "#313030",
+                    "error-container": "#93000a",
+                    "background": "#131313",
+                    "surface-container-low": "#1c1b1b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Noto Serif"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .dot-filled {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#131313]">
+<div class="font-['Noto_Serif'] italic text-xl text-[#D32F2F]">The Eldritch Editorial</div>
+<div class="hidden md:flex gap-8">
+<span class="font-['Inter'] uppercase tracking-widest text-white/60 hover:text-[#FFB3B1] transition-colors duration-300 cursor-pointer text-sm">Archive</span>
+<span class="font-['Inter'] uppercase tracking-widest text-white/60 hover:text-[#FFB3B1] transition-colors duration-300 cursor-pointer text-sm">Chronicler</span>
+<span class="font-['Inter'] uppercase tracking-widest text-[#D32F2F] font-bold transition-colors duration-300 cursor-pointer text-sm">Character</span>
+</div>
+<div class="flex items-center gap-4 text-white/60">
+<span class="material-symbols-outlined cursor-pointer hover:text-white transition-colors" data-icon="account_circle">account_circle</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-white transition-colors" data-icon="settings">settings</span>
+</div>
+</nav>
+<!-- Sidebar Navigation Shell -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-[#1C1B1B] flex flex-col pt-8 shadow-[40px_0px_40px_rgba(0,0,0,0.4)] z-40">
+<div class="px-6 mb-8">
+<div class="w-12 h-12 rounded-sm bg-surface-container-highest mb-3 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a weary man with sharp features and cold blue eyes in dramatic noir lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWnLzJ0Vg8qi9rqWvLV99FJUUoFMPLu1m-YdFOw_s2irqGXntoE5qI4Yzlus8lQT75ZGjAu6Ad98zzfwWA1Iw2U_yDkV-2EtB2KzmYmmhhmq-G9Jr4ZiBQ7am6ywofZSScrdQLxdShNSh4FvMUclCl03QqO8P7cFSnr3Xnyxuf4-O0gFk1EBBHcIyqsx6djuo1BoGwZT5-ngyzhFKLJnSh63cWTcLdLqiV78yKdJqb12sKK7b4UGOUsRWLsSfKnvKhibl4sslneN6L"/>
+</div>
+<h3 class="font-['Noto_Serif'] text-lg text-on-surface">New Chronicler</h3>
+<p class="font-['Inter'] text-xs text-white/40 uppercase tracking-tighter">Mortal Citizen</p>
+</div>
+<nav class="flex flex-col flex-grow">
+<div class="text-white/40 hover:text-white/80 px-4 py-3 flex items-center gap-3 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-xl" data-icon="psychology">psychology</span>
+<span class="font-['Inter'] text-sm">Concept</span>
+</div>
+<div class="text-white/40 hover:text-white/80 px-4 py-3 flex items-center gap-3 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-xl" data-icon="fitness_center">fitness_center</span>
+<span class="font-['Inter'] text-sm">Attributes</span>
+</div>
+<!-- Active State: Skills -->
+<div class="bg-[#D32F2F]/10 text-[#D32F2F] border-r-2 border-[#D32F2F] font-bold px-4 py-3 flex items-center gap-3 transition-all cursor-pointer">
+<span class="material-symbols-outlined text-xl" data-icon="architecture">architecture</span>
+<span class="font-['Inter'] text-sm">Skills</span>
+</div>
+<div class="text-white/40 hover:text-white/80 px-4 py-3 flex items-center gap-3 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-xl" data-icon="military_tech">military_tech</span>
+<span class="font-['Inter'] text-sm">Merits</span>
+</div>
+<div class="text-white/40 hover:text-white/80 px-4 py-3 flex items-center gap-3 transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-xl" data-icon="auto_fix_high">auto_fix_high</span>
+<span class="font-['Inter'] text-sm">Supernatural Splat</span>
+</div>
+</nav>
+<div class="p-6">
+<button class="w-full py-3 bg-primary-container text-on-primary-container font-['Inter'] text-xs font-bold uppercase tracking-widest rounded-sm hover:brightness-110 transition-all active:scale-95">
+                Finalize Character
+            </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-12 min-h-screen">
+<header class="mb-12 max-w-4xl">
+<span class="text-primary font-label text-xs uppercase tracking-[0.2em] mb-2 block">Development Phase 03</span>
+<h1 class="font-headline text-5xl font-bold mb-4 italic">Skills &amp; Proficiencies</h1>
+<p class="text-on-surface-variant font-body text-lg leading-relaxed max-w-2xl">Define the practical capabilities of your mortal existence. Skills represent learned knowledge and muscle memory acquired through years of struggle.</p>
+</header>
+<!-- Bento Layout for Skills -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl">
+<!-- Mental Skills Column -->
+<section class="space-y-6">
+<div class="flex items-center gap-4 mb-8">
+<div class="h-[2px] flex-grow bg-gradient-to-r from-primary/40 to-transparent"></div>
+<h2 class="font-headline text-2xl italic">Mental</h2>
+</div>
+<div class="space-y-1">
+<!-- Skill Item Template -->
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Academics</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Computer</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Crafts</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Investigation</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Medicine</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Occult</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Politics</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Science</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+</div>
+</section>
+<!-- Physical Skills Column -->
+<section class="space-y-6">
+<div class="flex items-center gap-4 mb-8">
+<div class="h-[2px] flex-grow bg-gradient-to-r from-primary/40 to-transparent"></div>
+<h2 class="font-headline text-2xl italic">Physical</h2>
+</div>
+<div class="space-y-1">
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Athletics</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Brawl</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Drive</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Firearms</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Larceny</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Stealth</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Survival</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Weaponry</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+</div>
+</section>
+<!-- Social Skills Column -->
+<section class="space-y-6">
+<div class="flex items-center gap-4 mb-8">
+<div class="h-[2px] flex-grow bg-gradient-to-r from-primary/40 to-transparent"></div>
+<h2 class="font-headline text-2xl italic">Social</h2>
+</div>
+<div class="space-y-1">
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Animal Ken</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Empathy</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Expression</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Intimidation</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Persuasion</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Socialize</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm border-b border-white/5">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Streetwise</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+<div class="group flex flex-col p-4 bg-surface-container-low hover:bg-surface-container transition-colors rounded-sm">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label text-xs uppercase tracking-widest text-on-surface">Subterfuge</span>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-sm dot-filled" data-icon="circle" style="font-variation-settings: 'FILL' 1;">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+<span class="material-symbols-outlined text-primary/20 text-sm" data-icon="circle">circle</span>
+</div>
+</div>
+<button class="self-start text-[10px] font-label uppercase tracking-tighter text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="add">add</span> Add Specialty
+                        </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Specialties Section (Asymmetric Positioned) -->
+<div class="mt-16 max-w-2xl ml-auto">
+<div class="bg-surface-container p-8 rounded-sm shadow-xl relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<h3 class="font-headline text-2xl italic mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="auto_awesome">auto_awesome</span>
+                    Specialties Added
+                </h3>
+<div class="flex flex-wrap gap-3">
+<div class="flex items-center gap-2 px-3 py-1 bg-primary-container text-on-primary-container rounded-sm">
+<span class="font-label text-[10px] uppercase tracking-widest font-bold">Academics:</span>
+<span class="text-sm font-headline italic">Philosophy</span>
+<button class="material-symbols-outlined text-xs ml-2 hover:text-white" data-icon="close">close</button>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-primary-container text-on-primary-container rounded-sm">
+<span class="font-label text-[10px] uppercase tracking-widest font-bold">Drive:</span>
+<span class="text-sm font-headline italic">High-Speed Chases</span>
+<button class="material-symbols-outlined text-xs ml-2 hover:text-white" data-icon="close">close</button>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-primary-container text-on-primary-container rounded-sm">
+<span class="font-label text-[10px] uppercase tracking-widest font-bold">Occult:</span>
+<span class="text-sm font-headline italic">Summoning Rituals</span>
+<button class="material-symbols-outlined text-xs ml-2 hover:text-white" data-icon="close">close</button>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-highest/50 text-on-surface-variant border border-primary/10 border-dashed rounded-sm">
+<span class="text-xs italic">Select a skill to add more...</span>
+</div>
+</div>
+<div class="mt-10 pt-8 border-t border-white/5 flex justify-between items-center">
+<button class="flex items-center gap-2 text-on-surface/60 hover:text-on-surface transition-all group">
+<span class="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform" data-icon="arrow_back">arrow_back</span>
+<span class="font-label text-xs uppercase tracking-widest">Back to Attributes</span>
+</button>
+<button class="px-8 py-3 bg-primary text-on-primary font-label text-xs uppercase tracking-[0.2em] font-bold rounded-sm hover:bg-white hover:text-black transition-all flex items-center gap-3">
+                        Commit Skills
+                        <span class="material-symbols-outlined text-sm" data-icon="double_arrow">double_arrow</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Background Decorative Elements -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-[20%] left-[10%] w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-5%] w-[30rem] h-[30rem] bg-primary/10 rounded-full blur-[100px]"></div>
+</div>
+</body></html>

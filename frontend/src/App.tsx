@@ -7,6 +7,7 @@ import { cloneCharacter, cycleHealth, remainingXp, woundPenalty } from './utils'
 type Screen = 'login' | 'dashboard' | 'wizard' | 'sheet' | 'settings';
 type SortMode = 'created' | 'name' | 'splat';
 type SheetTab = 'info' | 'attributes' | 'merits' | 'powers' | 'notes';
+type DiceHistoryItem = { id: string; at: string; input: string; output: string };
 
 const wizardStepLabels = ['Core Identity', 'Splat', 'Attributes', 'Skills', 'Merits', 'Powers'];
 const beastHungerChoices = [
@@ -33,6 +34,13 @@ const beastHungerChoices = [
 const emptySkills = { physical: [], social: [], mental: [] };
 const emptySplatOptions = { vampireClans: [], vampireCovenants: [], beastFamilies: [], beastHungers: [] };
 
+function createClientId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
 export default function App() {
   const [screen, setScreen] = useState<Screen>('login');
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -46,7 +54,12 @@ export default function App() {
   const [skillsLibrary, setSkillsLibrary] = useState<{ physical: string[]; social: string[]; mental: string[] }>(
     emptySkills
   );
-  const [splatOptions, setSplatOptions] = useState(emptySplatOptions);
+  const [splatOptions, setSplatOptions] = useState<{
+    vampireClans: string[];
+    vampireCovenants: string[];
+    beastFamilies: string[];
+    beastHungers: string[];
+  }>(emptySplatOptions);
   const [sheetEdit, setSheetEdit] = useState(false);
   const [sheetTab, setSheetTab] = useState<SheetTab>('info');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -56,7 +69,7 @@ export default function App() {
   const [diceRote, setDiceRote] = useState(false);
   const [diceChance, setDiceChance] = useState(false);
   const [diceResult, setDiceResult] = useState<DiceRollResult | null>(null);
-  const [diceHistory, setDiceHistory] = useState<Array<{ at: string; input: string; output: string }>>([]);
+  const [diceHistory, setDiceHistory] = useState<DiceHistoryItem[]>([]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem(THEME_KEY);
@@ -156,7 +169,7 @@ export default function App() {
 
   function addMerit(template: LibraryMerit) {
     const merit: Merit = {
-      id: crypto.randomUUID(),
+      id: createClientId(),
       name: template.name,
       category: template.category,
       dots: Math.min(5, Math.max(1, template.allowedDots[0] ?? 1)),
@@ -225,6 +238,7 @@ export default function App() {
           : 'Failure';
     setDiceHistory((prev) => [
       {
+        id: createClientId(),
         at: new Date().toLocaleTimeString(),
         input: diceChance ? 'Chance Die' : `Pool ${dicePool} / ${diceRule}`,
         output: `${label} (${result.successes})`
@@ -287,6 +301,10 @@ export default function App() {
   function pickBeastHunger(choice: (typeof beastHungerChoices)[number]) {
     const matched = splatOptions.beastHungers.find((hunger) => hunger === choice.key || hunger === choice.title);
     updateDraftSplatData('hunger', matched ?? choice.key);
+  }
+
+  function isHungerChoiceActive(choice: (typeof beastHungerChoices)[number]) {
+    return [choice.key, choice.title].some((value) => value === String(draft.splatData.hunger ?? ''));
   }
 
   return (
@@ -387,7 +405,7 @@ export default function App() {
               <button onClick={() => setDiceHistory([])}>Clear</button>
             </div>
             {diceResult && <p className="dice-result">Dice: {diceResult.dice.join(', ')} • Successes: {diceResult.successes}</p>}
-            <ul className="history-list">{diceHistory.map((item, index) => <li key={`${item.at}-${index}`}>{item.at} — {item.input} — {item.output}</li>)}</ul>
+            <ul className="history-list">{diceHistory.map((item) => <li key={item.id}>{item.at} — {item.input} — {item.output}</li>)}</ul>
           </section>
 
           {errorMessage && <p className="error">{errorMessage}</p>}
@@ -457,7 +475,23 @@ export default function App() {
               <>
                 <section className="wizard-section">
                   <div className="section-head between"><h3>The Hunger</h3><span>Select one primordial yearning</span></div>
-                  <div className="hunger-grid">{beastHungerChoices.map((choice) => <button className={`hunger-card ${[choice.key, choice.title].includes(String(draft.splatData.hunger ?? '')) ? 'active' : ''}`} onClick={() => pickBeastHunger(choice)} key={choice.key}><h4>{choice.title}</h4><p>{choice.body}</p><div className="chips">{choice.tags.map((tag) => <span key={tag}>{tag}</span>)}</div></button>)}</div>
+                  <div className="hunger-grid">
+                    {beastHungerChoices.map((choice) => (
+                      <button
+                        className={`hunger-card ${isHungerChoiceActive(choice) ? 'active' : ''}`}
+                        onClick={() => pickBeastHunger(choice)}
+                        key={choice.key}
+                      >
+                        <h4>{choice.title}</h4>
+                        <p>{choice.body}</p>
+                        <div className="chips">
+                          {choice.tags.map((tag) => (
+                            <span key={tag}>{tag}</span>
+                          ))}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 </section>
 
                 <section className="wizard-section horror-layout">

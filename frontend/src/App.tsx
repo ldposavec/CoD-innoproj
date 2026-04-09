@@ -44,6 +44,9 @@ function createClientId() {
 export default function App() {
   const [screen, setScreen] = useState<Screen>('login');
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [authUsername, setAuthUsername] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authConfirm, setAuthConfirm] = useState('');
   const [characters, setCharacters] = useState<Character[]>([]);
   const [selected, setSelected] = useState<Character | null>(null);
   const [draft, setDraft] = useState<Character>(() => defaultCharacter());
@@ -115,13 +118,13 @@ export default function App() {
       : 'Shape the dossier of your dark persona';
   const chronicleEvents = useMemo(() => {
     const characterEvents = characters.slice(0, 6).map((character) => ({
-      id: character.id,
+      id: `character-${character.id}`,
       time: new Date(character.createdAt).toLocaleDateString(),
       text: `${character.name} (${character.splat}) entered the archive.`,
       note: character.chronicle || 'No chronicle assigned'
     }));
     const rollEvents = diceHistory.slice(0, 6).map((item) => ({
-      id: item.id,
+      id: `roll-${item.id}`,
       time: item.at,
       text: item.output,
       note: item.input
@@ -167,6 +170,19 @@ export default function App() {
     setDraft(defaultCharacter());
     setWizardStep(0);
     setScreen('wizard');
+  }
+
+  function proceedFromLogin() {
+    if (!authUsername.trim() || !authPassword.trim()) {
+      setErrorMessage('Username and cipher are required.');
+      return;
+    }
+    if (authMode === 'register' && authPassword !== authConfirm) {
+      setErrorMessage('Cipher confirmation does not match.');
+      return;
+    }
+    setErrorMessage('');
+    setScreen('dashboard');
   }
 
   async function saveWizard() {
@@ -363,18 +379,39 @@ export default function App() {
           <div className="login-panel">
             <p className="kicker">Volume V: Nocturnal</p>
             <h1>{authMode === 'login' ? 'Enter the Archive' : 'Register New Blood'}</h1>
-            <label><span>Initiate Username</span><input placeholder="V.TEPES" /></label>
-            <label><span>Cipher Key</span><input type="password" placeholder="••••••••" /></label>
-            {authMode === 'register' && <label><span>Confirm Cipher</span><input type="password" placeholder="••••••••" /></label>}
-            <button className="primary" onClick={() => setScreen('dashboard')}>
+            <label><span>Initiate Username</span><input value={authUsername} onChange={(event) => setAuthUsername(event.target.value)} placeholder="V.TEPES" /></label>
+            <label><span>Cipher Key</span><input type="password" value={authPassword} onChange={(event) => setAuthPassword(event.target.value)} placeholder="••••••••" /></label>
+            {authMode === 'register' && (
+              <label>
+                <span>Confirm Cipher</span>
+                <input type="password" value={authConfirm} onChange={(event) => setAuthConfirm(event.target.value)} placeholder="••••••••" />
+              </label>
+            )}
+            <button className="primary" onClick={proceedFromLogin}>
               {authMode === 'login' ? 'Finalize Grimoire' : 'Seal Registration'}
             </button>
             <div className="login-footer">
-              <button onClick={() => setAuthMode((prev) => (prev === 'login' ? 'register' : 'login'))}>
+              <button
+                className="ghost-button"
+                aria-label={authMode === 'login' ? 'Switch to registration' : 'Switch to login'}
+                onClick={() => {
+                  setAuthMode((prev) => (prev === 'login' ? 'register' : 'login'));
+                  setErrorMessage('');
+                }}
+              >
                 {authMode === 'login' ? 'Register' : 'Back to Login'}
               </button>
-              <button className="ghost-button">Recover Lost Script</button>
+              <button
+                className="ghost-button"
+                onClick={() => {
+                  setAuthMode('login');
+                  setErrorMessage('Recovery flow is not wired yet. Contact the storyteller administrator.');
+                }}
+              >
+                Recover Lost Script
+              </button>
             </div>
+            {errorMessage && <p className="error">{errorMessage}</p>}
           </div>
         </section>
       )}
@@ -694,7 +731,7 @@ export default function App() {
               <div className="section-head"><h3>Session Timeline</h3></div>
               <ul className="history-list">
                 {chronicleEvents.map((event) => (
-                  <li key={`chronicle-${event.id}`}>
+                  <li key={event.id}>
                     <strong>{event.time}</strong> — {event.text}
                     <br />
                     <span className="muted">{event.note}</span>

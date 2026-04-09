@@ -608,7 +608,7 @@
           <ul>
             {#each selectedCharacter.specialties as specialty, i}
               <li>{formatLabel(specialty.skill)} — {specialty.specialty}
-                {#if editing}<button onclick={() => (selectedCharacter.specialties = selectedCharacter.specialties.filter((_, idx) => idx !== i))}>Remove</button>{/if}
+                {#if editing}<button onclick={() => (selectedCharacter!.specialties = selectedCharacter!.specialties.filter((_, idx) => idx !== i))}>Remove</button>{/if}
               </li>
             {/each}
           </ul>
@@ -622,7 +622,7 @@
                 <strong>{merit.name}</strong> {'•'.repeat(merit.dots)} — {merit.category}
                 <p>{merit.description}</p>
                 {#if merit.prerequisites}<small>Prerequisites: {merit.prerequisites}</small>{/if}
-                {#if editing}<button onclick={() => (selectedCharacter.merits = selectedCharacter.merits.filter((_, idx) => idx !== i))}>Remove</button>{/if}
+                {#if editing}<button onclick={() => (selectedCharacter!.merits = selectedCharacter!.merits.filter((_, idx) => idx !== i))}>Remove</button>{/if}
               </li>
             {/each}
           </ul>
@@ -649,7 +649,7 @@
             <textarea
               value={(selectedCharacter.splatData['summary'] as string) ?? ''}
               disabled={!editing}
-              oninput={(e) => (selectedCharacter.splatData['summary'] = (e.currentTarget as HTMLTextAreaElement).value)}></textarea>
+              oninput={(e) => (selectedCharacter!.splatData['summary'] = (e.currentTarget as HTMLTextAreaElement).value)}></textarea>
           </label>
 
           <h3>Powers</h3>
@@ -658,7 +658,7 @@
               <li>
                 <strong>{power.name}</strong> {'•'.repeat(power.dots)}
                 <p>{power.description}</p>
-                {#if editing}<button onclick={() => (selectedCharacter.customPowers = selectedCharacter.customPowers.filter((_, idx) => idx !== i))}>Remove</button>{/if}
+                {#if editing}<button onclick={() => (selectedCharacter!.customPowers = selectedCharacter!.customPowers.filter((_, idx) => idx !== i))}>Remove</button>{/if}
               </li>
             {/each}
           </ul>

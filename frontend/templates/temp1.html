@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+    <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Eldritch Editorial - Chronicle Management</title>
+
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+        <!-- React & Router CDNs -->
+        <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+        <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+        <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+        <script id="tailwind-config">
+            tailwind.config = {
+            darkMode: "class",
+            theme: {
+            extend: {
+            colors: {
+            "surface-tint": "#ffb3b1",
+            "tertiary": "#7bd1f8",
+            "inverse-on-surface": "#313030",
+            "primary": "#D32F2F", // Forced primary as per theme instructions
+            "on-secondary": "#00344c",
+            "on-tertiary-fixed-variant": "#004d65",
+            "primary-fixed": "#ffdad8",
+            "on-primary-fixed-variant": "#92001c",
+            "outline": "#ab8985",
+            "surface-dim": "#131313",
+            "on-tertiary": "#003546",
+            "primary-container": "#d42b3b",
+            "error-container": "#93000a",
+            "tertiary-container": "#00799c",
+            "surface-container-lowest": "#0e0e0e",
+            "tertiary-fixed-dim": "#7bd1f8",
+            "secondary-container": "#0b4e6e",
+            "on-secondary-container": "#8abfe4",
+            "secondary": "#98cdf2",
+            "on-tertiary-fixed": "#001f2a",
+            "surface-container-high": "#2a2a2a",
+            "tertiary-fixed": "#bee9ff",
+            "surface-variant": "#353534",
+            "surface-container-highest": "#353534",
+            "on-background": "#e5e2e1",
+            "surface-bright": "#393939",
+            "on-secondary-fixed-variant": "#064c6b",
+            "error": "#ffb4ab",
+            "background": "#131313",
+            "on-primary-fixed": "#410007",
+            "on-surface-variant": "#e4beba",
+            "outline-variant": "#5b403d",
+            "on-secondary-fixed": "#001e2e",
+            "surface-container-low": "#1c1b1b",
+            "secondary-fixed-dim": "#98cdf2",
+            "on-primary-container": "#fff2f1",
+            "on-error": "#690005",
+            "on-surface": "#e5e2e1",
+            "on-error-container": "#ffdad6",
+            "secondary-fixed": "#c7e7ff",
+            "inverse-primary": "#bb152c",
+            "surface-container": "#201f1f",
+            "inverse-surface": "#e5e2e1",
+            "primary-fixed-dim": "#ffb3b1",
+            "surface": "#131313",
+            "on-tertiary-container": "#e9f7ff",
+            "on-primary": "#680011"
+        },
+            borderRadius: {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+        },
+            fontFamily: {
+            "headline": ["Noto Serif"],
+            "body": ["Inter"],
+            "label": ["Inter"]
+        }
+        }
+        }
+        }
+        </script>
+        <style>
+            .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+            .dot-filled { font-variation-settings: 'FILL' 1; }
+            .glass-panel {
+            background: rgba(53, 53, 52, 0.6);
+            backdrop-filter: blur(20px);
+        }
+            .blood-glow {
+            background: linear-gradient(135deg, #ffb3b1 0%, #d42b3b 100%);
+        }
+            .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+            .custom-scrollbar::-webkit-scrollbar-track { background: #131313; }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background: #d42b3b; }
+            .vignette {
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+        }
+            body {
+            background-color: #131313;
+        }
+        </style>
+    </head>
+    <body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const Sidebar = () => {
+        const location = useLocation();
+        const navigate = useNavigate();
+        const isActive = (path) => location.pathname === path;
+
+        return (
+        <aside className="fixed left-0 top-0 h-full flex flex-col py-8 bg-[#131313] w-64 rounded-none shadow-[40px_0px_40px_0px_rgba(255,255,255,0.06)] z-50">
+        <div className="px-6 mb-12">
+        <h1 className="text-2xl font-bold text-[#D32F2F] font-headline italic">The Eldritch Editorial</h1>
+        <p className="text-xs font-label uppercase tracking-widest text-outline mt-1">Chronicles of Darkness</p>
+        </div>
+        <nav className="flex-1 space-y-1">
+        <Link to="/" className={`flex items-center gap-4 transition-all py-3 pl-4 ${isActive('/') ? 'text-[#FFB3B1] font-bold border-l-4 border-[#D32F2F]' : 'text-[#353534] hover:text-[#FFB3B1]'}`}>
+        <span className="material-symbols-outlined">dashboard</span>
+        <span className="font-label text-sm uppercase tracking-wider">Dashboard</span>
+    </Link>
+    <Link to="/create-origin" className={`flex items-center gap-4 transition-all py-3 pl-4 ${isActive('/create-origin') ? 'text-[#FFB3B1] font-bold border-l-4 border-[#D32F2F]' : 'text-[#353534] hover:text-[#FFB3B1]'}`}>
+        <span className="material-symbols-outlined">auto_fix_high</span>
+        <span className="font-label text-sm uppercase tracking-wider">Creator</span>
+    </Link>
+    <Link to="/grimoire" className={`flex items-center gap-4 transition-all py-3 pl-4 ${isActive('/grimoire') ? 'text-[#FFB3B1] font-bold border-l-4 border-[#D32F2F]' : 'text-[#353534] hover:text-[#FFB3B1]'}`}>
+        <span className="material-symbols-outlined">menu_book</span>
+        <span className="font-label text-sm uppercase tracking-wider">Grimoire</span>
+    </Link>
+    <Link to="/log" className={`flex items-center gap-4 transition-all py-3 pl-4 ${isActive('/log') ? 'text-[#FFB3B1] font-bold border-l-4 border-[#D32F2F]' : 'text-[#353534] hover:text-[#FFB3B1]'}`}>
+        <span className="material-symbols-outlined">history_edu</span>
+        <span className="font-label text-sm uppercase tracking-wider">Chronicle Log</span>
+    </Link>
+    <Link to="/settings" className={`flex items-center gap-4 transition-all py-3 pl-4 ${isActive('/settings') ? 'text-[#FFB3B1] font-bold border-l-4 border-[#D32F2F]' : 'text-[#353534] hover:text-[#FFB3B1]'}`}>
+        <span className="material-symbols-outlined">settings</span>
+        <span className="font-label text-sm uppercase tracking-wider">Settings</span>
+    </Link>
+    </nav>
+    <div className="mt-auto px-4 space-y-2 border-t border-outline-variant/10 pt-6">
+        <a href="#" className="flex items-center gap-4 text-outline hover:text-on-surface transition-colors py-2 px-2">
+            <span className="material-symbols-outlined text-xl">help_outline</span>
+            <span className="text-xs uppercase font-label tracking-tighter">Support</span>
+        </a>
+        <Link to="/login" className="flex items-center gap-4 text-outline hover:text-primary transition-colors py-2 px-2">
+            <span className="material-symbols-outlined text-xl">logout</span>
+            <span className="text-xs uppercase font-label tracking-tighter">Logout</span>
+        </Link>
+    </div>
+</aside>
+);
+};
+
+const TopBar = ({ title }) => (
+<header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 flex justify-between items-center px-8 h-16 bg-[#131313]/60 backdrop-blur-xl border-b border-white/5">
+    <div className="flex items-center gap-8">
+        <nav className="flex gap-6">
+            <span className="text-[#353534] font-medium text-sm tracking-tight">{title || "Archive"}</span>
+        </nav>
+    </div>
+    <div className="flex items-center gap-4">
+        <button className="text-outline hover:text-primary transition-colors">
+            <span className="material-symbols-outlined">notifications</span>
+        </button>
+        <Link to="/sheet" className="h-8 w-8 rounded-sm bg-surface-container overflow-hidden border border-outline-variant/20">
+            <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0lhySKRAB7jovyyD3ClGPDNuTOVSHfB6RFpNBXJdxpDciHxWje8SXcf-KO2kk0Da2S0tditp5xgTkDZINeLxO82yOBY00YYhRmeSDDOOQAIaV-ztXKVAkaO4VxgWMx5olWbvRy_iN997dOaFqUgOqaoUzj3dJZ1Y4qFjfAPGlyDci-Znia8dYug1ujqSy44GoMeCMmIulRLGc3vmCFjjB0NE1cQ7Ij1TD0KmW373EJwzX18KFyNMnzFJ_pmYXKpd5nSWkd2kB-jPO" />
+        </Link>
+    </div>
+</header>
+);
+
+// --- Pages ---
+
+const LoginPage = () => {
+const navigate = useNavigate();
+return (
+    <div className="flex h-screen w-full bg-surface">
+        <div className="hidden lg:block lg:w-3/5 h-full relative overflow-hidden bg-surface-container-lowest">
+            <img className="absolute inset-0 object-cover w-full h-full opacity-60 mix-blend-luminosity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFQ2B4TqMMt3QGJI85BO8uLjmLbz5YR9ceml_rABsWWIVQzS2faSFm5E7qne8aK7UHADVCx0S-SBGZ3z70qs_wojNZo6Oftmi0zFaDvoYwpU1wwgXwW4eSPUee7v2U70PMqimhp0Fl0rk2mGft22Ze826T6AeQop7aFvjo2JUF_fc5Isc64IAlYOScI2XOUDZRSTX6eYC-bUpj9TG1JXc3VCE10WqSbs0Tp8j4aRG98kSk8OahjPUYyQNPRlxN0pcx1e6BjelA0mMX" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-surface"></div>
+            <div className="absolute bottom-12 left-12 max-w-lg z-10">
+                <h2 className="font-headline italic text-5xl text-on-surface tracking-tight leading-tight">"Truth is a shadow <br/>waiting to be cast."</h2>
+            </div>
+        </div>
+        <main className="w-full lg:w-2/5 h-full flex items-center justify-center relative p-6">
+            <div className="relative z-10 w-full max-w-md glass-panel p-8 lg:p-12 rounded-none border-l border-white/5 shadow-2xl">
+                <header className="mb-12">
+                    <p className="font-label text-[10px] uppercase tracking-[0.3rem] text-on-surface-variant mb-4">Volume V: Nocturnal</p>
+                    <h1 className="font-headline italic text-4xl text-on-surface tracking-tight">ENTER THE ARCHIVE</h1>
+                </header>
+                <div className="space-y-10">
+                    <div className="group">
+                        <label className="block font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-2">Initiate Username</label>
+                        <input className="w-full bg-transparent border-t-0 border-x-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body text-lg py-2 transition-all px-0" placeholder="V.TEPES" type="text" />
+                    </div>
+                    <div className="group">
+                        <label className="block font-label text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-2">Cipher Key</label>
+                        <input className="w-full bg-transparent border-t-0 border-x-0 border-b border-outline-variant focus:border-primary focus:ring-0 text-on-surface font-body text-lg py-2 transition-all px-0" placeholder="••••••••" type="password" />
+                    </div>
+                    <div className="pt-4">
+                        <button onClick={() => navigate('/')} className="w-full blood-pulse bg-[#D32F2F] text-on-primary font-label font-black text-xs uppercase tracking-[0.2rem] py-5 rounded-none shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                            <span>Finalize Grimoire</span>
+                            <span className="material-symbols-outlined text-sm">login</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+);
+};
+
+const Dashboard = () => {
+const navigate = useNavigate();
+return (
+    <div className="bg-surface">
+        <Sidebar />
+        <TopBar title="Active Roster" />
+        <main className="ml-64 pt-24 px-12 pb-12 min-h-screen">
+            <section className="flex justify-between items-end mb-12">
+                <div>
+                    <h2 className="font-headline text-5xl font-bold text-on-surface mb-2 italic">Character Dossiers</h2>
+                    <p className="text-on-surface-variant font-label text-sm tracking-widest uppercase">Chronicles of Darkness • Active Roster</p>
+                </div>
+                <button onClick={() => navigate('/create-origin')} className="bg-[#D32F2F] text-white px-6 py-3 font-label text-sm uppercase font-bold tracking-widest flex items-center gap-3 rounded-sm shadow-xl transition-all active:scale-95 hover:brightness-110">
+                    <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>add_circle</span>
+                    New Character
+                </button>
+            </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[
+                    { name: "Julian Vane", splat: "Vampire: The Requiem", desc: "A relic of the Gilded Age seeking modern vengeance.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDV_6smrgUVJWaHkbQ02GAyzLAZ0lM8linXJaNSDIz4CrhH2I8WSY46JV_nAAaJfCrpeAHxliuhy6ISeN8zKmJngvBMGXcMIbvcOveBEStGDwT0knlKQuvpIcJm3rspDAKbR4Dwh_gfVbkPGy8mh9HgtVzI_U79Y5Ed7dZZZSdqylw751yiwb5nQucQLEwv1qCrBAPMJLw8ixllVtMgDjam3aoap5hqO1DlXbbhwrsbc7GLOeQCV6hQmp-WForoZdH8hu8jFgVotOWa" },
+                    { name: "Cora Thorne", splat: "Beast: The Primordial", desc: "The hunger of the deep places, wearing a human skin.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDdtKlCOtiANO0vL4vNCdlaB8WNCuUf3eSaptfiZ3FSJhfwWseqDxn48yA8gxdo_FfBryeAXpRTRNGHln-jfBR5SJnPas6UrvEwz3EVRFqZEZ_CU7m8pIcSRgH2l26vfSMfaLKZCQnx6zSa6A9puLOrUseKno4sdVUc_SfbzJXYIfxhLSzSXPJu6VKSLyeaAtYVOMeKl--4yliGLNlUU5Zv1XV0WJLDnMz7-woaQF6HGTfFSR0W3OfmRLcqKgWUG6AKJYdtLgb-pDWC" },
+                    { name: "Subject 402", splat: "Deviant: The Renegades", desc: "A shattered biological weapon on a quest for its soul.", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC7-qKIIl_CDlWKV4IEXQDGK9odRLFexJmAcz99hfUY-6Mdw53XNAfCO17sVd0UMUvdRXeYv7JakrizdLUdhAeg7V9lLNNEZSRsufL6IuXeWhG5IwXv-0wPe1Efw-VxnRz0c6xOLzwjaAwYP7ahF_mOH0KVz5NVra9xO4Y89NcsN0_OWD0c0gyfw9iPOKWs_UEVMAdjbNGbNcdlPSAah5_1cjqLnbWIt0SUw-WPj0Xj9XV-5x-4ZTqROniuut2c1F2z-v2E6qtmiWIa" }
+                ].map((char, i) => (
+                    <div key={i} onClick={() => navigate('/sheet')} className="group cursor-pointer relative flex flex-col bg-surface-container-low rounded-none overflow-hidden transition-all hover:bg-surface-bright">
+                        <div className="h-48 relative overflow-hidden">
+                            <img className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" src={char.img} />
+                            <div className="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+                            <div className="absolute bottom-4 left-6">
+                                <span className="bg-primary-container/20 text-primary text-[10px] font-label font-bold tracking-[0.2em] px-2 py-1 uppercase rounded-sm border border-primary/20">{char.splat}</span>
+                            </div>
+                        </div>
+                        <div className="p-6">
+                            <h3 className="font-headline text-2xl font-bold mb-1">{char.name}</h3>
+                            <p className="text-on-surface-variant font-body text-sm mb-6 italic">{char.desc}</p>
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="flex justify-between items-end mb-1"><span className="font-label text-[10px] text-primary uppercase tracking-widest font-bold">Health</span><span className="text-[10px] text-on-surface-variant">Max</span></div>
+                                    <div className="h-1 bg-surface-container-highest w-full rounded-full overflow-hidden"><div className="h-full bg-primary" style={{width: '100%'}}></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+                <button onClick={() => navigate('/create-origin')} className="flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/30 bg-surface-container-lowest p-12 hover:bg-surface-container-low transition-all hover:border-primary/50 group">
+                    <span className="material-symbols-outlined text-outline-variant text-5xl mb-4 group-hover:text-primary transition-colors">add_circle</span>
+                    <span className="font-headline text-xl text-on-surface-variant group-hover:text-on-surface">Forge New Identity</span>
+                </button>
+            </div>
+        </main>
+    </div>
+);
+};
+
+const CreateOrigin = () => {
+const navigate = useNavigate();
+return (
+    <div className="bg-surface">
+        <Sidebar />
+        <TopBar title="Phase 01: Awakening" />
+        <main className="ml-64 pt-24 pb-12 px-12 min-h-screen">
+            <div className="max-w-5xl mx-auto">
+                <header className="mb-12">
+                    <div className="flex items-center gap-4 mb-2">
+                        <span className="text-primary font-label text-xs uppercase tracking-[0.3em]">Step 01</span>
+                        <div className="h-[1px] w-12 bg-primary-container"></div>
+                    </div>
+                    <h2 className="font-headline text-5xl font-bold text-on-surface tracking-tight mb-4">The Awakening</h2>
+                    <p className="text-on-surface-variant max-w-xl font-body leading-relaxed">Before you step into the shadows, we must define the essence of your existence. Every legend begins with a name and a nature.</p>
+                </header>
+                <section className="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div className="space-y-10">
+                        <div className="relative group">
+                            <label className="block font-label text-[10px] uppercase tracking-[0.2em] text-outline mb-2 group-focus-within:text-primary">Character Name</label>
+                            <input className="w-full bg-transparent border-0 border-b border-outline-variant/30 py-3 text-2xl font-headline focus:ring-0 focus:border-primary transition-all placeholder:text-surface-container-highest" placeholder="Enter name or alias..." type="text" />
+                        </div>
+                        <div className="relative group">
+                            <label className="block font-label text-[10px] uppercase tracking-[0.2em] text-outline mb-2 group-focus-within:text-primary">Core Concept</label>
+                            <textarea className="w-full bg-transparent border-0 border-b border-outline-variant/30 py-3 text-lg font-body focus:ring-0 focus:border-primary transition-all placeholder:text-surface-container-highest resize-none" placeholder="Ex: A disgraced detective..." rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div className="bg-surface-container-low p-8 rounded-none border-l-2 border-primary-container/20">
+                        <div className="flex items-start gap-4">
+                            <span className="material-symbols-outlined text-primary-container">auto_awesome</span>
+                            <div>
+                                <h4 className="font-headline text-lg mb-2">The Chronicle Awaits</h4>
+                                <p className="text-sm text-on-surface-variant leading-relaxed italic">"The world is not what it seems. Behind the veil of reality, creatures of myth and nightmare pull the strings."</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div className="flex items-end justify-between mb-8">
+                        <h3 className="font-headline text-2xl text-on-surface">Choose Lineage</h3>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {['Vampire', 'Werewolf', 'Mage', 'Deviant', 'Beast', 'Hunter'].map((splat, i) => (
+                            <button key={i} onClick={() => navigate('/create-soul')} className="group relative flex flex-col items-start text-left p-6 bg-surface-container-low hover:bg-surface-bright transition-all duration-300 border-b-2 border-transparent hover:border-primary">
+                                <span className="material-symbols-outlined text-3xl mb-6 group-hover:text-primary transition-colors">bloodtype</span>
+                                <h4 className="font-headline text-xl mb-2">{splat}</h4>
+                                <p className="text-xs text-on-surface-variant leading-relaxed">Bound by ancient rules and driven by primal instincts.</p>
+                            </button>
+                        ))}
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+);
+};
+
+const CreateSoul = () => {
+const navigate = useNavigate();
+return (
+    <div className="bg-surface">
+        <Sidebar />
+        <TopBar title="Phase 02: The Mortal Soul" />
+        <main className="ml-64 pt-24 pb-12 px-12 min-h-screen">
+            <div className="max-w-6xl mx-auto">
+                <header className="mb-16">
+                    <div className="flex items-baseline gap-4 mb-2">
+                        <span className="font-inter text-primary text-sm font-bold tracking-[0.2em] uppercase">Step 02</span>
+                        <h1 className="font-headline text-5xl font-bold italic tracking-tight text-on-surface">The Mortal Soul</h1>
+                    </div>
+                    <div className="w-32 h-1 bg-primary mb-6"></div>
+                    <p className="font-headline text-xl text-on-surface-variant max-w-2xl leading-relaxed italic opacity-80">"A human heart is defined by the tension between its noblest aspirations and its deepest flaws."</p>
+                </header>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div className="lg:col-span-8 space-y-8">
+                        <div className="space-y-4">
+                            <h2 className="font-headline text-2xl italic">Virtue</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {['Ambitious', 'Courageous', 'Generous'].map(v => (
+                                    <div key={v} onClick={() => {}} className="bg-surface-container-low p-6 border-l-2 border-transparent hover:border-primary cursor-pointer group">
+                                        <h4 className="font-headline font-bold text-lg mb-2 group-hover:text-primary italic">{v}</h4>
+                                        <p className="text-xs text-on-surface-variant">Regain Willpower when you fulfill your noble calling.</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <h2 className="font-headline text-2xl italic">Vice</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {['Greedy', 'Lustful', 'Arrogant'].map(v => (
+                                    <div key={v} onClick={() => {}} className="bg-surface-container-low p-6 border-l-2 border-transparent hover:border-primary cursor-pointer group">
+                                        <h4 className="font-headline font-bold text-lg mb-2 group-hover:text-primary italic">{v}</h4>
+                                        <p className="text-xs text-on-surface-variant">Regain Willpower when you indulge your darker side.</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="lg:col-span-4 bg-surface-container-low p-8 border border-white/5">
+                        <h2 className="font-headline text-3xl font-bold mb-8">Aspirations</h2>
+                        <div className="space-y-8">
+                            <input className="w-full bg-transparent border-0 border-b border-outline-variant/30 text-lg italic p-0 pb-1" placeholder="Short-term goal..." />
+                            <input className="w-full bg-transparent border-0 border-b border-outline-variant/30 text-lg italic p-0 pb-1" placeholder="Ultimate aspiration..." />
+                        </div>
+                        <button onClick={() => navigate('/create-skills')} className="w-full mt-12 py-4 bg-[#D32F2F] text-white font-headline italic font-bold text-lg shadow-xl hover:brightness-110">Commit Soul</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+);
+};
+
+const CreateSkills = () => {
+const navigate = useNavigate();
+return (
+    <div className="bg-surface">
+        <Sidebar />
+        <TopBar title="Phase 03: Skills & Proficiencies" />
+        <main className="ml-64 pt-24 p-12 min-h-screen">
+            <header className="mb-12">
+                <h1 className="font-headline text-5xl font-bold mb-4 italic">Skills & Proficiencies</h1>
+                <p className="text-on-surface-variant font-body text-lg leading-relaxed max-w-2xl">Define the practical capabilities of your mortal existence.</p>
+            </header>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {['Mental', 'Physical', 'Social'].map(type => (
+                    <section key={type} className="space-y-4">
+                        <h2 className="font-headline text-2xl italic border-b border-primary/20 pb-2">{type}</h2>
+                        <div className="space-y-1">
+                            {Array(5).fill(0).map((_, i) => (
+                                <div key={i} className="p-4 bg-surface-container-low flex justify-between items-center">
+                                    <span className="font-label text-xs uppercase tracking-widest">Skill {i+1}</span>
+                                    <div className="flex gap-1">
+                                        {[1, 2, 3, 4, 5].map(dot => (
+                                            <span key={dot} className={`material-symbols-outlined text-sm ${dot <= 2 ? 'text-primary dot-filled' : 'text-primary/20'}`}>circle</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                ))}
+            </div>
+            <div className="mt-12 flex justify-end">
+                <button onClick={() => navigate('/sheet')} className="px-10 py-4 bg-[#D32F2F] text-white font-headline italic font-bold text-lg">Review Dossier</button>
+            </div>
+        </main>
+    </div>
+);
+};
+
+const CharacterSheet = () => (
+<div className="bg-surface">
+    <Sidebar />
+    <TopBar title="Subject Profile: Julien Vane" />
+    <main className="ml-64 pt-24 px-12 pb-12 min-h-screen space-y-12">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="md:col-span-2 flex gap-8 items-end">
+                <div className="h-48 w-48 bg-primary-container/20 overflow-hidden">
+                    <img className="h-full w-full object-cover grayscale brightness-75" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAk41qvO_KtddFC4Qk5zFTdp7Xij6l2yCtvaEoNWxdCuJPV7f-aRARB8JGDn0bUZkWP9dJrHzbLROWtJS4P7T5gLlwIXadeFkNeCOleTsNozKeGMlc_OA0hRjjTLvaPBgDFfsABQmPuKBf-sEO3i_vJj361DL-DlCgVgleuyDdtda303oV4PzJ4EM3y1oTQMkeB3X5YUD8OpiDl8rygym0QA_IOph-DhZemFx5YtFbd-vy1SmHvvuPCNzLLlJMlW12UfZtU5vRcCd1" />
+                </div>
+                <div>
+                    <h2 className="font-headline text-5xl font-bold text-on-surface">Julien Vane</h2>
+                    <div className="flex gap-4 mt-2">
+                        <span className="bg-primary-container/20 text-primary px-3 py-1 text-[10px] font-bold uppercase tracking-widest">Ventrue</span>
+                        <span className="bg-surface-container-high text-on-surface-variant px-3 py-1 text-[10px] font-bold uppercase tracking-widest">Invictus</span>
+                    </div>
+                </div>
+            </div>
+            <div className="bg-surface-container-low p-6 space-y-4">
+                <p className="font-headline italic text-lg">The Disgraced Diplomat</p>
+                <p className="text-on-surface-variant text-sm">Chronicle: Crimson Veins of London</p>
+            </div>
+        </section>
+        <section className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <div className="bg-surface-container-low p-6">
+                <label className="text-[10px] uppercase tracking-widest text-primary font-bold">Health</label>
+                <div className="flex gap-1 mt-2">
+                    {Array(8).fill(0).map((_, i) => <div key={i} className={`h-6 flex-1 ${i < 6 ? 'bg-primary-container' : 'bg-surface-container-highest'}`}></div>)}
+                </div>
+            </div>
+            <div className="bg-surface-container-low p-6">
+                <label className="text-[10px] uppercase tracking-widest text-secondary font-bold">Willpower</label>
+                <div className="flex gap-1 mt-2">
+                    {Array(6).fill(0).map((_, i) => <div key={i} className={`h-6 flex-1 ${i < 4 ? 'bg-secondary-container' : 'bg-surface-container-highest'}`}></div>)}
+                </div>
+            </div>
+        </section>
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {['Mental', 'Physical', 'Social'].map(cat => (
+                <div key={cat} className="space-y-4">
+                    <h3 className="font-label text-[11px] uppercase tracking-widest text-primary border-b border-primary/20 pb-2">{cat}</h3>
+                    {Array(3).fill(0).map((_, i) => (
+                        <div key={i} className="flex justify-between items-center group">
+                            <span className="text-sm">Attribute {i+1}</span>
+                            <div className="flex gap-1">
+                                {[1, 2, 3, 4, 5].map(dot => <span key={dot} className={`material-symbols-outlined text-sm ${dot <= 3 ? 'text-primary dot-filled' : 'text-primary/20'}`}>circle</span>)}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </section>
+    </main>
+</div>
+);
+
+const ChronicleLog = () => (
+<div className="bg-surface">
+    <Sidebar />
+    <TopBar title="Chronicle Log: The Silent City" />
+    <main className="ml-64 pt-16 h-screen flex overflow-hidden">
+        <aside className="w-80 bg-surface-container-low border-r border-white/5 flex flex-col p-6 space-y-4 overflow-y-auto custom-scrollbar">
+            <h2 className="font-headline italic text-xl">Notebooks</h2>
+            {['The Whispering Sewers', 'Crimson Sky Banquet', 'The Night of Iron Tears'].map((note, i) => (
+                <div key={i} className={`p-4 ${i===0 ? 'bg-surface-container border-l-4 border-primary-container' : 'bg-surface-container-lowest opacity-60'} cursor-pointer hover:bg-surface-bright transition-all`}>
+                    <h3 className="font-headline text-lg leading-tight">{note}</h3>
+                    <p className="text-[9px] font-label text-gray-500 uppercase mt-2">Last entry: 12 Oct 1994</p>
+                </div>
+            ))}
+        </aside>
+        <section className="flex-1 flex flex-col bg-surface-container-lowest relative overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none vignette" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDeNXYJNHxnlXAtinQYcEanudZGO2oSI4lB2BLswdVPZJmGitV_abUk2X_MzD5QNTufVs9zXFefqYEPm1Xs_WAot3PIy7QO3hsOafBwR82bqMTbz1h7uRrbSQ5D2KbrEM3wglIMhOXg1-4YXXcMvj3pkHYLkgvIc9Ae8ZsNbtfrxCpO2ohUkvZnFlSV46FfyzGzzZcclTZDfxyxmO5IREjBCA0l8MH0IlYDg3GvaUEBc430BSk3W4G2YxboPxngex6-rMl5oqUChziD')"}}></div>
+            <header className="h-14 bg-surface-container-highest/40 backdrop-blur-md flex items-center px-6 justify-between border-b border-white/5">
+                <div className="flex gap-2">
+                    {['format_bold', 'format_italic', 'ink_pen', 'image'].map(icon => <span key={icon} className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">{icon}</span>)}
+                </div>
+                <button className="bg-primary-container text-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest">Archive</button>
+            </header>
+            <div className="flex-1 overflow-y-auto p-12 custom-scrollbar relative z-10">
+                <div className="max-w-3xl mx-auto">
+                    <h1 className="font-headline text-5xl mb-8 leading-tight italic">The Whispering Sewers</h1>
+                    <div className="space-y-6 text-on-surface-variant text-lg leading-relaxed font-body">
+                        <p>"The darkness here isn't just an absence of light; it's a presence that breathes, smells of copper and damp earth."</p>
+                        <p>We met Julian Thorne at the broken junction. He looked paler than usual. The Second Inquisition is closing in. Trust nobody.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+);
+
+const SettingsPage = () => (
+<div className="bg-surface">
+    <Sidebar />
+    <TopBar title="Settings" />
+    <main className="ml-64 pt-24 pb-12 px-12 min-h-screen">
+        <div className="max-w-4xl mx-auto">
+            <header className="mb-12">
+                <h2 className="text-4xl font-noto-serif italic text-on-surface mb-2 tracking-tight">The Archival Sanctum</h2>
+                <p className="text-on-surface-variant font-label text-xs uppercase tracking-[0.2em]">Configure your digital grimoire experience</p>
+            </header>
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                <section className="md:col-span-7 bg-surface-container-low p-8 space-y-8">
+                    <h3 className="text-2xl font-noto-serif text-primary">Aesthetic Alignment</h3>
+                    <div className="grid grid-cols-2 gap-6">
+                        <div className="border border-primary bg-surface-container p-4 rounded-sm">
+                            <div className="aspect-video bg-gradient-to-br from-[#131313] to-[#D42B3B]/20 mb-4"></div>
+                            <span className="font-label text-xs uppercase tracking-widest">Dark Gothic</span>
+                        </div>
+                        <div className="border border-white/5 bg-surface-container p-4 rounded-sm opacity-50">
+                            <div className="aspect-video bg-[#F5F1E6] mb-4"></div>
+                            <span className="font-label text-xs uppercase tracking-widest">Parchment</span>
+                        </div>
+                    </div>
+                </section>
+                <aside className="md:col-span-5 space-y-8">
+                    <div className="bg-surface-container p-8">
+                        <h3 className="text-xl font-noto-serif mb-6">Data Transmutation</h3>
+                        <button className="w-full p-4 bg-surface-container-low hover:bg-surface-bright mb-2 font-label text-[10px] uppercase tracking-widest flex justify-between">
+                            <span>Export JSON</span>
+                            <span className="material-symbols-outlined">download</span>
+                        </button>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+</div>
+);
+
+const Grimoire = () => (
+<div className="bg-surface">
+    <Sidebar />
+    <TopBar title="The Shadowed Grimoire" />
+    <main className="ml-64 pt-24 pb-12 px-12 min-h-screen">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="md:col-span-2 flex flex-col justify-end">
+                <h2 className="font-headline text-5xl font-bold text-on-surface italic">The Grimoire</h2>
+                <p className="text-on-surface-variant mt-4">Master the occult arts and refine your supernatural essence.</p>
+            </div>
+            <div className="bg-surface-container-low p-6 border-l-4 border-primary">
+                <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">XP Reserves</p>
+                <h3 className="text-4xl font-black text-primary">12 pts</h3>
+            </div>
+        </section>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {['Celerity', 'Dominate', 'Auspex'].map(power => (
+                <div key={power} className="bg-surface-container-low p-8 group hover:bg-surface-bright transition-all border-b-2 border-transparent hover:border-primary cursor-pointer">
+                    <h4 className="font-headline text-2xl font-bold mb-2">{power}</h4>
+                    <div className="flex gap-1 mb-4">
+                        {[1, 2, 3, 4, 5].map(dot => <span key={dot} className={`material-symbols-outlined text-xs ${dot <= 2 ? 'text-primary dot-filled' : 'text-primary/20'}`}>circle</span>)}
+                    </div>
+                    <p className="text-sm text-on-surface-variant mb-6">Unnatural capabilities that separate the masters from the prey.</p>
+                    <button className="text-[10px] font-bold uppercase tracking-widest text-primary">Unlock Next Level</button>
+                </div>
+            ))}
+        </div>
+    </main>
+</div>
+);
+
+// --- App Entry ---
+
+const App = () => {
+return (
+    <MemoryRouter>
+        <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/create-origin" element={<CreateOrigin />} />
+            <Route path="/create-soul" element={<CreateSoul />} />
+            <Route path="/create-skills" element={<CreateSkills />} />
+            <Route path="/sheet" element={<CharacterSheet />} />
+            <Route path="/log" element={<ChronicleLog />} />
+            <Route path="/grimoire" element={<Grimoire />} />
+            <Route path="/settings" element={<SettingsPage />} />
+        </Routes>
+    </MemoryRouter>
+);
+};
+
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<App />);
+</script>
+</body>
+</html>

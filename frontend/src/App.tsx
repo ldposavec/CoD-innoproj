@@ -642,6 +642,7 @@ export default function App() {
       { total: 0, inClan: 0 }
     );
   }, [selectedVampireClan, vampireDisciplineDots, vampireDisciplines]);
+  const selectedDerived = useMemo(() => (selected ? recalculateDerivedStats(selected) : null), [selected]);
 
   function getStepAdvanceError(step: number): string | null {
     if (step === 0 && !wizardSplatSelected) {
@@ -1168,6 +1169,14 @@ export default function App() {
   }
 
   function uploadPortrait(file: File) {
+    if (!file.type.startsWith('image/')) {
+      showToast('Please upload an image file.', 'error');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image must be smaller than 5MB.', 'error');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       const result = typeof reader.result === 'string' ? reader.result : null;
@@ -1191,7 +1200,7 @@ export default function App() {
     setSelected((prev) => {
       if (!prev) return prev;
       const duplicate = prev.specialties.some(
-        (entry) => entry.skill === newSheetSpecialtySkill && entry.specialty.toLowerCase() === specialtyName.toLowerCase()
+        (entry) => entry.skill === newSheetSpecialtySkill && entry.specialty.toLocaleLowerCase() === specialtyName.toLocaleLowerCase()
       );
       if (duplicate) {
         showToast('That specialty already exists.', 'error');
@@ -2335,10 +2344,10 @@ export default function App() {
                 <aside className="sheet-resource-column">
                   <h4>Health, Willpower & Resources</h4>
                   <ul className="history">
-                    <li>Speed: {recalculateDerivedStats(selected).speed}</li>
-                    <li>Defense: {recalculateDerivedStats(selected).defense}</li>
-                    <li>Initiative: {recalculateDerivedStats(selected).initiative}</li>
-                    <li>Perception: {recalculateDerivedStats(selected).perception}</li>
+                    <li>Speed: {selectedDerived?.speed ?? selected.derivedStats.speed}</li>
+                    <li>Defense: {selectedDerived?.defense ?? selected.derivedStats.defense}</li>
+                    <li>Initiative: {selectedDerived?.initiative ?? selected.derivedStats.initiative}</li>
+                    <li>Perception: {selectedDerived?.perception ?? selected.derivedStats.perception}</li>
                     <li>Morality: {moralityDisplayForCharacter(selected)}</li>
                     {typeof selected.splatData.vitae === 'number' && <li>Vitae: {Number(selected.splatData.vitae)}</li>}
                   </ul>
@@ -2761,6 +2770,11 @@ export default function App() {
               role="dialog"
               aria-modal="true"
               aria-label="Create chronicle"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  setShowCreateChronicleModal(false);
+                }
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Escape') {
                   setShowCreateChronicleModal(false);

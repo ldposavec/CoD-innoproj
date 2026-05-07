@@ -2286,7 +2286,7 @@ export default function App() {
                   <li>Willpower Max: {recalculateDerivedStats(selected).willpowerMax}</li>
                   <li>Wound Penalty: {woundPenalty(selected.derivedStats.healthBoxes)}</li>
                   <li>
-                    Integrity / Humanity / Harmony / Satiety:{' '}
+                    Integrity / Humanity / Harmony / Wisdom / Clarity / Synergy / Satiety:{' '}
                     {['integrity', 'humanity', 'harmony', 'satiety', 'wisdom', 'clarity', 'synergy']
                       .map((key) => (typeof selected.splatData[key] === 'number' ? `${toTitle(key)} ${selected.splatData[key]}` : null))
                       .filter(Boolean)
@@ -2386,7 +2386,12 @@ export default function App() {
                         <div className="form-grid two">
                           <input value={power.name} onChange={(e) => updateSelectedCustomPower(power.id, { name: e.target.value })} />
                           <input type="number" min={1} max={5} value={power.dots} onChange={(e) => updateSelectedCustomPower(power.id, { dots: Number(e.target.value) })} />
-                          <textarea rows={3} value={power.description} onChange={(e) => updateSelectedCustomPower(power.id, { description: e.target.value })} />
+                          <textarea
+                            rows={3}
+                            style={{ gridColumn: '1 / -1' }}
+                            value={power.description}
+                            onChange={(e) => updateSelectedCustomPower(power.id, { description: e.target.value })}
+                          />
                         </div>
                       ) : (
                         <span>{power.name} · {power.dots}</span>

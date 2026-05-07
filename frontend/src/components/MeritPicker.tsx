@@ -224,7 +224,7 @@ export function MeritPicker({
                       -
                     </button>
                     <strong>{merit.dots}</strong>
-                    <button type="button" onClick={() => adjustMeritDots(merit.id, merit.dots + 1)} disabled={selectedDots - merit.dots + merit.dots + 1 > meritDotBudget || merit.dots >= 5}>
+                    <button type="button" onClick={() => adjustMeritDots(merit.id, merit.dots + 1)} disabled={selectedDots + 1 > meritDotBudget || merit.dots >= 5}>
                       +
                     </button>
                   </div>

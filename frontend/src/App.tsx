@@ -135,7 +135,7 @@ function moralityDisplayForCharacter(character: Character): string {
   if (typeof value === 'number') {
     return `${trait.label} ${value}`;
   }
-  return `${trait.label} Not set`;
+  return `${trait.label}: Not set`;
 }
 
 function getArchetypeLabels(splat: Splat): ArchetypeLabels {
@@ -1200,7 +1200,7 @@ export default function App() {
     setSelected((prev) => {
       if (!prev) return prev;
       const duplicate = prev.specialties.some(
-        (entry) => entry.skill === newSheetSpecialtySkill && entry.specialty.toLocaleLowerCase() === specialtyName.toLocaleLowerCase()
+        (entry) => entry.skill === newSheetSpecialtySkill && entry.specialty.toLowerCase() === specialtyName.toLowerCase()
       );
       if (duplicate) {
         showToast('That specialty already exists.', 'error');
@@ -2348,7 +2348,7 @@ export default function App() {
                     <li>Defense: {selectedDerived?.defense ?? selected.derivedStats.defense}</li>
                     <li>Initiative: {selectedDerived?.initiative ?? selected.derivedStats.initiative}</li>
                     <li>Perception: {selectedDerived?.perception ?? selected.derivedStats.perception}</li>
-                    <li>Morality: {moralityDisplayForCharacter(selected)}</li>
+                    <li>{moralityDisplayForCharacter(selected)}</li>
                     {typeof selected.splatData.vitae === 'number' && <li>Vitae: {Number(selected.splatData.vitae)}</li>}
                   </ul>
 
@@ -2411,13 +2411,18 @@ export default function App() {
                   <h4>Specialties</h4>
                   {sheetEdit && (
                     <div className="specialty-editor-row">
-                      <select value={newSheetSpecialtySkill} onChange={(e) => setNewSheetSpecialtySkill(e.target.value)}>
+                      <select aria-label="Specialty skill" value={newSheetSpecialtySkill} onChange={(e) => setNewSheetSpecialtySkill(e.target.value)}>
                         <option value="">Select skill</option>
                         {skillOptions.map((option) => (
                           <option key={option.key} value={option.key}>{option.label}</option>
                         ))}
                       </select>
-                      <input value={newSheetSpecialtyName} placeholder="Specialty name" onChange={(e) => setNewSheetSpecialtyName(e.target.value)} />
+                      <input
+                        aria-label="Specialty name"
+                        value={newSheetSpecialtyName}
+                        placeholder="Specialty name"
+                        onChange={(e) => setNewSheetSpecialtyName(e.target.value)}
+                      />
                       <button type="button" onClick={addSheetSpecialty} disabled={!newSheetSpecialtySkill || !newSheetSpecialtyName.trim()}>
                         Add
                       </button>
@@ -2472,8 +2477,8 @@ export default function App() {
                 <h4>Powers</h4>
                 {sheetEdit && (
                   <div className="powers-editor-grid">
-                    <input placeholder="Power name" value={newCustomPowerName} onChange={(e) => setNewCustomPowerName(e.target.value)} />
-                    <input type="number" min={1} max={5} value={newCustomPowerDots} onChange={(e) => setNewCustomPowerDots(clamp(Number(e.target.value), 1, 5))} />
+                    <input aria-label="Power name" placeholder="Power name" value={newCustomPowerName} onChange={(e) => setNewCustomPowerName(e.target.value)} />
+                    <input aria-label="Power dots" type="number" min={1} max={5} value={newCustomPowerDots} onChange={(e) => setNewCustomPowerDots(clamp(Number(e.target.value), 1, 5))} />
                     <button type="button" onClick={addSelectedCustomPower} disabled={!newCustomPowerName.trim()}>
                       Add Power
                     </button>

@@ -4,11 +4,7 @@
     "name": "Area of Expertise",
     "category": "Mental",
     "allowedDots": [
-      1,
-      2,
-      3,
-      4,
-      5
+      1
     ],
     "description": "Prerequisite: Resolve ●● and one Skill Specialty.\n\tEffect: Your character is uncommonly specialized in one area. Choose a Specialty to assign this Merit. Forgo the +1 bonus afforded by a Specialty, in exchange for a +2.",
     "prerequisites": "Resolve ●● and one Skill Specialty.",

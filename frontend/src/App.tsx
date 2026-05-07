@@ -1,15 +1,21 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { api, setAuthToken } from './api';
 import { ATTRIBUTE_GROUPS, defaultCharacter, SKILL_GROUPS, SPLATS, THEME_KEY } from './constants';
-import type { Character, DiceRollResult, LibraryMerit, Splat } from './types';
+import { CharacterCard } from './components/CharacterCard';
+import { MeritPicker } from './components/MeritPicker';
+import type { Character, DiceRollResult, LibraryMerit, Splat, VampireDiscipline } from './types';
 import {
   ATTRIBUTE_DOT_BUDGET,
+  MERIT_DOT_BUDGET,
+  SPECIALTY_DOT_BUDGET,
   SKILL_DOT_BUDGET,
   attributeDotsSpent,
   clamp,
   cloneCharacter,
   cycleHealth,
+  formatTextContent,
+  evaluateMeritPrerequisites,
   recalculateDerivedStats,
   remainingXp,
   skillDotsSpent,
@@ -22,13 +28,64 @@ type AuthMode = 'login' | 'register';
 type SheetTab = 'info' | 'traits' | 'merits' | 'powers' | 'notes';
 
 type Session = { username: string; token: string | null };
-type ChronicleEntry = { id: string; title: string; body: string; characterId: string; createdAt: number };
+type ChronicleNote = { id: string; title: string; body: string; characterId: string; createdAt: number; updatedAt: number };
+type ChronicleDirectory = { id: string; name: string; createdAt: number; updatedAt: number; notes: ChronicleNote[] };
+type ToastKind = 'info' | 'success' | 'error';
+type ChronicleSort = 'updated' | 'name' | 'character';
+type ChronicleGroup = 'none' | 'character' | 'date';
 type SplatField = { key: string; label: string; type: 'text' | 'textarea' | 'number' | 'select'; min?: number; max?: number; options?: string[] };
+type FocusTier = 'primary' | 'secondary' | 'tertiary';
+type AttributeGroup = keyof typeof ATTRIBUTE_GROUPS;
+type SkillGroup = keyof typeof SKILL_GROUPS;
+type AspirationTerm = 'Short-Term' | 'Long-Term';
+type AspirationEntry = { text: string; term: AspirationTerm };
+type ArchetypeLabels = { first: string; second: string };
+type DiceHistoryItem = {
+  id: string;
+  poolSize: number;
+  rule: string;
+  roteQuality: boolean;
+  chanceDie: boolean;
+  successes: number;
+};
 
 const SESSION_KEY = 'cod-session';
-const NOTES_KEY = 'cod-chronicle-entries';
-const wizardSteps = ['Concept', 'Splat', 'Attributes', 'Skills', 'Merits', 'Supernatural'];
+const CHRONICLES_KEY = 'cod-chronicle-entries';
+const wizardSteps = ['Splat', 'Concept', 'Attributes', 'Skills', 'Merits', 'Supernatural'];
 const BYPASS_LOGIN_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_BYPASS_LOGIN === 'true';
+const DIE_ROTATION_MS = 350;
+const ATTRIBUTE_FOCUS_DOTS: Record<FocusTier, number> = { primary: 5, secondary: 4, tertiary: 3 };
+const SKILL_FOCUS_DOTS: Record<FocusTier, number> = { primary: 11, secondary: 7, tertiary: 4 };
+const TIER_LABELS: Record<FocusTier, string> = {
+  primary: 'Primary',
+  secondary: 'Secondary',
+  tertiary: 'Tertiary'
+};
+const DICE_RULE_LABELS: Record<string, string> = {
+  '10again': '10-again',
+  '9again': '9-again',
+  '8again': '8-again',
+  none: 'No explode'
+};
+const DEFAULT_SEVEN_TRAIT_KEYS = ['humanity', 'integrity', 'harmony', 'wisdom', 'clarity', 'synergy'] as const;
+const SPLAT_ARCHETYPE_LABELS: Partial<Record<Splat, ArchetypeLabels>> = {
+  VAMPIRE: { first: 'Mask', second: 'Dirge' },
+  BEAST: { first: 'Legend', second: 'Life' }
+};
+const SPLAT_POWER_LIBRARY: Record<Splat, string[]> = {
+  MORTAL: [],
+  VAMPIRE: ['Animalism', 'Auspex', 'Celerity', 'Dominate', 'Majesty', 'Nightmare', 'Obfuscate', 'Protean', 'Resilience', 'Vigor'],
+  WEREWOLF: ['Dominance', 'Evasion', 'Insight', 'Knowledge', 'Rage', 'Resilience', 'Shaping', 'Stealth', 'Strength', 'Warding'],
+  MAGE: ['Death', 'Fate', 'Forces', 'Life', 'Matter', 'Mind', 'Prime', 'Space', 'Spirit', 'Time'],
+  PROMETHEAN: ['Aes', 'Argos', 'Disquiet', 'Flux', 'Saturninus', 'Transmutation', 'Vitriol'],
+  CHANGELING: ['Contracts of Artifice', 'Contracts of Darkness', 'Contracts of Elements', 'Contracts of Fleeting Summer', 'Contracts of Smoke'],
+  HUNTER: ['Tactics', 'Endowments', 'Compact Edges', 'Conspiracy Gifts'],
+  GEIST: ['Boneyard', 'Caul', 'Dirge', 'Key', 'Marionette', 'Oracle', 'Rage', 'Shroud'],
+  MUMMY: ['Affinities', 'Utterances', 'Sekhem Blessings', 'Guild Secrets'],
+  DEMON: ['Embeds', 'Exploits', 'Demon Form', 'Interlocks'],
+  BEAST: ['Atavisms', 'Nightmares', 'Lair Traits', 'Hunger Blessings'],
+  DEVIANT: ['Adaptations', 'Variations', 'Scar Tricks', 'Instabilities']
+};
 
 const defaultSkillsLibrary = { physical: [], social: [], mental: [] };
 const defaultSplatOptions: {
@@ -49,12 +106,159 @@ function toTitle(text: string) {
   return text.replace(/([A-Z])/g, ' $1').replace(/^./, (m) => m.toUpperCase()).trim();
 }
 
+function normalizeKey(text: string) {
+  return text.trim().toLowerCase();
+}
+
+function normalizeChronicleTitle(title: string, fallbackIndex: number) {
+  const trimmed = title.trim();
+  return trimmed || `Chronicle ${fallbackIndex + 1}`;
+}
+
+function getArchetypeLabels(splat: Splat): ArchetypeLabels {
+  return SPLAT_ARCHETYPE_LABELS[splat] ?? { first: 'Virtue', second: 'Vice' };
+}
+
+function withDefaultSevenTraits(splatData: Record<string, unknown>) {
+  const next = { ...splatData };
+  for (const key of DEFAULT_SEVEN_TRAIT_KEYS) {
+    if (typeof next[key] !== 'number') {
+      next[key] = 7;
+    }
+  }
+  return next;
+}
+
+function isVampireDisciplineInClan(clan: string, disciplineName: string, inClanClans: string[]) {
+  if (!clan) return false;
+  const clanLower = normalizeKey(clan);
+  const discLower = normalizeKey(disciplineName);
+
+  const coreInClan: Record<string, string[]> = {
+    daeva: ['vigor', 'celerity', 'majesty'],
+    gangrel: ['animalism', 'resilience', 'protean'],
+    mekhet: ['auspex', 'celerity', 'obfuscate'],
+    nosferatu: ['nightmare', 'obfuscate', 'vigor'],
+    ventrue: ['animalism', 'dominate', 'resilience'],
+  };
+
+  if (coreInClan[clanLower]?.includes(discLower)) {
+    return true;
+  }
+
+  return inClanClans.some((c) => normalizeKey(c) === clanLower);
+}
+
+function normalizeVampireDisciplines(raw: unknown): VampireDiscipline[] {
+  if (!Array.isArray(raw)) return [];
+
+  const disciplinesMap = new Map<string, VampireDiscipline>();
+
+  function inferDisciplineName(record: Record<string, unknown>, fallbackIndex: number) {
+    if (typeof record.discipline === 'string' && record.discipline.trim() !== '') {
+      return record.discipline;
+    }
+    if (typeof record.id === 'string') {
+      const inferred = record.id.split(/[-_]/)[0];
+      if (inferred.trim() !== '') return inferred;
+    }
+    if (typeof record.type === 'string' && record.type.toLowerCase() === 'discipline' && typeof record.name === 'string' && record.name.trim() !== '') {
+      return record.name;
+    }
+    if (typeof record.name === 'string' && record.name.trim() !== '') {
+      return record.name;
+    }
+    return `Discipline ${fallbackIndex + 1}`;
+  }
+
+  function ensureDiscipline(discName: string, clans?: unknown[]) {
+    const finalName = toTitle(discName.trim());
+    if (!disciplinesMap.has(finalName)) {
+      disciplinesMap.set(finalName, {
+        id: finalName.toLowerCase().replace(/\s+/g, '-'),
+        name: finalName,
+        inClanClans: [],
+        powers: []
+      });
+    }
+    const disc = disciplinesMap.get(finalName)!;
+
+    if (Array.isArray(clans)) {
+      clans.forEach((c) => {
+        if (typeof c === 'string') {
+          const capC = toTitle(c.trim());
+          if (!disc.inClanClans.some((existing) => normalizeKey(existing) === normalizeKey(capC))) disc.inClanClans.push(capC);
+        }
+      });
+    }
+    return disc;
+  }
+
+  function addPower(discName: string, dot: number, powerName: string, description?: string, effect?: string, clans?: unknown[]) {
+    const disc = ensureDiscipline(discName, clans);
+
+    let finalDesc = description ?? '';
+    if (effect) {
+      finalDesc = finalDesc ? `${finalDesc}\n\nEffect: ${effect}` : `Effect: ${effect}`;
+    }
+    disc.powers.push({ name: powerName, dot, description: finalDesc.trim() || undefined });
+  }
+
+  raw.forEach((entry, index) => {
+    const record = typeof entry === 'object' && entry !== null ? (entry as Record<string, unknown>) : null;
+    if (!record) return;
+
+    const clansRaw = record.inClanClans ?? record.clans;
+    const recordDiscipline = inferDisciplineName(record, index);
+
+    if (Array.isArray(record.powers)) {
+      const discName = recordDiscipline;
+      record.powers.forEach((power, pIdx) => {
+        const powerRecord = typeof power === 'object' && power !== null ? (power as Record<string, unknown>) : null;
+        if (!powerRecord) return;
+        const dot = Number(powerRecord.dot ?? powerRecord.level ?? powerRecord.rating ?? 1);
+        const powerName = typeof powerRecord.name === 'string' ? powerRecord.name : `Power ${pIdx + 1}`;
+        const description = typeof powerRecord.description === 'string' ? powerRecord.description : undefined;
+        const effect = typeof powerRecord.effect === 'string' ? powerRecord.effect : undefined;
+        const powerDiscipline = typeof powerRecord.discipline === 'string' && powerRecord.discipline.trim() !== '' ? powerRecord.discipline : discName;
+        addPower(powerDiscipline, dot, powerName, description, effect, clansRaw as unknown[]);
+      });
+    } else if (Array.isArray(record.dotLevels)) {
+      const fallbackDiscName = recordDiscipline;
+
+      record.dotLevels.forEach((dl: any, pIdx: number) => {
+        const dot = Number(dl.dots ?? dl.dot ?? dl.level ?? dl.rating ?? 1);
+        const powerName = typeof dl.power === 'string' ? dl.power : (typeof dl.name === 'string' ? dl.name : (typeof record.name === 'string' ? record.name : `Power ${pIdx + 1}`));
+        const description = typeof dl.description === 'string' ? dl.description : (typeof record.description === 'string' ? record.description : undefined);
+        const effect = typeof dl.effect === 'string' ? dl.effect : (typeof record.effect === 'string' ? record.effect : undefined);
+        const disciplineName = typeof dl.discipline === 'string' && dl.discipline.trim() !== '' ? dl.discipline : fallbackDiscName;
+        addPower(disciplineName, dot, powerName, description, effect, clansRaw as unknown[]);
+      });
+    } else {
+      const discName = recordDiscipline;
+      const dot = Number(record.dot ?? record.level ?? record.rating ?? 1);
+      const powerName = typeof record.name === 'string' ? record.name : `Power ${index + 1}`;
+      const description = typeof record.description === 'string' ? record.description : undefined;
+      const effect = typeof record.effect === 'string' ? record.effect : undefined;
+      addPower(discName, dot, powerName, description, effect, clansRaw as unknown[]);
+    }
+  });
+
+  const normalized = Array.from(disciplinesMap.values());
+  normalized.forEach((d) => {
+    d.powers.sort((a, b) => a.dot - b.dot);
+  });
+
+  return normalized;
+}
+
 function DotField({
   label,
   value,
   min,
   max,
   disabled,
+  stacked,
   onChange
 }: {
   label: string;
@@ -62,21 +266,65 @@ function DotField({
   min: number;
   max: number;
   disabled?: boolean;
+  stacked?: boolean;
   onChange: (value: number) => void;
 }) {
+  const dots = min === 0 ? Array.from({ length: max }, (_, i) => i + 1) : Array.from({ length: max - min + 1 }, (_, i) => min + i);
+
   return (
-    <div className="dot-field">
+    <div className={`dot-field ${stacked ? 'stacked' : ''}`}>
       <span>{label}</span>
       <div className="dot-row" role="radiogroup" aria-label={label}>
-        {Array.from({ length: max - min + 1 }, (_, i) => min + i).map((dot) => (
+        {dots.map((dot) => (
           <button
             key={dot}
             type="button"
             role="radio"
             aria-checked={value === dot}
             className={value >= dot ? 'dot active' : 'dot'}
-            onClick={() => onChange(dot)}
+            onClick={() => onChange(min === 0 && dot === 1 && value === 1 ? 0 : dot)}
             disabled={disabled}
+          />
+        ))}
+      </div>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function BoxField({
+  label,
+  value,
+  min,
+  max,
+  disabled,
+  stacked,
+  onChange
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  disabled?: boolean;
+  stacked?: boolean;
+  onChange: (value: number) => void;
+}) {
+  const boxes = min === 0 ? Array.from({ length: max }, (_, i) => i + 1) : Array.from({ length: max - min + 1 }, (_, i) => min + i);
+
+  return (
+    <div className={`dot-field box-field ${stacked ? 'stacked' : ''}`}>
+      <span>{label}</span>
+      <div className="dot-row box-row flex gap-1" role="radiogroup" aria-label={label}>
+        {boxes.map((box) => (
+          <button
+            key={box}
+            type="button"
+            role="radio"
+            aria-checked={value === box}
+            className={value >= box ? 'box-btn active bg-primary border-primary' : 'box-btn bg-transparent border-primary/50'}
+            onClick={() => onChange(min === 0 && box === 1 && value === 1 ? 0 : box)}
+            disabled={disabled}
+            style={{ width: '16px', height: '16px', borderStyle: 'solid', borderWidth: '1px', borderRadius: '2px', cursor: disabled ? 'default' : 'pointer' }}
           />
         ))}
       </div>
@@ -94,6 +342,7 @@ export default function App() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [session, setSession] = useState<Session | null>(null);
   const [message, setMessage] = useState('');
+  const [toastKind, setToastKind] = useState<ToastKind>('info');
   const [busy, setBusy] = useState(false);
 
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -103,11 +352,29 @@ export default function App() {
 
   const [draft, setDraft] = useState<Character>(() => ({ ...defaultCharacter(), derivedStats: recalculateDerivedStats(defaultCharacter()) }));
   const [wizardStep, setWizardStep] = useState(0);
+  const [wizardSplatSelected, setWizardSplatSelected] = useState(false);
+  const [attributeFocus, setAttributeFocus] = useState<Record<FocusTier, AttributeGroup>>({
+    primary: 'Mental',
+    secondary: 'Physical',
+    tertiary: 'Social'
+  });
+  const [skillFocus, setSkillFocus] = useState<Record<FocusTier, SkillGroup>>({
+    primary: 'Mental',
+    secondary: 'Physical',
+    tertiary: 'Social'
+  });
+  const [aspirations, setAspirations] = useState<AspirationEntry[]>([
+    { text: '', term: 'Short-Term' },
+    { text: '', term: 'Short-Term' },
+    { text: '', term: 'Short-Term' }
+  ]);
   const [meritsLibrary, setMeritsLibrary] = useState<LibraryMerit[]>([]);
   const [skillsLibrary, setSkillsLibrary] = useState<{ physical: string[]; social: string[]; mental: string[] }>(defaultSkillsLibrary);
   const [splatOptions, setSplatOptions] = useState(defaultSplatOptions);
-  const [meritFilter, setMeritFilter] = useState('All');
-  const [customMerit, setCustomMerit] = useState({ name: '', category: 'Custom', dots: 1, description: '', prerequisites: '' });
+  const [vampireDisciplines, setVampireDisciplines] = useState<VampireDiscipline[]>([]);
+  const [newSpecSkill, setNewSpecSkill] = useState('');
+  const [newSpecName, setNewSpecName] = useState('');
+  const [wizardStepError, setWizardStepError] = useState('');
 
   const [search, setSearch] = useState('');
   const [sortMode, setSortMode] = useState<SortMode>('created');
@@ -116,11 +383,43 @@ export default function App() {
   const [diceRule, setDiceRule] = useState('10again');
   const [diceRote, setDiceRote] = useState(false);
   const [diceChance, setDiceChance] = useState(false);
+  const [diceRolling, setDiceRolling] = useState(false);
+  const [diceGhostCount, setDiceGhostCount] = useState(0);
+  const [diceRevealCount, setDiceRevealCount] = useState(0);
+  const [diceVisualKey, setDiceVisualKey] = useState(0);
   const [diceResult, setDiceResult] = useState<DiceRollResult | null>(null);
-  const [diceHistory, setDiceHistory] = useState<{ id: string; at: string; detail: string; result: string }[]>([]);
+  const [diceCurrentRoll, setDiceCurrentRoll] = useState<DiceHistoryItem | null>(null);
+  const [diceHistory, setDiceHistory] = useState<DiceHistoryItem[]>([]);
 
-  const [chronicleEntries, setChronicleEntries] = useState<ChronicleEntry[]>([]);
-  const [entryDraft, setEntryDraft] = useState({ title: '', body: '', characterId: '' });
+  const [chronicleDirectories, setChronicleDirectories] = useState<ChronicleDirectory[]>([]);
+  const [selectedChronicleId, setSelectedChronicleId] = useState('');
+  const [selectedChronicleNoteId, setSelectedChronicleNoteId] = useState('');
+  const [noteDraft, setNoteDraft] = useState({ title: '', body: '', characterId: '' });
+  const [chronicleSort, setChronicleSort] = useState<ChronicleSort>('updated');
+  const [chronicleGroup, setChronicleGroup] = useState<ChronicleGroup>('none');
+  const [chronicleCharacterFilter, setChronicleCharacterFilter] = useState('');
+  const diceTimerHandles = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+  const toastTimerHandles = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+
+  function clearDiceTimers() {
+    diceTimerHandles.current.forEach((timer) => clearTimeout(timer));
+    diceTimerHandles.current = [];
+  }
+
+  function clearToastTimers() {
+    toastTimerHandles.current.forEach((timer) => clearTimeout(timer));
+    toastTimerHandles.current = [];
+  }
+
+  function showToast(text: string, kind: ToastKind = 'info') {
+    clearToastTimers();
+    setToastKind(kind);
+    setMessage(text);
+    const timer = setTimeout(() => {
+      setMessage('');
+    }, 4200);
+    toastTimerHandles.current.push(timer);
+  }
 
   useEffect(() => {
     const storedTheme = localStorage.getItem(THEME_KEY);
@@ -140,12 +439,60 @@ export default function App() {
       }
     }
 
-    const rawEntries = localStorage.getItem(NOTES_KEY);
+    const rawEntries = localStorage.getItem(CHRONICLES_KEY);
     if (rawEntries) {
       try {
-        setChronicleEntries(JSON.parse(rawEntries) as ChronicleEntry[]);
+        const parsed = JSON.parse(rawEntries) as unknown;
+        if (Array.isArray(parsed)) {
+          const now = Date.now();
+          const first = parsed[0] as Record<string, unknown> | undefined;
+          if (first && Array.isArray((first as Record<string, unknown>).notes)) {
+            const dirs = (parsed as Record<string, unknown>[]).map((dir, index) => {
+              const rawNotes = Array.isArray(dir.notes) ? (dir.notes as Record<string, unknown>[]) : [];
+              return {
+                id: typeof dir.id === 'string' ? dir.id : createId(),
+                name: normalizeChronicleTitle(typeof dir.name === 'string' ? dir.name : '', index),
+                createdAt: typeof dir.createdAt === 'number' ? dir.createdAt : now,
+                updatedAt: typeof dir.updatedAt === 'number' ? dir.updatedAt : now,
+                notes: rawNotes.map((note, noteIndex) => ({
+                  id: typeof note.id === 'string' ? note.id : createId(),
+                  title: normalizeChronicleTitle(typeof note.title === 'string' ? note.title : '', noteIndex),
+                  body: typeof note.body === 'string' ? note.body : '',
+                  characterId: typeof note.characterId === 'string' ? note.characterId : '',
+                  createdAt: typeof note.createdAt === 'number' ? note.createdAt : now,
+                  updatedAt: typeof note.updatedAt === 'number' ? note.updatedAt : now
+                }))
+              } satisfies ChronicleDirectory;
+            });
+            setChronicleDirectories(dirs);
+          } else {
+            // Legacy migration: each old chronicle entry becomes a directory with one note.
+            const dirs = (parsed as Record<string, unknown>[]).map((entry, index) => {
+              const createdAt = typeof entry.createdAt === 'number' ? entry.createdAt : now;
+              const updatedAt = typeof entry.updatedAt === 'number' ? entry.updatedAt : createdAt;
+              const title = normalizeChronicleTitle(typeof entry.title === 'string' ? entry.title : '', index);
+              return {
+                id: typeof entry.id === 'string' ? entry.id : createId(),
+                name: title,
+                createdAt,
+                updatedAt,
+                notes: [
+                  {
+                    id: createId(),
+                    title: `${title} Note`,
+                    body: typeof entry.body === 'string' ? entry.body : '',
+                    characterId: typeof entry.characterId === 'string' ? entry.characterId : '',
+                    createdAt,
+                    updatedAt
+                  }
+                ]
+              } satisfies ChronicleDirectory;
+            });
+            setChronicleDirectories(dirs);
+          }
+        }
       } catch {
-        localStorage.removeItem(NOTES_KEY);
+        localStorage.removeItem(CHRONICLES_KEY);
       }
     }
 
@@ -158,14 +505,23 @@ export default function App() {
   }, [theme]);
 
   useEffect(() => {
-    localStorage.setItem(NOTES_KEY, JSON.stringify(chronicleEntries));
-  }, [chronicleEntries]);
+    localStorage.setItem(CHRONICLES_KEY, JSON.stringify(chronicleDirectories));
+  }, [chronicleDirectories]);
+
+  useEffect(
+    () => () => {
+      clearDiceTimers();
+      clearToastTimers();
+    },
+    []
+  );
 
   useEffect(() => {
     if (!session) return;
     setAuthToken(session.token);
     void loadCharacters();
   }, [session]);
+
 
   const visibleCharacters = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -179,50 +535,204 @@ export default function App() {
     return list;
   }, [characters, search, sortMode]);
 
-  const meritCategories = useMemo(() => ['All', ...new Set(meritsLibrary.map((m) => m.category))], [meritsLibrary]);
-  const filteredMerits = useMemo(
-    () => (meritFilter === 'All' ? meritsLibrary : meritsLibrary.filter((m) => m.category === meritFilter)),
-    [meritFilter, meritsLibrary]
+  const skillOptions = useMemo(
+    () =>
+      Object.entries(SKILL_GROUPS).flatMap(([group, keys]) => {
+        const named = skillsLibrary[group.toLowerCase() as 'physical' | 'social' | 'mental'];
+        return keys.map((key, index) => ({ key, label: named[index] ?? toTitle(key) }));
+      }),
+    [skillsLibrary]
   );
+  const attributeSpentByGroup = useMemo(() => {
+    return (Object.entries(ATTRIBUTE_GROUPS) as [AttributeGroup, string[]][]).reduce<Record<AttributeGroup, number>>(
+      (acc, [group, keys]) => {
+        acc[group] = keys.reduce((sum, key) => sum + Math.max(0, (draft.attributes[key] ?? 1) - 1), 0);
+        return acc;
+      },
+      { Mental: 0, Physical: 0, Social: 0 }
+    );
+  }, [draft.attributes]);
+  const skillSpentByGroup = useMemo(() => {
+    return (Object.entries(SKILL_GROUPS) as [SkillGroup, string[]][]).reduce<Record<SkillGroup, number>>(
+      (acc, [group, keys]) => {
+        acc[group] = keys.reduce((sum, key) => sum + Math.max(0, draft.skills[key] ?? 0), 0);
+        return acc;
+      },
+      { Mental: 0, Physical: 0, Social: 0 }
+    );
+  }, [draft.skills]);
+  const attributeGroupCaps = useMemo(() => {
+    return {
+      [attributeFocus.primary]: ATTRIBUTE_FOCUS_DOTS.primary,
+      [attributeFocus.secondary]: ATTRIBUTE_FOCUS_DOTS.secondary,
+      [attributeFocus.tertiary]: ATTRIBUTE_FOCUS_DOTS.tertiary
+    } as Record<AttributeGroup, number>;
+  }, [attributeFocus]);
+  const skillGroupCaps = useMemo(() => {
+    return {
+      [skillFocus.primary]: SKILL_FOCUS_DOTS.primary,
+      [skillFocus.secondary]: SKILL_FOCUS_DOTS.secondary,
+      [skillFocus.tertiary]: SKILL_FOCUS_DOTS.tertiary
+    } as Record<SkillGroup, number>;
+  }, [skillFocus]);
+  const hasAttributeFocusOverflow = useMemo(
+    () => (Object.keys(attributeSpentByGroup) as AttributeGroup[]).some((group) => attributeSpentByGroup[group] > attributeGroupCaps[group]),
+    [attributeGroupCaps, attributeSpentByGroup]
+  );
+  const hasSkillFocusOverflow = useMemo(
+    () => (Object.keys(skillSpentByGroup) as SkillGroup[]).some((group) => skillSpentByGroup[group] > skillGroupCaps[group]),
+    [skillGroupCaps, skillSpentByGroup]
+  );
+  const selectedVampireClan = useMemo(() => String(draft.splatData.clan ?? '').trim(), [draft.splatData.clan]);
+  const vampireDisciplineDots = useMemo(() => {
+    const raw = draft.splatData.vampireDisciplines;
+    if (!raw || typeof raw !== 'object') return {} as Record<string, number>;
+    return Object.entries(raw as Record<string, unknown>).reduce<Record<string, number>>((acc, [name, value]) => {
+      if (typeof value === 'number' && value > 0) {
+        acc[name] = clamp(value, 0, 5);
+      }
+      return acc;
+    }, {});
+  }, [draft.splatData.vampireDisciplines]);
+  const vampireDisciplineTotals = useMemo(() => {
+    return vampireDisciplines.reduce(
+      (acc, discipline) => {
+        const dots = vampireDisciplineDots[discipline.name] ?? 0;
+        acc.total += dots;
+        let inClan = false;
+        if (selectedVampireClan) {
+          inClan = isVampireDisciplineInClan(selectedVampireClan, discipline.name, discipline.inClanClans);
+        }
+        if (inClan) {
+          acc.inClan += dots;
+        }
+        return acc;
+      },
+      { total: 0, inClan: 0 }
+    );
+  }, [selectedVampireClan, vampireDisciplineDots, vampireDisciplines]);
+
+  function getStepAdvanceError(step: number): string | null {
+    if (step === 0 && !wizardSplatSelected) {
+      return 'Select a splat before continuing.';
+    }
+    if (step === 2) {
+      if (hasAttributeFocusOverflow) return 'Attribute focus distribution is invalid. Rebalance dots to match selected priorities.';
+    }
+    if (step === 3) {
+      if (hasSkillFocusOverflow) return 'Skill focus distribution is invalid. Rebalance dots to match selected priorities.';
+    }
+    return null;
+  }
+
+  function tryAdvanceWizard() {
+    const reason = getStepAdvanceError(wizardStep);
+    if (reason) {
+      setWizardStepError(reason);
+      showToast(reason, 'error');
+      return;
+    }
+    setWizardStepError('');
+    setWizardStep((step) => step + 1);
+  }
+
+  function tryOpenWizardStep(nextStep: number) {
+    if (nextStep > wizardStep) {
+      const reason = getStepAdvanceError(wizardStep);
+      if (reason) {
+        setWizardStepError(reason);
+        showToast(reason, 'error');
+        return;
+      }
+    }
+    setWizardStepError('');
+    setWizardStep(nextStep);
+  }
 
   const wizardValidation = useMemo(() => {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    if (!draft.name.trim()) errors.push('Name is required.');
-    const attrSpent = attributeDotsSpent(draft);
-    const skillSpent = skillDotsSpent(draft);
+    if (!wizardSplatSelected) errors.push('Select a splat before continuing character creation.');
 
-    if (attrSpent > ATTRIBUTE_DOT_BUDGET) errors.push(`Attribute dots exceed budget (${attrSpent}/${ATTRIBUTE_DOT_BUDGET}).`);
-    if (skillSpent > SKILL_DOT_BUDGET) errors.push(`Skill dots exceed budget (${skillSpent}/${SKILL_DOT_BUDGET}).`);
-    if (attrSpent < ATTRIBUTE_DOT_BUDGET) warnings.push(`You still have ${ATTRIBUTE_DOT_BUDGET - attrSpent} attribute dots left.`);
-    if (skillSpent < SKILL_DOT_BUDGET) warnings.push(`You still have ${SKILL_DOT_BUDGET - skillSpent} skill dots left.`);
+    if (!draft.name.trim()) errors.push('Name is required.');
 
     const hasProfessionalTraining = draft.merits.some((m) => m.name.toLowerCase().includes('professional training'));
     if (hasProfessionalTraining && draft.professionalTrainingSkills.length !== 2) {
       errors.push('Professional Training requires exactly two focus skills.');
     }
 
+    const missingAspirations = aspirations.filter((entry) => !entry.text.trim()).length;
+    if (missingAspirations > 0) {
+      warnings.push(`You still have ${missingAspirations} aspiration slot(s) empty.`);
+    }
+
+    if (draft.specialties.length > SPECIALTY_DOT_BUDGET) {
+      errors.push(`Specialties exceed budget (${draft.specialties.length}/${SPECIALTY_DOT_BUDGET}).`);
+    }
+
+    draft.merits.forEach((merit) => {
+      if (merit.isCustom || !merit.prerequisites.trim()) return;
+      const check = evaluateMeritPrerequisites(merit.prerequisites, draft);
+      if (!check.met) {
+        errors.push(`${merit.name} prerequisites are no longer met: ${check.unmet.join(', ')}`);
+      }
+    });
+
+    (Object.keys(attributeSpentByGroup) as AttributeGroup[]).forEach((group) => {
+      if (attributeSpentByGroup[group] > attributeGroupCaps[group]) {
+        errors.push(`${group} attributes exceed its focus dots (${attributeSpentByGroup[group]}/${attributeGroupCaps[group]}).`);
+      } else if (attributeSpentByGroup[group] < attributeGroupCaps[group]) {
+        warnings.push(`You still have ${attributeGroupCaps[group] - attributeSpentByGroup[group]} ${group} attribute dots left.`);
+      }
+    });
+
+    (Object.keys(skillSpentByGroup) as SkillGroup[]).forEach((group) => {
+      if (skillSpentByGroup[group] > skillGroupCaps[group]) {
+        errors.push(`${group} skills exceed its focus dots (${skillSpentByGroup[group]}/${skillGroupCaps[group]}).`);
+      } else if (skillSpentByGroup[group] < skillGroupCaps[group]) {
+        warnings.push(`You still have ${skillGroupCaps[group] - skillSpentByGroup[group]} ${group} skill dots left.`);
+      }
+    });
+
     if (draft.splat === 'VAMPIRE') {
       if (!String(draft.splatData.clan ?? '').trim()) errors.push('Vampire requires Clan.');
       if (!String(draft.splatData.covenant ?? '').trim()) errors.push('Vampire requires Covenant.');
+      if (vampireDisciplineTotals.total !== 3) {
+        errors.push(`Vampire discipline dots must total exactly 3 (currently ${vampireDisciplineTotals.total}).`);
+      }
+      if (vampireDisciplineTotals.inClan < 2) {
+        errors.push(`At least 2 discipline dots must be in-clan (currently ${vampireDisciplineTotals.inClan}).`);
+      }
     }
 
     return { errors, warnings };
-  }, [draft]);
+  }, [
+    aspirations,
+    attributeGroupCaps,
+    attributeSpentByGroup,
+    draft,
+    skillGroupCaps,
+    skillSpentByGroup,
+    wizardSplatSelected,
+    vampireDisciplineTotals.inClan,
+    vampireDisciplineTotals.total
+  ]);
 
   async function loadLibraries() {
     try {
-      const [merits, skills, splats] = await Promise.all([
+      const [merits, skills, splats, disciplines] = await Promise.all([
         api.listMerits().catch(() => []),
         api.listSkills().catch(() => defaultSkillsLibrary),
-        api.listSplatOptions().catch(() => defaultSplatOptions)
+        api.listSplatOptions().catch(() => defaultSplatOptions),
+        api.listVampireDisciplines().catch(() => [])
       ]);
       setMeritsLibrary(merits);
       setSkillsLibrary(skills);
       setSplatOptions(splats);
+      setVampireDisciplines(normalizeVampireDisciplines(disciplines));
     } catch {
-      setMessage('Could not load all libraries. You can still continue with core fields.');
+      showToast('Could not load all libraries. You can still continue with core fields.', 'error');
     }
   }
 
@@ -230,21 +740,20 @@ export default function App() {
     try {
       const list = await api.listCharacters();
       setCharacters(list.map((c) => ({ ...c, derivedStats: recalculateDerivedStats(c) })));
-      setMessage('');
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Failed to load characters.';
-      setMessage(reason);
+      showToast(reason, 'error');
     }
   }
 
   async function submitAuth(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!username.trim() || !password.trim()) {
-      setMessage('Username and password are required.');
+      showToast('Username and password are required.', 'error');
       return;
     }
     if (authMode === 'register' && password !== confirmPassword) {
-      setMessage('Password confirmation does not match.');
+      showToast('Password confirmation does not match.', 'error');
       return;
     }
 
@@ -253,10 +762,9 @@ export default function App() {
       const payload = { username: username.trim(), password };
       const response = authMode === 'login' ? await api.login(payload) : await api.register(payload);
       completeLogin({ username: response.username ?? payload.username, token: response.token ?? null });
-      setMessage('');
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Authentication failed.';
-      setMessage(reason);
+      showToast(reason, 'error');
     } finally {
       setBusy(false);
     }
@@ -271,7 +779,7 @@ export default function App() {
 
   function bypassLogin() {
     completeLogin({ username: username.trim() || 'test-user', token: null });
-    setMessage('Bypass login enabled for testing.');
+    showToast('Bypass login enabled for testing.', 'success');
   }
 
   function logout() {
@@ -285,24 +793,198 @@ export default function App() {
 
   function beginWizard() {
     const base = defaultCharacter();
-    setDraft({ ...base, derivedStats: recalculateDerivedStats(base) });
+    setDraft({
+      ...base,
+      splatData: withDefaultSevenTraits(base.splatData),
+      derivedStats: recalculateDerivedStats(base)
+    });
+    setWizardSplatSelected(false);
+    setAttributeFocus({ primary: 'Mental', secondary: 'Physical', tertiary: 'Social' });
+    setSkillFocus({ primary: 'Mental', secondary: 'Physical', tertiary: 'Social' });
+    setAspirations([
+      { text: '', term: 'Short-Term' },
+      { text: '', term: 'Short-Term' },
+      { text: '', term: 'Short-Term' }
+    ]);
+    setNewSpecSkill('');
+    setNewSpecName('');
     setWizardStep(0);
+    setWizardStepError('');
     setPage('wizard');
-    setMessage('');
+  }
+
+  function setFocusTier<T extends string>(
+    nextGroup: T,
+    tier: FocusTier,
+    focus: Record<FocusTier, T>,
+    apply: (next: Record<FocusTier, T>) => void,
+    validateNext?: (next: Record<FocusTier, T>) => boolean
+  ) {
+    const conflictTier = (Object.keys(focus) as FocusTier[]).find((key) => key !== tier && focus[key] === nextGroup);
+    if (!conflictTier) {
+      const nextFocus = { ...focus, [tier]: nextGroup };
+      if (validateNext && !validateNext(nextFocus)) return;
+      apply(nextFocus);
+      return;
+    }
+    const swapped = { ...focus, [conflictTier]: focus[tier], [tier]: nextGroup };
+    if (validateNext && !validateNext(swapped)) return;
+    apply(swapped);
+  }
+
+  function isStepLocked(stepIndex: number) {
+    if (!wizardSplatSelected && stepIndex > 0) return false;
+    return stepIndex > wizardStep + 1;
+  }
+
+  function getConceptFieldValue(slot: 'first' | 'second') {
+    if (draft.splat === 'VAMPIRE') {
+      return String(draft.splatData[slot === 'first' ? 'mask' : 'dirge'] ?? '');
+    }
+    if (draft.splat === 'BEAST') {
+      return String(draft.splatData[slot === 'first' ? 'legend' : 'life'] ?? '');
+    }
+    return slot === 'first' ? draft.virtue : draft.vice;
+  }
+
+  function setConceptFieldValue(slot: 'first' | 'second', value: string) {
+    if (draft.splat === 'VAMPIRE') {
+      updateSplatData(slot === 'first' ? 'mask' : 'dirge', value);
+      return;
+    }
+    if (draft.splat === 'BEAST') {
+      updateSplatData(slot === 'first' ? 'legend' : 'life', value);
+      return;
+    }
+    updateDraftText(slot === 'first' ? 'virtue' : 'vice', value);
+  }
+
+  function setAspirationText(index: number, text: string) {
+    setAspirations((prev) => prev.map((entry, entryIndex) => (entryIndex === index ? { ...entry, text } : entry)));
+  }
+
+  function setAspirationTerm(index: number, term: AspirationTerm) {
+    setAspirations((prev) => prev.map((entry, entryIndex) => (entryIndex === index ? { ...entry, term } : entry)));
+  }
+
+  function toggleDraftPower(name: string) {
+    setDraft((prev) => {
+      const exists = prev.customPowers.some((power) => power.name === name);
+      if (exists) {
+        return { ...prev, customPowers: prev.customPowers.filter((power) => power.name !== name) };
+      }
+      return {
+        ...prev,
+        customPowers: [...prev.customPowers, { id: createId(), name, dots: 1, description: '' }]
+      };
+    });
+  }
+
+  function setVampireDisciplineDots(name: string, nextDots: number) {
+    setDraft((prev) => {
+      const currentMap = (prev.splatData.vampireDisciplines as Record<string, number> | undefined) ?? {};
+      const safeDots = clamp(nextDots, 0, 5);
+      const isIncreasing = safeDots > (currentMap[name] ?? 0);
+      const nextMap = { ...currentMap, [name]: safeDots };
+      if (safeDots <= 0) {
+        delete nextMap[name];
+      }
+
+      const totals = vampireDisciplines.reduce(
+        (acc, discipline) => {
+          const dots = nextMap[discipline.name] ?? 0;
+          acc.total += dots;
+          let inClan = false;
+          if (selectedVampireClan) {
+            inClan = isVampireDisciplineInClan(selectedVampireClan, discipline.name, discipline.inClanClans);
+          }
+          if (inClan) {
+            acc.inClan += dots;
+          }
+          return acc;
+        },
+        { total: 0, inClan: 0 }
+      );
+
+      if (isIncreasing) {
+        if (totals.total > 3) {
+          showToast('Vampire disciplines allow only 3 total dots.', 'error');
+          return prev;
+        }
+        if (totals.total > 0 && totals.total - totals.inClan > 1) {
+          showToast('At most 1 vampire discipline dot can be out-of-clan.', 'error');
+          return prev;
+        }
+      }
+
+      return {
+        ...prev,
+        splatData: {
+          ...prev.splatData,
+          vampireDisciplines: nextMap
+        }
+      };
+    });
+  }
+
+  function addDraftSpecialty() {
+    const specialtyName = newSpecName.trim();
+    if (!newSpecSkill || !specialtyName) return;
+    if (draft.specialties.length >= SPECIALTY_DOT_BUDGET) return;
+
+    setDraft((prev) => {
+      const duplicate = prev.specialties.some(
+        (entry) => entry.skill === newSpecSkill && entry.specialty.toLowerCase() === specialtyName.toLowerCase()
+      );
+      if (duplicate) return prev;
+      return {
+        ...prev,
+        specialties: [...prev.specialties, { skill: newSpecSkill, specialty: specialtyName }]
+      };
+    });
+    setNewSpecName('');
+  }
+
+  function removeDraftSpecialty(index: number) {
+    setDraft((prev) => ({
+      ...prev,
+      specialties: prev.specialties.filter((_, itemIndex) => itemIndex !== index)
+    }));
   }
 
   function setDraftNumber(section: 'attributes' | 'skills', key: string, raw: number, min: number, max: number) {
     setDraft((prev) => {
-      const next = cloneCharacter(prev);
-      next[section][key] = clamp(raw, min, max);
+      const currentVal = prev[section][key] as number;
+      const nextVal = clamp(raw, min, max);
+      const isIncreasing = nextVal > currentVal;
 
-      if (section === 'attributes' && attributeDotsSpent(next) > ATTRIBUTE_DOT_BUDGET) {
-        setMessage('Attribute budget reached; reduce another attribute first.');
-        return prev;
-      }
-      if (section === 'skills' && skillDotsSpent(next) > SKILL_DOT_BUDGET) {
-        setMessage('Skill budget reached; reduce another skill first.');
-        return prev;
+      const next = cloneCharacter(prev);
+      next[section][key] = nextVal;
+
+      if (isIncreasing) {
+        if (section === 'attributes') {
+          const group = (Object.entries(ATTRIBUTE_GROUPS) as [AttributeGroup, string[]][]).find(([, keys]) => keys.includes(key))?.[0];
+          if (group) {
+            const spent = ATTRIBUTE_GROUPS[group].reduce((sum, item) => sum + Math.max(0, (next.attributes[item] ?? 1) - 1), 0);
+            const cap = attributeGroupCaps[group];
+            if (spent > cap) {
+              showToast(`${group} attributes are capped at ${cap} focus dots.`, 'error');
+              return prev;
+            }
+          }
+        }
+
+        if (section === 'skills') {
+          const group = (Object.entries(SKILL_GROUPS) as [SkillGroup, string[]][]).find(([, keys]) => keys.includes(key))?.[0];
+          if (group) {
+            const spent = SKILL_GROUPS[group].reduce((sum, item) => sum + Math.max(0, next.skills[item] ?? 0), 0);
+            const cap = skillGroupCaps[group];
+            if (spent > cap) {
+              showToast(`${group} skills are capped at ${cap} focus dots.`, 'error');
+              return prev;
+            }
+          }
+        }
       }
 
       next.derivedStats = recalculateDerivedStats(next);
@@ -324,56 +1006,18 @@ export default function App() {
     setDraft((prev) => ({ ...prev, splatData: { ...prev.splatData, [key]: value } }));
   }
 
-  function addMerit(merit: LibraryMerit) {
-    setDraft((prev) => ({
-      ...prev,
-      merits: [
-        ...prev.merits,
-        {
-          id: createId(),
-          name: merit.name,
-          category: merit.category,
-          dots: merit.allowedDots[0] ?? 1,
-          description: merit.description,
-          prerequisites: merit.prerequisites,
-          isCustom: false
-        }
-      ]
-    }));
-  }
-
-  function addCustomMerit() {
-    if (!customMerit.name.trim()) return;
-    setDraft((prev) => ({
-      ...prev,
-      merits: [
-        ...prev.merits,
-        {
-          id: createId(),
-          name: customMerit.name.trim(),
-          category: customMerit.category.trim() || 'Custom',
-          dots: clamp(customMerit.dots, 1, 5),
-          description: customMerit.description,
-          prerequisites: customMerit.prerequisites,
-          isCustom: true
-        }
-      ]
-    }));
-    setCustomMerit({ name: '', category: 'Custom', dots: 1, description: '', prerequisites: '' });
-  }
-
-  function removeDraftMerit(id: string) {
-    setDraft((prev) => ({ ...prev, merits: prev.merits.filter((m) => m.id !== id) }));
-  }
-
   async function saveWizardCharacter() {
     if (wizardValidation.errors.length > 0) {
-      setMessage(wizardValidation.errors[0]);
+      showToast(wizardValidation.errors[0], 'error');
       return;
     }
 
     try {
       const payload = cloneCharacter(draft);
+      payload.splatData = {
+        ...payload.splatData,
+        aspirations: aspirations.map((entry) => ({ text: entry.text.trim(), term: entry.term }))
+      };
       payload.derivedStats = recalculateDerivedStats(payload);
       const created = await api.createCharacter(payload);
       const next = { ...created, derivedStats: recalculateDerivedStats(created) };
@@ -382,10 +1026,10 @@ export default function App() {
       setPage('sheet');
       setSheetTab('info');
       setSheetEdit(false);
-      setMessage('Character created.');
+      showToast('Character created.', 'success');
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Could not create character.';
-      setMessage(reason);
+      showToast(reason, 'error');
     }
   }
 
@@ -416,10 +1060,10 @@ export default function App() {
       setCharacters((prev) => prev.map((c) => (c.id === normalized.id ? normalized : c)));
       setSelected(normalized);
       setSheetEdit(false);
-      setMessage('Character saved.');
+      showToast('Character saved.', 'success');
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Save failed.';
-      setMessage(reason);
+      showToast(reason, 'error');
     }
   }
 
@@ -431,10 +1075,10 @@ export default function App() {
       setCharacters((prev) => prev.filter((c) => c.id !== selected.id));
       setSelected(null);
       setPage('dashboard');
-      setMessage('Character deleted.');
+      showToast('Character deleted.', 'success');
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Delete failed.';
-      setMessage(reason);
+      showToast(reason, 'error');
     }
   }
 
@@ -461,49 +1105,260 @@ export default function App() {
   }
 
   async function rollDice() {
+    if (diceRolling) return;
+    const poolSize = diceChance ? 0 : clamp(dicePool, 0, 30);
+    const ghostCount = Math.max(diceChance ? 1 : clamp(dicePool, 1, 30), 1);
+    clearDiceTimers();
+    setDiceResult(null);
+    setDiceRevealCount(0);
+    setDiceGhostCount(ghostCount);
+    setDiceRolling(true);
+
     try {
-      const result = await api.rollDice({
-        poolSize: diceChance ? 0 : clamp(dicePool, 0, 30),
+      const [result] = await Promise.all([
+        api.rollDice({
+          poolSize,
+          rule: diceRule,
+          roteQuality: diceRote,
+          chanceDie: diceChance
+        }),
+        new Promise((resolve) => {
+          setTimeout(resolve, DIE_ROTATION_MS);
+        })
+      ]);
+
+      setDiceResult(result);
+      const revealTimers = result.dice.map((_, index) =>
+        setTimeout(() => {
+          setDiceRevealCount(index + 1);
+        }, DIE_ROTATION_MS * (index + 1))
+      );
+      diceTimerHandles.current.push(...revealTimers);
+
+      const finishTimer = setTimeout(() => {
+        setDiceRolling(false);
+        setDiceVisualKey((prev) => prev + 1);
+      }, DIE_ROTATION_MS * result.dice.length + 20);
+      diceTimerHandles.current.push(finishTimer);
+
+      const nextRoll: DiceHistoryItem = {
+        id: createId(),
+        poolSize,
         rule: diceRule,
         roteQuality: diceRote,
-        chanceDie: diceChance
-      });
-      setDiceResult(result);
-      const label = result.dramaticFailure
-        ? 'Dramatic failure'
-        : result.exceptional
-          ? 'Exceptional success'
-          : result.successes > 0
-            ? 'Success'
-            : 'Failure';
-      setDiceHistory((prev) => [
-        {
-          id: createId(),
-          at: new Date().toLocaleTimeString(),
-          detail: diceChance ? 'Chance die' : `${dicePool} dice, ${diceRule}`,
-          result: `${label} (${result.successes})`
-        },
-        ...prev
-      ]);
+        chanceDie: diceChance,
+        successes: result.successes
+      };
+
+      if (diceCurrentRoll) {
+        setDiceHistory((prev) => [diceCurrentRoll, ...prev]);
+      }
+      setDiceCurrentRoll(nextRoll);
     } catch (error) {
       const reason = error instanceof Error ? error.message : 'Dice roll failed.';
-      setMessage(reason);
+      showToast(reason, 'error');
+      clearDiceTimers();
+      setDiceRolling(false);
     }
   }
 
-  function addChronicleEntry() {
-    if (!entryDraft.title.trim() || !entryDraft.body.trim()) return;
-    setChronicleEntries((prev) => [
-      {
+  const selectedChronicle = useMemo(
+    () => chronicleDirectories.find((entry) => entry.id === selectedChronicleId) ?? null,
+    [chronicleDirectories, selectedChronicleId]
+  );
+
+  const selectedChronicleNote = useMemo(
+    () => selectedChronicle?.notes.find((note) => note.id === selectedChronicleNoteId) ?? null,
+    [selectedChronicle, selectedChronicleNoteId]
+  );
+
+  const chronicleCharacterOptions = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          characters.map((character) => [
+            character.id,
+            { id: character.id, name: character.name }
+          ])
+        ).values()
+      ),
+    [characters]
+  );
+
+  const chronicleNotesView = useMemo(() => {
+    if (!selectedChronicle) return [] as ChronicleNote[];
+    let notes = [...selectedChronicle.notes];
+    if (chronicleCharacterFilter) {
+      notes = notes.filter((note) => note.characterId === chronicleCharacterFilter);
+    }
+    if (chronicleSort === 'updated') {
+      notes.sort((a, b) => b.updatedAt - a.updatedAt);
+    } else if (chronicleSort === 'name') {
+      notes.sort((a, b) => a.title.localeCompare(b.title));
+    } else {
+      notes.sort((a, b) => {
+        const charA = characters.find((c) => c.id === a.characterId)?.name ?? 'Unassigned';
+        const charB = characters.find((c) => c.id === b.characterId)?.name ?? 'Unassigned';
+        return charA.localeCompare(charB);
+      });
+    }
+    return notes;
+  }, [characters, chronicleCharacterFilter, chronicleSort, selectedChronicle]);
+
+  const groupedChronicleNotes = useMemo(() => {
+    if (chronicleGroup === 'none') {
+      return [{ key: 'All Notes', notes: chronicleNotesView }];
+    }
+    const groups = new Map<string, ChronicleNote[]>();
+    chronicleNotesView.forEach((note) => {
+      const key = chronicleGroup === 'character'
+        ? characters.find((c) => c.id === note.characterId)?.name ?? 'Unassigned'
+        : new Date(note.updatedAt).toLocaleDateString();
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(note);
+    });
+    return Array.from(groups.entries()).map(([key, notes]) => ({ key, notes }));
+  }, [characters, chronicleGroup, chronicleNotesView]);
+
+  useEffect(() => {
+    if (selectedChronicleId || chronicleDirectories.length === 0) return;
+    setSelectedChronicleId(chronicleDirectories[0].id);
+  }, [chronicleDirectories, selectedChronicleId]);
+
+  useEffect(() => {
+    if (!selectedChronicle) {
+      setSelectedChronicleNoteId('');
+      setNoteDraft({ title: '', body: '', characterId: '' });
+      return;
+    }
+    if (!selectedChronicleNoteId || !selectedChronicle.notes.some((note) => note.id === selectedChronicleNoteId)) {
+      const first = selectedChronicle.notes[0];
+      if (first) {
+        setSelectedChronicleNoteId(first.id);
+        setNoteDraft({ title: first.title, body: first.body, characterId: first.characterId });
+      } else {
+        setSelectedChronicleNoteId('');
+        setNoteDraft({ title: '', body: '', characterId: '' });
+      }
+    }
+  }, [selectedChronicle, selectedChronicleNoteId]);
+
+  function selectChronicle(id: string) {
+    setSelectedChronicleId(id);
+    setSelectedChronicleNoteId('');
+    setNoteDraft({ title: '', body: '', characterId: '' });
+  }
+
+  function selectChronicleNote(noteId: string) {
+    if (!selectedChronicle) return;
+    const note = selectedChronicle.notes.find((entry) => entry.id === noteId);
+    if (!note) return;
+    setSelectedChronicleNoteId(note.id);
+    setNoteDraft({ title: note.title, body: note.body, characterId: note.characterId });
+  }
+
+  function syncChronicleNoteDraft(nextDraft: typeof noteDraft) {
+    setNoteDraft(nextDraft);
+    if (!selectedChronicle || !selectedChronicleNoteId) return;
+    setChronicleDirectories((prev) =>
+      prev.map((dir) => {
+        if (dir.id !== selectedChronicle.id) return dir;
+        const notes = dir.notes.map((note) =>
+          note.id === selectedChronicleNoteId
+            ? {
+                ...note,
+                title: normalizeChronicleTitle(nextDraft.title, 0),
+                body: nextDraft.body,
+                characterId: nextDraft.characterId,
+                updatedAt: Date.now()
+              }
+            : note
+        );
+        return {
+          ...dir,
+          notes,
+          updatedAt: Date.now()
+        };
+      })
+    );
+  }
+
+  function createChronicle() {
+    const nextId = createId();
+    const name = normalizeChronicleTitle('', chronicleDirectories.length);
+    const record: ChronicleDirectory = {
+      id: nextId,
+      name,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      notes: []
+    };
+    setChronicleDirectories((prev) => [record, ...prev]);
+    setSelectedChronicleId(nextId);
+    setSelectedChronicleNoteId('');
+    setNoteDraft({ title: '', body: '', characterId: '' });
+    showToast(`Created ${name}.`, 'success');
+  }
+
+  function createChronicleNote() {
+    if (!selectedChronicle) {
+      showToast('Select a chronicle first.', 'error');
+      return;
+    }
+    const nextIndex = selectedChronicle.notes.length + 1;
+    const note: ChronicleNote = {
+      id: createId(),
+      title: `Note ${nextIndex}`,
+      body: '',
+      characterId: '',
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    setChronicleDirectories((prev) =>
+      prev.map((dir) =>
+        dir.id === selectedChronicle.id
+          ? { ...dir, notes: [note, ...dir.notes], updatedAt: Date.now() }
+          : dir
+      )
+    );
+    setSelectedChronicleNoteId(note.id);
+    setNoteDraft({ title: note.title, body: note.body, characterId: note.characterId });
+    showToast('Chronicle note created.', 'success');
+  }
+
+  function saveChronicleNoteDraft() {
+    if (!selectedChronicle) {
+      showToast('Select a chronicle first.', 'error');
+      return;
+    }
+    const cleanBody = noteDraft.body.trim();
+    if (!cleanBody) {
+      showToast('Write some notes before saving.', 'error');
+      return;
+    }
+    if (!selectedChronicleNoteId) {
+      const created: ChronicleNote = {
         id: createId(),
-        title: entryDraft.title.trim(),
-        body: entryDraft.body.trim(),
-        characterId: entryDraft.characterId,
-        createdAt: Date.now()
-      },
-      ...prev
-    ]);
-    setEntryDraft({ title: '', body: '', characterId: '' });
+        title: normalizeChronicleTitle(noteDraft.title, selectedChronicle.notes.length),
+        body: cleanBody,
+        characterId: noteDraft.characterId,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      };
+      setChronicleDirectories((prev) =>
+        prev.map((dir) =>
+          dir.id === selectedChronicle.id
+            ? { ...dir, notes: [created, ...dir.notes], updatedAt: Date.now() }
+            : dir
+        )
+      );
+      setSelectedChronicleNoteId(created.id);
+      setNoteDraft({ title: created.title, body: created.body, characterId: created.characterId });
+      showToast('Chronicle note saved.', 'success');
+      return;
+    }
+    syncChronicleNoteDraft({ ...noteDraft, body: cleanBody });
+    showToast('Chronicle note saved.', 'success');
   }
 
   const splatFields: Record<Exclude<Splat, 'MORTAL'>, SplatField[]> = {
@@ -511,8 +1366,7 @@ export default function App() {
       { key: 'clan', label: 'Clan', type: 'select', options: splatOptions.vampireClans.length > 0 ? splatOptions.vampireClans : ['Daeva', 'Gangrel', 'Mekhet', 'Nosferatu', 'Ventrue'] },
       { key: 'covenant', label: 'Covenant', type: 'select', options: splatOptions.vampireCovenants.length > 0 ? splatOptions.vampireCovenants : ['Invictus', 'Carthian Movement', 'Circle of the Crone', 'Lancea et Sanctum', 'Ordo Dracul', 'Unaligned'] },
       { key: 'bloodPotency', label: 'Blood Potency', type: 'number', min: 1, max: 10 },
-      { key: 'humanity', label: 'Humanity', type: 'number', min: 0, max: 10 },
-      { key: 'predatorType', label: 'Predator Type', type: 'text' }
+      { key: 'humanity', label: 'Humanity', type: 'number', min: 0, max: 10 }
     ],
     WEREWOLF: [
       { key: 'auspice', label: 'Auspice', type: 'select', options: ['Cahalith', 'Elodoth', 'Irraka', 'Ithaeur', 'Rahu'] },
@@ -574,8 +1428,7 @@ export default function App() {
       { key: 'family', label: 'Family', type: 'select', options: splatOptions.beastFamilies.length > 0 ? splatOptions.beastFamilies : ['Anakim', 'Eshmaki', 'Inguma', 'Makara', 'Namtaru', 'Ugallu', 'Talassii'] },
       { key: 'hunger', label: 'Hunger', type: 'select', options: splatOptions.beastHungers.length > 0 ? splatOptions.beastHungers : ['Collector', 'Enabler', 'Nemesis', 'Predator', 'Ravager', 'Tyrant', 'Whisperer'] },
       { key: 'lair', label: 'Lair', type: 'number', min: 1, max: 10 },
-      { key: 'satiety', label: 'Satiety', type: 'number', min: 0, max: 10 },
-      { key: 'horrorForm', label: 'Horror Form', type: 'textarea' }
+      { key: 'satiety', label: 'Satiety', type: 'number', min: 0, max: 10 }
     ],
     DEVIANT: [
       { key: 'origin', label: 'Origin', type: 'text' },
@@ -604,7 +1457,12 @@ export default function App() {
         )}
       </header>
 
-      {message && <p className="banner">{message}</p>}
+      {message && (
+        <div className={`toast toast-${toastKind}`} role="status" aria-live="polite">
+          <strong>{toastKind === 'error' ? 'Error' : toastKind === 'success' ? 'Success' : 'Notice'}</strong>
+          <span>{message}</span>
+        </div>
+      )}
 
       {page === 'auth' && (
         <section className="auth-wrap">
@@ -633,6 +1491,7 @@ export default function App() {
               className="ghost"
               onClick={() => {
                 setAuthMode((prev) => (prev === 'login' ? 'register' : 'login'));
+                clearToastTimers();
                 setMessage('');
               }}
             >
@@ -661,11 +1520,7 @@ export default function App() {
 
           <div className="card-grid">
             {visibleCharacters.map((character) => (
-              <button key={character.id} type="button" className="card" onClick={() => openCharacter(character)}>
-                <h3>{character.name}</h3>
-                <p>{character.splat} · {character.concept || 'No concept'}</p>
-                <small>{character.chronicle || 'No chronicle'} · {new Date(character.createdAt).toLocaleDateString()}</small>
-              </button>
+              <CharacterCard key={character.id} character={character} onOpen={() => openCharacter(character)} />
             ))}
           </div>
 
@@ -685,14 +1540,42 @@ export default function App() {
                   <option value="none">No explode</option>
                 </select>
               </label>
-              <label className="checkbox"><input type="checkbox" checked={diceRote} onChange={(e) => setDiceRote(e.target.checked)} />Rote</label>
-              <label className="checkbox"><input type="checkbox" checked={diceChance} onChange={(e) => setDiceChance(e.target.checked)} />Chance die</label>
-              <button type="button" className="primary" onClick={() => void rollDice()}>Roll</button>
+                <div className={"checkbox-group"}>
+                  <label className="checkbox"><input type="checkbox" checked={diceRote} onChange={(e) => setDiceRote(e.target.checked)} />Rote</label>
+                  <label className="checkbox"><input type="checkbox" checked={diceChance} onChange={(e) => setDiceChance(e.target.checked)} />Chance die</label>
+                </div>
+              <button type="button" className="primary" id={"btnRollDice"} disabled={diceRolling} onClick={() => void rollDice()}>{diceRolling ? 'Rolling...' : 'Roll'}</button>
             </div>
-            <p aria-live="polite">{diceResult ? `Dice: ${diceResult.dice.join(', ')} | Successes: ${diceResult.successes}` : 'No roll yet.'}</p>
+
+            <div className="dice-vtt" aria-live="polite">
+              <div className="dice-tray-3d" role="img" aria-label={diceRolling ? 'Dice are rolling' : 'Dice result'}>
+                {(diceResult?.dice ?? Array.from({ length: diceGhostCount }, (_, ghostDie) => ghostDie + 1)).map((die, index) => {
+                  const isRevealed = Boolean(diceResult) && index < diceRevealCount;
+                  return (
+                  <div
+                    key={diceResult ? `${diceVisualKey}-${die}-${index}` : `ghost-${index}`}
+                    className={`die-3d ${isRevealed ? 'revealed' : 'rolling'} ${isRevealed && Number(die) >= 8 ? 'success' : ''} ${isRevealed && Number(die) === 1 && diceChance ? 'dramatic' : ''}`}
+                  >
+                    {isRevealed && <span className="die-value">{die}</span>}
+                  </div>
+                  );
+                })}
+              </div>
+              <p className="dice-vtt-summary">
+                {diceRolling
+                  ? 'Rolling dice...'
+                  : diceResult
+                    ? `${diceResult.successes} ${diceResult.successes === 1 ? 'Success' : 'Successes'}`
+                    : 'No roll yet.'}
+              </p>
+            </div>
+
             <ul className="history">
               {diceHistory.map((item) => (
-                <li key={item.id}><strong>{item.at}</strong> · {item.detail} · {item.result}</li>
+                <li key={item.id}>
+                  {item.poolSize} dice ({DICE_RULE_LABELS[item.rule] ?? item.rule} - Rote: {item.roteQuality ? 'Yes' : 'No'} - Chance die: {item.chanceDie ? 'Yes' : 'No'}) -
+                  {' '}Successes: {item.successes}
+                </li>
               ))}
             </ul>
           </section>
@@ -704,36 +1587,135 @@ export default function App() {
           <aside className="wizard-side">
             <h3>Create Character</h3>
             {wizardSteps.map((step, index) => (
-              <button key={step} type="button" className={wizardStep === index ? 'active' : ''} onClick={() => setWizardStep(index)}>
+              <button
+                key={step}
+                type="button"
+                className={wizardStep === index ? 'active' : ''}
+                disabled={isStepLocked(index)}
+                onClick={() => tryOpenWizardStep(index)}
+              >
                 {index + 1}. {step}
               </button>
             ))}
             <div className="wizard-hints">
               <p>Attributes spent: {attributeDotsSpent(draft)} / {ATTRIBUTE_DOT_BUDGET}</p>
               <p>Skills spent: {skillDotsSpent(draft)} / {SKILL_DOT_BUDGET}</p>
+              <p>Specialties spent: {draft.specialties.length} / {SPECIALTY_DOT_BUDGET}</p>
+              <p>Merits spent: {draft.merits.reduce((sum, merit) => sum + merit.dots, 0)} / {MERIT_DOT_BUDGET}</p>
+              <p>
+                Total specialization pool used: {attributeDotsSpent(draft) + skillDotsSpent(draft) + draft.specialties.length + draft.merits.reduce((sum, merit) => sum + merit.dots, 0)} /
+                {' '}
+                {ATTRIBUTE_DOT_BUDGET + SKILL_DOT_BUDGET + SPECIALTY_DOT_BUDGET + MERIT_DOT_BUDGET}
+              </p>
             </div>
             {wizardValidation.warnings.map((warning) => <small key={warning}>{warning}</small>)}
+            {wizardStepError && <small className="wizard-step-error">{wizardStepError}</small>}
           </aside>
 
           <article className="wizard-body">
             {wizardStep === 0 && (
+              <div className="panel">
+                <h4>Select Splat to Start</h4>
+                <p>Character creation is locked until a splat is selected.</p>
+                <div className="chips splat-grid">
+                  {SPLATS.map((splat) => (
+                    <button
+                      key={splat}
+                      type="button"
+                      data-splat={splat}
+                      className={`splat-card ${draft.splat === splat && wizardSplatSelected ? 'active' : ''}`}
+                      onClick={() => {
+                        setDraft((prev) => ({
+                          ...prev,
+                          splat,
+                          splatData: withDefaultSevenTraits(prev.splatData)
+                        }));
+                        setWizardSplatSelected(true);
+                      }}
+                    >
+                      <strong>{splat}</strong>
+                      <small>Select {splat.toLowerCase()} archetype</small>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {wizardStep === 1 && (
               <div className="form-grid two">
                 <label>Name<input value={draft.name} onChange={(e) => updateDraftText('name', e.target.value)} /></label>
                 <label>Player<input value={draft.player} onChange={(e) => updateDraftText('player', e.target.value)} /></label>
                 <label>Chronicle<input value={draft.chronicle} onChange={(e) => updateDraftText('chronicle', e.target.value)} /></label>
                 <label>Concept<input value={draft.concept} onChange={(e) => updateDraftText('concept', e.target.value)} /></label>
-                <label>Virtue<input value={draft.virtue} onChange={(e) => updateDraftText('virtue', e.target.value)} /></label>
-                <label>Vice<input value={draft.vice} onChange={(e) => updateDraftText('vice', e.target.value)} /></label>
+                <label>
+                  {getArchetypeLabels(draft.splat).first}
+                  <input value={getConceptFieldValue('first')} onChange={(e) => setConceptFieldValue('first', e.target.value)} />
+                </label>
+                <label>
+                  {getArchetypeLabels(draft.splat).second}
+                  <input value={getConceptFieldValue('second')} onChange={(e) => setConceptFieldValue('second', e.target.value)} />
+                </label>
+                <label>
+                  Touchstone
+                  <input
+                    placeholder="Name only"
+                    value={String(draft.splatData.touchstone ?? '')}
+                    onChange={(e) => updateSplatData('touchstone', e.target.value)}
+                  />
+                </label>
               </div>
             )}
 
             {wizardStep === 1 && (
-              <div className="chips">
-                {SPLATS.map((splat) => (
-                  <button key={splat} type="button" className={draft.splat === splat ? 'active' : ''} onClick={() => updateDraftText('splat', splat)}>
-                    {splat}
-                  </button>
+              <section className="panel aspirations-module">
+                <h4>Aspirations</h4>
+                <p>Set 3 aspirations and mark each as Short-Term or Long-Term.</p>
+                {aspirations.map((aspiration, index) => (
+                  <div key={`aspiration-${index}`} className="aspiration-row">
+                    <label>
+                      Aspiration {index + 1}
+                      <input
+                        value={aspiration.text}
+                        placeholder="Describe aspiration"
+                        onChange={(e) => setAspirationText(index, e.target.value)}
+                      />
+                    </label>
+                    <div className="aspiration-term" role="radiogroup" aria-label={`Aspiration ${index + 1} term`}>
+                      {(['Short-Term', 'Long-Term'] as AspirationTerm[]).map((term) => (
+                        <label className="checkbox modern-checkbox" key={`${index}-${term}`}>
+                          <input
+                            type="radio"
+                            name={`aspiration-term-${index}`}
+                            checked={aspiration.term === term}
+                            onChange={() => setAspirationTerm(index, term)}
+                          />
+                          <span>{term}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 ))}
+              </section>
+            )}
+
+            {wizardStep === 2 && (
+              <div className="panel focus-panel">
+                <h4>Attribute Focus</h4>
+                <div className="form-grid three">
+                  {(['primary', 'secondary', 'tertiary'] as FocusTier[]).map((tier) => (
+                    <label key={`attr-focus-${tier}`}>
+                      {TIER_LABELS[tier]} ({ATTRIBUTE_FOCUS_DOTS[tier]} dots)
+                      <select
+                        value={attributeFocus[tier]}
+                        onChange={(e) => setFocusTier(e.target.value as AttributeGroup, tier, attributeFocus, setAttributeFocus)}
+                      >
+                        {(Object.keys(ATTRIBUTE_GROUPS) as AttributeGroup[]).map((group) => (
+                          <option key={group} value={group}>{group}</option>
+                        ))}
+                      </select>
+                    </label>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -742,6 +1724,9 @@ export default function App() {
                 {Object.entries(ATTRIBUTE_GROUPS).map(([group, keys]) => (
                   <section key={group} className="panel">
                     <h4>{group}</h4>
+                    <small>
+                      Spent: {attributeSpentByGroup[group as AttributeGroup]} / {attributeGroupCaps[group as AttributeGroup]}
+                    </small>
                     {keys.map((key) => (
                       <DotField
                         key={key}
@@ -758,81 +1743,142 @@ export default function App() {
             )}
 
             {wizardStep === 3 && (
-              <div className="split">
-                {Object.entries(SKILL_GROUPS).map(([group, keys]) => {
-                  const named = skillsLibrary[group.toLowerCase() as 'physical' | 'social' | 'mental'];
-                  return (
-                    <section key={group} className="panel">
-                      <h4>{group}</h4>
-                      {keys.map((key, index) => (
-                        <DotField
-                          key={key}
-                          label={named[index] ?? toTitle(key)}
-                          value={draft.skills[key]}
-                          min={0}
-                          max={5}
-                          onChange={(value) => setDraftNumber('skills', key, value, 0, 5)}
-                        />
-                      ))}
-                    </section>
-                  );
-                })}
+              <div className="panel focus-panel">
+                <h4>Skill Focus</h4>
+                <div className="form-grid three">
+                  {(['primary', 'secondary', 'tertiary'] as FocusTier[]).map((tier) => (
+                    <label key={`skill-focus-${tier}`}>
+                      {TIER_LABELS[tier]} ({SKILL_FOCUS_DOTS[tier]} dots)
+                      <select
+                        value={skillFocus[tier]}
+                        onChange={(e) => setFocusTier(e.target.value as SkillGroup, tier, skillFocus, setSkillFocus)}
+                      >
+                        {(Object.keys(SKILL_GROUPS) as SkillGroup[]).map((group) => (
+                          <option key={group} value={group}>{group}</option>
+                        ))}
+                      </select>
+                    </label>
+                  ))}
+                </div>
               </div>
             )}
 
-            {wizardStep === 4 && (
-              <div className="split">
-                <section className="panel">
-                  <div className="toolbar">
-                    <label>
-                      Category
-                      <select value={meritFilter} onChange={(e) => setMeritFilter(e.target.value)}>
-                        {meritCategories.map((category) => <option value={category} key={category}>{category}</option>)}
-                      </select>
-                    </label>
+            {wizardStep === 3 && (
+              <>
+                <div className="split wizard-skills">
+                  {Object.entries(SKILL_GROUPS).map(([group, keys]) => {
+                    const named = skillsLibrary[group.toLowerCase() as 'physical' | 'social' | 'mental'];
+                    return (
+                      <section key={group} className="panel">
+                        <h4>{group}</h4>
+                        <small>
+                          Spent: {skillSpentByGroup[group as SkillGroup]} / {skillGroupCaps[group as SkillGroup]}
+                        </small>
+                        {keys.map((key, index) => (
+                          <DotField
+                            key={key}
+                            label={named[index] ?? toTitle(key)}
+                            value={draft.skills[key]}
+                            min={0}
+                            max={5}
+                            onChange={(value) => setDraftNumber('skills', key, value, 0, 5)}
+                          />
+                        ))}
+                      </section>
+                    );
+                  })}
+                </div>
+                <section className="panel specialty-editor specialties-module">
+                  <h4>Specialties ({draft.specialties.length}/{SPECIALTY_DOT_BUDGET})</h4>
+                  <p>Remaining specialty dots: {Math.max(0, SPECIALTY_DOT_BUDGET - draft.specialties.length)}</p>
+                  <div className="specialty-editor-row">
+                    <select value={newSpecSkill} onChange={(e) => setNewSpecSkill(e.target.value)}>
+                      <option value="">Select skill</option>
+                      {skillOptions.map((option) => (
+                        <option key={option.key} value={option.key}>{option.label}</option>
+                      ))}
+                    </select>
+                    <input
+                      value={newSpecName}
+                      placeholder="Specialty name"
+                      onChange={(e) => setNewSpecName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addDraftSpecialty();
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={addDraftSpecialty}
+                      disabled={!newSpecSkill || !newSpecName.trim() || draft.specialties.length >= SPECIALTY_DOT_BUDGET}
+                    >
+                      Add
+                    </button>
                   </div>
-                  <div className="merit-list">
-                    {filteredMerits.map((merit) => (
-                      <article key={merit.id}>
-                        <h4>{merit.name}</h4>
-                        <p>{merit.description}</p>
-                        <small>{merit.prerequisites}</small>
-                        <button type="button" onClick={() => addMerit(merit)}>Add</button>
-                      </article>
-                    ))}
-                  </div>
-                </section>
-                <section className="panel">
-                  <h4>Selected Merits</h4>
-                  <ul className="history">
-                    {draft.merits.map((merit) => (
-                      <li key={merit.id}>
-                        {merit.name} ({merit.dots})
-                        <button type="button" onClick={() => removeDraftMerit(merit.id)}>Remove</button>
-                      </li>
-                    ))}
+                  <ul className="specialty-list">
+                    {draft.specialties.map((specialty, index) => {
+                      const label = skillOptions.find((option) => option.key === specialty.skill)?.label ?? toTitle(specialty.skill);
+                      return (
+                        <li key={`${specialty.skill}-${specialty.specialty}-${index}`} className="specialty-item">
+                          <span>
+                            {label}: {specialty.specialty}
+                          </span>
+                          <button type="button" className="ghost specialty-remove" onClick={() => removeDraftSpecialty(index)}>
+                            Remove
+                          </button>
+                        </li>
+                      );
+                    })}
                   </ul>
-
-                  <h4>Custom Merit</h4>
-                  <div className="form-grid">
-                    <label>Name<input value={customMerit.name} onChange={(e) => setCustomMerit((p) => ({ ...p, name: e.target.value }))} /></label>
-                    <label>Category<input value={customMerit.category} onChange={(e) => setCustomMerit((p) => ({ ...p, category: e.target.value }))} /></label>
-                    <label>Dots<input type="number" min={1} max={5} value={customMerit.dots} onChange={(e) => setCustomMerit((p) => ({ ...p, dots: clamp(Number(e.target.value), 1, 5) }))} /></label>
-                    <label>Description<textarea rows={3} value={customMerit.description} onChange={(e) => setCustomMerit((p) => ({ ...p, description: e.target.value }))} /></label>
-                    <label>Prerequisites<input value={customMerit.prerequisites} onChange={(e) => setCustomMerit((p) => ({ ...p, prerequisites: e.target.value }))} /></label>
-                    <button type="button" onClick={addCustomMerit}>Add Custom Merit</button>
-                  </div>
                 </section>
-              </div>
+              </>
+            )}
+
+            {wizardStep === 4 && (
+              <MeritPicker
+                merits={draft.merits}
+                setMerits={(merits) => setDraft((prev) => ({ ...prev, merits }))}
+                professionalTrainingSkills={draft.professionalTrainingSkills}
+                setProfessionalTrainingSkills={(skills) => setDraft((prev) => ({ ...prev, professionalTrainingSkills: skills }))}
+                meritLibrary={meritsLibrary}
+                skillOptions={skillOptions}
+                character={draft}
+                createId={createId}
+                meritDotBudget={MERIT_DOT_BUDGET}
+                onValidationError={(reason) => showToast(reason, 'error')}
+                isCreationMode={true}
+              />
             )}
 
             {wizardStep === 5 && (
               <section className="panel">
                 {draft.splat === 'MORTAL' ? (
-                  <p>Mortal has no supernatural fields. You can still add powers in free text below if needed.</p>
+                  <p>Mortal has no mandatory supernatural fields.</p>
                 ) : (
                   <div className="form-grid two">
-                    {splatFields[draft.splat].map((field) => (
+                    {splatFields[draft.splat].map((field) => {
+                      const isMorality = ['humanity', 'harmony', 'wisdom', 'clarity', 'synergy', 'memory', 'cover', 'satiety', 'conviction'].includes(field.key);
+                      const isPowerTrait = ['bloodPotency', 'primalUrge', 'gnosis', 'azoth', 'wyrd', 'sekhem', 'primum', 'lair', 'baseline', 'psyche'].includes(field.key);
+
+                      if (field.type === 'number' && (isMorality || isPowerTrait)) {
+                        const FieldComponent = isMorality ? BoxField : DotField;
+                        return (
+                          <div key={field.key} className="col-span-full md:col-span-1">
+                              <FieldComponent
+                                label={field.label}
+                                value={Number(draft.splatData[field.key] ?? field.min ?? 0)}
+                                min={field.min ?? 0}
+                                max={field.max ?? 10}
+                                stacked
+                                onChange={(val) => updateSplatData(field.key, val)}
+                              />
+                          </div>
+                        );
+                      }
+
+                      return (
                       <label key={field.key}>
                         {field.label}
                         {field.type === 'select' && (
@@ -849,26 +1895,112 @@ export default function App() {
                         {field.type === 'text' && (
                           <input value={String(draft.splatData[field.key] ?? '')} onChange={(e) => updateSplatData(field.key, e.target.value)} />
                         )}
-                        {field.type === 'number' && (
-                          <input
-                            type="number"
-                            min={field.min}
-                            max={field.max}
-                            value={Number(draft.splatData[field.key] ?? field.min ?? 0)}
-                            onChange={(e) => updateSplatData(field.key, clamp(Number(e.target.value), field.min ?? 0, field.max ?? 10))}
-                          />
-                        )}
                         {field.type === 'textarea' && (
                           <textarea rows={4} value={String(draft.splatData[field.key] ?? '')} onChange={(e) => updateSplatData(field.key, e.target.value)} />
                         )}
                       </label>
-                    ))}
+                    );
+                    })}
                   </div>
                 )}
+
                 <label>
-                  Powers / Abilities
-                  <textarea rows={6} value={String(draft.splatData.powers ?? '')} onChange={(e) => updateSplatData('powers', e.target.value)} />
+                  Touchstone
+                  <input
+                    placeholder="Name only"
+                    value={String(draft.splatData.touchstone ?? '')}
+                    onChange={(e) => updateSplatData('touchstone', e.target.value)}
+                  />
                 </label>
+
+                <div className="specialties-module powers-module">
+                  {draft.splat === 'VAMPIRE' ? (
+                    <>
+                      <h4>Vampire Disciplines</h4>
+                      <p>
+                        Distribute 3 dots total. At least 2 dots must be in-clan for {selectedVampireClan || 'the selected clan'}.
+                      </p>
+                      <p>
+                        Assigned: {vampireDisciplineTotals.total}/3 dots · In-clan: {vampireDisciplineTotals.inClan}/2 minimum
+                      </p>
+                      <div className="discipline-list">
+                        {vampireDisciplines.map((discipline) => {
+                          const currentDots = vampireDisciplineDots[discipline.name] ?? 0;
+                          let inClan = false;
+                          if (selectedVampireClan) {
+                            inClan = isVampireDisciplineInClan(selectedVampireClan, discipline.name, discipline.inClanClans);
+                          }
+                          return (
+                            <details key={discipline.id} className={`discipline-item ${inClan ? 'in-clan' : 'out-clan'}`}>
+                              <summary className="expandable-summary">
+                                <span className="expand-summary-left">
+                                  <span className="expand-chevron" aria-hidden="true">▶</span>
+                                  <span>{discipline.name}</span>
+                                </span>
+                                <span>
+                                  {inClan ? 'In-clan' : 'Out-of-clan'} · {currentDots} dots
+                                </span>
+                              </summary>
+                              <div className="discipline-controls">
+                                <button type="button" onClick={() => setVampireDisciplineDots(discipline.name, currentDots - 1)} disabled={currentDots <= 0}>
+                                  -
+                                </button>
+                                <strong>{currentDots}</strong>
+                                <button type="button" onClick={() => setVampireDisciplineDots(discipline.name, currentDots + 1)} disabled={currentDots >= 5}>
+                                  +
+                                </button>
+                              </div>
+                              {['Celerity', 'Vigor', 'Resilience'].includes(discipline.name) ? (
+                                <div className="mt-2 text-sm text-muted-foreground whitespace-pre-wrap bg-muted/50 p-2 rounded-md">
+                                  {formatTextContent(discipline.powers[0]?.description) || 'Grants scaling bonuses per dot.'}
+                                </div>
+                              ) : (
+                                <ul className="discipline-power-list mt-2 space-y-1">
+                                  {discipline.powers.map((power, pIdx) => {
+                                    const unlocked = currentDots >= power.dot;
+                                    return (
+                                      <li key={`${discipline.id}-${power.name}-${power.dot}-${pIdx}`} className={unlocked ? 'unlocked opacity-100' : 'locked opacity-50 grayscale'}>
+                                        <details className="bg-background/50 border border-border/50 rounded-md p-1.5" style={{ listStyle: 'none' }}>
+                                          <summary className="expandable-summary cursor-pointer text-sm font-medium hover:text-primary transition-colors select-none">
+                                            <span className="expand-summary-left">
+                                              <span className="expand-chevron" aria-hidden="true">▶</span>
+                                              <span>Dot {power.dot}: {power.name}</span>
+                                            </span>
+                                          </summary>
+                                          {power.description && (
+                                            <div className="text-xs text-muted-foreground whitespace-pre-wrap mt-2 pl-6 border-l-2 border-primary/30">
+                                              {formatTextContent(power.description)}
+                                            </div>
+                                          )}
+                                        </details>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              )}
+                            </details>
+                          );
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <h4>{draft.splat} Powers</h4>
+                      <p>Available powers are filtered by splat.</p>
+                      <div className="chips">
+                        {SPLAT_POWER_LIBRARY[draft.splat].map((power) => {
+                          const selected = draft.customPowers.some((entry) => entry.name === power);
+                          return (
+                            <label key={power} className="checkbox modern-checkbox">
+                              <input type="checkbox" checked={selected} onChange={() => toggleDraftPower(power)} />
+                              <span>{power}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </div>
               </section>
             )}
 
@@ -876,7 +2008,13 @@ export default function App() {
               <button type="button" onClick={() => setPage('dashboard')}>Cancel</button>
               <button type="button" disabled={wizardStep === 0} onClick={() => setWizardStep((s) => s - 1)}>Previous</button>
               {wizardStep < 5 ? (
-                <button type="button" className="primary" onClick={() => setWizardStep((s) => s + 1)}>Next</button>
+                <button
+                  type="button"
+                  className="primary"
+                  onClick={tryAdvanceWizard}
+                >
+                  Next
+                </button>
               ) : (
                 <button type="button" className="primary" onClick={() => void saveWizardCharacter()}>Save Character</button>
               )}
@@ -1009,32 +2147,141 @@ export default function App() {
       )}
 
       {page === 'chronicle' && (
-        <section className="page split">
-          <article className="panel">
-            <h3>Session Log</h3>
-            <div className="form-grid">
-              <label>Title<input value={entryDraft.title} onChange={(e) => setEntryDraft((p) => ({ ...p, title: e.target.value }))} /></label>
-              <label>Character
-                <select value={entryDraft.characterId} onChange={(e) => setEntryDraft((p) => ({ ...p, characterId: e.target.value }))}>
-                  <option value="">No character link</option>
-                  {characters.map((character) => <option key={character.id} value={character.id}>{character.name}</option>)}
-                </select>
+        <section className="page chronicle-page">
+          <div className="toolbar chronicle-toolbar">
+            <h3>Chronicles</h3>
+            <button type="button" className="primary" onClick={createChronicle}>
+              Add New Chronicle
+            </button>
+          </div>
+
+          <div className="chronicle-dashboard">
+            <article className="panel chronicle-list-panel">
+              <h4>All Chronicles</h4>
+              <div className="chronicle-list">
+                {chronicleDirectories.length === 0 ? (
+                  <p className="text-muted-foreground italic">No chronicles yet. Create one to start taking notes.</p>
+                ) : (
+                  chronicleDirectories.map((entry) => {
+                    const isSelected = entry.id === selectedChronicleId;
+                    return (
+                      <button
+                        key={entry.id}
+                        type="button"
+                        className={`chronicle-card ${isSelected ? 'active' : ''}`}
+                        onClick={() => selectChronicle(entry.id)}
+                      >
+                        <strong>{entry.name}</strong>
+                        <small>{entry.notes.length} note(s)</small>
+                        <span>{new Date(entry.updatedAt).toLocaleDateString()}</span>
+                      </button>
+                    );
+                  })
+                )}
+              </div>
+            </article>
+
+            <article className="panel chronicle-notes-panel">
+              <div className="chronicle-editor-header">
+                <h4>{selectedChronicle ? `Notes in ${selectedChronicle.name}` : 'Chronicle Notes'}</h4>
+                <button type="button" className="ghost" onClick={createChronicleNote} disabled={!selectedChronicle}>
+                  Add Note
+                </button>
+              </div>
+
+              <div className="chronicle-note-controls form-grid three">
+                <label>
+                  Filter by Character
+                  <select value={chronicleCharacterFilter} onChange={(e) => setChronicleCharacterFilter(e.target.value)}>
+                    <option value="">All characters</option>
+                    {chronicleCharacterOptions.map((character) => (
+                      <option key={character.id} value={character.id}>{character.name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Sort
+                  <select value={chronicleSort} onChange={(e) => setChronicleSort(e.target.value as ChronicleSort)}>
+                    <option value="updated">Last Updated</option>
+                    <option value="name">Name</option>
+                    <option value="character">Character</option>
+                  </select>
+                </label>
+                <label>
+                  Group
+                  <select value={chronicleGroup} onChange={(e) => setChronicleGroup(e.target.value as ChronicleGroup)}>
+                    <option value="none">None</option>
+                    <option value="character">Character</option>
+                    <option value="date">Date</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="chronicle-note-groups">
+                {groupedChronicleNotes.map((group) => (
+                  <div key={group.key} className="chronicle-note-group">
+                    {chronicleGroup !== 'none' && <small>{group.key}</small>}
+                    {group.notes.map((note) => {
+                      const selected = note.id === selectedChronicleNoteId;
+                      const characterLabel = characters.find((c) => c.id === note.characterId)?.name ?? 'Unassigned';
+                      return (
+                        <button
+                          key={note.id}
+                          type="button"
+                          className={`chronicle-note-card ${selected ? 'active' : ''}`}
+                          onClick={() => selectChronicleNote(note.id)}
+                        >
+                          <strong>{note.title}</strong>
+                          <small>{characterLabel}</small>
+                          <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article className="panel chronicle-editor-panel">
+              <div className="chronicle-editor-header">
+                <h4>{selectedChronicleNote ? selectedChronicleNote.title : 'Note Editor'}</h4>
+                <button type="button" className="ghost" onClick={saveChronicleNoteDraft}>
+                  Save Note
+                </button>
+              </div>
+
+              <div className="form-grid two">
+                <label>
+                  Note Title
+                  <input value={noteDraft.title} onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, title: e.target.value })} />
+                </label>
+                <label>
+                  Character Link
+                  <select
+                    value={noteDraft.characterId}
+                    onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, characterId: e.target.value })}
+                  >
+                    <option value="">None / Storyteller note</option>
+                    {characters.map((character) => (
+                      <option key={character.id} value={character.id}>
+                        {character.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <label className="chronicle-notes-label">
+                Notes
+                <textarea
+                  rows={10}
+                  value={noteDraft.body}
+                  onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, body: e.target.value })}
+                  placeholder="Write chronicle notes here..."
+                />
               </label>
-              <label>Entry<textarea rows={5} value={entryDraft.body} onChange={(e) => setEntryDraft((p) => ({ ...p, body: e.target.value }))} /></label>
-              <button type="button" className="primary" onClick={addChronicleEntry}>Add Entry</button>
-            </div>
-          </article>
-          <article className="panel">
-            <h3>Archive</h3>
-            <ul className="history">
-              {chronicleEntries.map((entry) => (
-                <li key={entry.id}>
-                  <strong>{entry.title}</strong> · {new Date(entry.createdAt).toLocaleString()}
-                  <p>{entry.body}</p>
-                </li>
-              ))}
-            </ul>
-          </article>
+            </article>
+          </div>
         </section>
       )}
 

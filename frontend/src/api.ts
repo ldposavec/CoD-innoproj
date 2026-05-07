@@ -1,4 +1,4 @@
-import type { Character, DiceRollResult, LibraryMerit } from './types';
+import type { Character, DiceRollResult, LibraryMerit, VampireDiscipline } from './types';
 
 const API_BASE = 'http://localhost:8080/api';
 let authToken: string | null = null;
@@ -81,5 +81,6 @@ export const api = {
       vampireCovenants: string[];
       beastFamilies: string[];
       beastHungers: string[];
-    }>('/libraries/splat-options')
+    }>('/libraries/splat-options'),
+  listVampireDisciplines: () => request<VampireDiscipline[]>('/libraries/vampire-disciplines')
 };

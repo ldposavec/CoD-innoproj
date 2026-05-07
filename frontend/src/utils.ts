@@ -173,7 +173,6 @@ export function evaluateMeritPrerequisites(
     allUnmetGroups.push(unmet);
   }
 
-  const formattedUnmet = allUnmetGroups.map(unmets => unmets.join(' AND ')).join(' OR ');
-  return { met: false, unmet: [formattedUnmet] };
+  const unmet = Array.from(new Set(allUnmetGroups.flatMap((group) => group)));
+  return { met: false, unmet: unmet.length > 0 ? unmet : [text] };
 }
-

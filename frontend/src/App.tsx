@@ -68,7 +68,20 @@ const DICE_RULE_LABELS: Record<string, string> = {
   none: 'No explode'
 };
 const DEFAULT_SEVEN_TRAIT_KEYS = ['humanity', 'integrity', 'harmony', 'wisdom', 'clarity', 'synergy'] as const;
-const CORE_MORALITY_KEYS = [...DEFAULT_SEVEN_TRAIT_KEYS, 'satiety'] as const;
+const MORALITY_TRAIT_BY_SPLAT: Record<Splat, { key: string; label: string }> = {
+  MORTAL: { key: 'integrity', label: 'Integrity' },
+  VAMPIRE: { key: 'humanity', label: 'Humanity' },
+  WEREWOLF: { key: 'harmony', label: 'Harmony' },
+  MAGE: { key: 'wisdom', label: 'Wisdom' },
+  PROMETHEAN: { key: 'humanity', label: 'Humanity' },
+  CHANGELING: { key: 'clarity', label: 'Clarity' },
+  HUNTER: { key: 'integrity', label: 'Integrity' },
+  GEIST: { key: 'synergy', label: 'Synergy' },
+  MUMMY: { key: 'memory', label: 'Memory' },
+  DEMON: { key: 'cover', label: 'Cover' },
+  BEAST: { key: 'satiety', label: 'Satiety' },
+  DEVIANT: { key: 'conviction', label: 'Conviction' }
+};
 const SPLAT_ARCHETYPE_LABELS: Partial<Record<Splat, ArchetypeLabels>> = {
   VAMPIRE: { first: 'Mask', second: 'Dirge' },
   BEAST: { first: 'Legend', second: 'Life' }
@@ -114,6 +127,15 @@ function normalizeKey(text: string) {
 function normalizeChronicleTitle(title: string, fallbackIndex: number) {
   const trimmed = title.trim();
   return trimmed || `Chronicle ${fallbackIndex + 1}`;
+}
+
+function moralityDisplayForCharacter(character: Character): string {
+  const trait = MORALITY_TRAIT_BY_SPLAT[character.splat];
+  const value = character.splatData[trait.key];
+  if (typeof value === 'number') {
+    return `${trait.label} ${value}`;
+  }
+  return `${trait.label} Not set`;
 }
 
 function getArchetypeLabels(splat: Splat): ArchetypeLabels {
@@ -406,6 +428,7 @@ export default function App() {
   const [newCustomPowerName, setNewCustomPowerName] = useState('');
   const [newCustomPowerDots, setNewCustomPowerDots] = useState(1);
   const [newCustomPowerDescription, setNewCustomPowerDescription] = useState('');
+  const portraitInputRef = useRef<HTMLInputElement | null>(null);
   const diceTimerHandles = useRef<Array<ReturnType<typeof setTimeout>>>([]);
   const toastTimerHandles = useRef<Array<ReturnType<typeof setTimeout>>>([]);
 
@@ -1090,20 +1113,26 @@ export default function App() {
     }
   }
 
-  function addBeat() {
+  function setBeatsWithRollover(nextBeatsRaw: number, notify = true) {
     setSelected((prev) => {
       if (!prev) return prev;
       const next = cloneCharacter(prev);
-      next.beatsTotal += 1;
-      if (next.beatsTotal >= 5) {
+      const nextBeats = clamp(nextBeatsRaw, 0, 5);
+      if (nextBeats >= 5) {
         next.experienceTotal += 1;
         next.beatsTotal = 0;
-        showToast('5 Beats converted to 1 Experience.', 'success');
+        if (notify) showToast('5 Beats converted to 1 Experience.', 'success');
       } else {
-        showToast(`Beats increased to ${next.beatsTotal}/5.`, 'info');
+        next.beatsTotal = nextBeats;
+        if (notify) showToast(`Beats set to ${next.beatsTotal}/5.`, 'info');
       }
       return next;
     });
+  }
+
+  function addBeat() {
+    if (!selected) return;
+    setBeatsWithRollover(selected.beatsTotal + 1, true);
   }
 
   function toggleHealthBox(index: number) {
@@ -1116,33 +1145,40 @@ export default function App() {
     });
   }
 
-  function spendWillpower() {
+  function setWillpowerSpent(nextSpentRaw: number) {
     setSelected((prev) => {
       if (!prev) return prev;
-      const max = prev.derivedStats.willpowerMax;
-      if (prev.derivedStats.willpowerSpent >= max) {
-        showToast('No unspent Willpower remaining.', 'error');
-        return prev;
-      }
       const next = cloneCharacter(prev);
-      next.derivedStats.willpowerSpent = clamp(next.derivedStats.willpowerSpent + 1, 0, max);
-      showToast(`Spent Willpower (${next.derivedStats.willpowerSpent}/${max}).`, 'info');
+      next.derivedStats.willpowerSpent = clamp(nextSpentRaw, 0, next.derivedStats.willpowerMax);
       return next;
     });
   }
 
-  function recoverWillpower() {
-    setSelected((prev) => {
-      if (!prev) return prev;
-      if (prev.derivedStats.willpowerSpent <= 0) {
-        showToast('Willpower is already fully available.', 'error');
-        return prev;
-      }
-      const next = cloneCharacter(prev);
-      next.derivedStats.willpowerSpent = clamp(next.derivedStats.willpowerSpent - 1, 0, next.derivedStats.willpowerMax);
-      showToast(`Recovered Willpower (${next.derivedStats.willpowerSpent}/${next.derivedStats.willpowerMax} spent).`, 'success');
-      return next;
-    });
+  function toggleWillpowerBox(index: number) {
+    if (!selected) return;
+    const spent = selected.derivedStats.willpowerSpent;
+    if (index < spent) {
+      setWillpowerSpent(index);
+      showToast(`Recovered Willpower (${index}/${selected.derivedStats.willpowerMax} spent).`, 'success');
+      return;
+    }
+    const nextSpent = index + 1;
+    setWillpowerSpent(nextSpent);
+    showToast(`Spent Willpower (${nextSpent}/${selected.derivedStats.willpowerMax}).`, 'info');
+  }
+
+  function uploadPortrait(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : null;
+      if (!result) return;
+      setSelected((prev) => (prev ? { ...prev, portraitUri: result } : prev));
+      showToast('Portrait updated.', 'success');
+    };
+    reader.onerror = () => {
+      showToast('Failed to read image file.', 'error');
+    };
+    reader.readAsDataURL(file);
   }
 
   function updateSelectedSplatData(key: string, value: string | number) {
@@ -1247,6 +1283,26 @@ export default function App() {
       if (!prev) return prev;
       showToast('Power removed.', 'info');
       return { ...prev, customPowers: prev.customPowers.filter((power) => power.id !== id) };
+    });
+  }
+
+  function setSelectedVampireDisciplineDots(name: string, nextDotsRaw: number) {
+    setSelected((prev) => {
+      if (!prev) return prev;
+      const nextDots = clamp(nextDotsRaw, 0, 5);
+      const map = { ...((prev.splatData.vampireDisciplines as Record<string, number> | undefined) ?? {}) };
+      if (nextDots <= 0) {
+        delete map[name];
+      } else {
+        map[name] = nextDots;
+      }
+      return {
+        ...prev,
+        splatData: {
+          ...prev.splatData,
+          vampireDisciplines: map
+        }
+      };
     });
   }
 
@@ -1365,11 +1421,6 @@ export default function App() {
     });
     return Array.from(groups.entries()).map(([key, notes]) => ({ key, notes }));
   }, [characters, chronicleGroup, chronicleNotesView]);
-
-  useEffect(() => {
-    if (selectedChronicleId || chronicleDirectories.length === 0) return;
-    setSelectedChronicleId(chronicleDirectories[0].id);
-  }, [chronicleDirectories, selectedChronicleId]);
 
   useEffect(() => {
     if (!selectedChronicle) {
@@ -2198,7 +2249,6 @@ export default function App() {
                   <label>Concept<input value={selected.concept} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, concept: e.target.value } : p))} /></label>
                   <label>Virtue<input value={selected.virtue} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, virtue: e.target.value } : p))} /></label>
                   <label>Vice<input value={selected.vice} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, vice: e.target.value } : p))} /></label>
-                  <label>Portrait URL<input value={selected.portraitUri ?? ''} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, portraitUri: e.target.value || null } : p))} /></label>
                   <label>Size<input type="number" min={1} max={15} value={selected.derivedStats.size} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, derivedStats: { ...p.derivedStats, size: clamp(Number(e.target.value), 1, 15) } } : p))} /></label>
                   {selected.splat === 'VAMPIRE' && (
                     <>
@@ -2213,106 +2263,170 @@ export default function App() {
                     </>
                   )}
                 </div>
+                <div className="portrait-upload-wrap">
+                  <input
+                    ref={portraitInputRef}
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      uploadPortrait(file);
+                      e.currentTarget.value = '';
+                    }}
+                  />
+                  <button type="button" className="portrait-upload-button" onClick={() => portraitInputRef.current?.click()}>
+                    {selected.portraitUri ? (
+                      <img src={selected.portraitUri} alt={`${selected.name || 'Character'} portrait`} className="portrait-upload-image" />
+                    ) : (
+                      <span>Click to upload portrait</span>
+                    )}
+                  </button>
+                </div>
               </section>
 
-              <div className="split">
-                <section className="panel">
+              <section className="panel sheet-traits-layout">
+                <div className="sheet-main-column">
                   <h4>Attributes</h4>
-                  {Object.values(ATTRIBUTE_GROUPS).flat().map((key) => (
-                    <DotField
-                      key={key}
-                      label={toTitle(key)}
-                      value={selected.attributes[key]}
-                      min={1}
-                      max={5}
-                      disabled={!sheetEdit}
-                      onChange={(value) => updateSelected('attributes', key, value, 1, 5)}
-                    />
-                  ))}
-                </section>
-                <section className="panel">
-                  <h4>Skills</h4>
-                  {Object.values(SKILL_GROUPS).flat().map((key) => (
-                    <DotField
-                      key={key}
-                      label={toTitle(key)}
-                      value={selected.skills[key]}
-                      min={0}
-                      max={5}
-                      disabled={!sheetEdit}
-                      onChange={(value) => updateSelected('skills', key, value, 0, 5)}
-                    />
-                  ))}
-                </section>
-              </div>
-
-              <section className="panel">
-                <h4>Specialties</h4>
-                {sheetEdit && (
-                  <div className="specialty-editor-row">
-                    <select value={newSheetSpecialtySkill} onChange={(e) => setNewSheetSpecialtySkill(e.target.value)}>
-                      <option value="">Select skill</option>
-                      {skillOptions.map((option) => (
-                        <option key={option.key} value={option.key}>{option.label}</option>
-                      ))}
-                    </select>
-                    <input value={newSheetSpecialtyName} placeholder="Specialty name" onChange={(e) => setNewSheetSpecialtyName(e.target.value)} />
-                    <button type="button" onClick={addSheetSpecialty} disabled={!newSheetSpecialtySkill || !newSheetSpecialtyName.trim()}>
-                      Add
-                    </button>
+                  <div className="sheet-attributes-grid">
+                    {(Object.entries(ATTRIBUTE_GROUPS) as [AttributeGroup, string[]][]).map(([group, keys]) => (
+                      <article key={group} className="sheet-group-block">
+                        <h5>{group}</h5>
+                        {keys.map((key) => (
+                          <DotField
+                            key={key}
+                            label={toTitle(key)}
+                            value={selected.attributes[key]}
+                            min={1}
+                            max={5}
+                            disabled={!sheetEdit}
+                            onChange={(value) => updateSelected('attributes', key, value, 1, 5)}
+                          />
+                        ))}
+                      </article>
+                    ))}
                   </div>
-                )}
-                <ul className="specialty-list">
-                  {selected.specialties.map((specialty, index) => (
-                    <li key={`${specialty.skill}-${specialty.specialty}-${index}`} className="specialty-item">
-                      <span>{toTitle(specialty.skill)}: {specialty.specialty}</span>
-                      {sheetEdit && (
-                        <button type="button" className="ghost specialty-remove" onClick={() => removeSheetSpecialty(index)}>
-                          Remove
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </section>
 
-              <section className="panel">
-                <h4>Health, Willpower & Other Resources</h4>
-                <ul className="history">
-                  <li>Speed: {recalculateDerivedStats(selected).speed}</li>
-                  <li>Defense: {recalculateDerivedStats(selected).defense}</li>
-                  <li>Initiative: {recalculateDerivedStats(selected).initiative}</li>
-                  <li>Perception: {recalculateDerivedStats(selected).perception}</li>
-                  <li>Health Max: {recalculateDerivedStats(selected).healthMax}</li>
-                  <li>Willpower Max: {recalculateDerivedStats(selected).willpowerMax}</li>
-                  <li>Wound Penalty: {woundPenalty(selected.derivedStats.healthBoxes)}</li>
-                  <li>
-                    Morality:{' '}
-                    {CORE_MORALITY_KEYS
-                      .map((key) => (typeof selected.splatData[key] === 'number' ? `${toTitle(key)} ${selected.splatData[key]}` : null))
-                      .filter(Boolean)
-                      .join(' · ') || 'Not set'}
-                  </li>
-                  {typeof selected.splatData.vitae === 'number' && <li>Vitae: {Number(selected.splatData.vitae)}</li>}
-                </ul>
-                <p>Click health boxes to cycle: empty → bashing → lethal → aggravated.</p>
-                <div className="health-track">
-                  {selected.derivedStats.healthBoxes.map((status, index) => (
-                    <button key={`${status}-${index}`} type="button" className={`box ${status.toLowerCase()}`} onClick={() => toggleHealthBox(index)}>
-                      {status === 'BASHING' ? '/' : status === 'LETHAL' ? 'X' : status === 'AGGRAVATED' ? '*' : ''}
-                    </button>
-                  ))}
+                  <h4>Skills</h4>
+                  <div className="sheet-skills-stack">
+                    {(Object.entries(SKILL_GROUPS) as [SkillGroup, string[]][]).map(([group, keys]) => {
+                      const named = skillsLibrary[group.toLowerCase() as 'physical' | 'social' | 'mental'];
+                      return (
+                        <article key={group} className="sheet-group-block">
+                          <h5>{group}</h5>
+                          {keys.map((key, index) => (
+                            <DotField
+                              key={key}
+                              label={named[index] ?? toTitle(key)}
+                              value={selected.skills[key]}
+                              min={0}
+                              max={5}
+                              disabled={!sheetEdit}
+                              onChange={(value) => updateSelected('skills', key, value, 0, 5)}
+                            />
+                          ))}
+                        </article>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="resource-actions">
-                  <button type="button" onClick={spendWillpower}>Spend Willpower</button>
-                  <button type="button" onClick={recoverWillpower}>Recover Willpower</button>
-                  <button type="button" onClick={addBeat}>Add Beat</button>
-                </div>
-                <p>Willpower Spent: {selected.derivedStats.willpowerSpent} / {selected.derivedStats.willpowerMax}</p>
-                <p>Beats: {selected.beatsTotal} / 5</p>
-                <p>XP Total: {selected.experienceTotal}</p>
-                <p>XP Spent: {selected.experienceSpent}</p>
-                <p>Remaining XP: {remainingXp(selected)}</p>
+
+                <aside className="sheet-resource-column">
+                  <h4>Health, Willpower & Resources</h4>
+                  <ul className="history">
+                    <li>Speed: {recalculateDerivedStats(selected).speed}</li>
+                    <li>Defense: {recalculateDerivedStats(selected).defense}</li>
+                    <li>Initiative: {recalculateDerivedStats(selected).initiative}</li>
+                    <li>Perception: {recalculateDerivedStats(selected).perception}</li>
+                    <li>Morality: {moralityDisplayForCharacter(selected)}</li>
+                    {typeof selected.splatData.vitae === 'number' && <li>Vitae: {Number(selected.splatData.vitae)}</li>}
+                  </ul>
+
+                  <p>Wound Penalty: {woundPenalty(selected.derivedStats.healthBoxes)}</p>
+                  <div className="health-penalties">
+                    {selected.derivedStats.healthBoxes.map((_, index, arr) => {
+                      const offset = arr.length - index;
+                      const label = offset === 3 ? '-1' : offset === 2 ? '-2' : offset === 1 ? '-3' : '';
+                      return (
+                        <span key={`penalty-${index}`}>{label}</span>
+                      );
+                    })}
+                  </div>
+                  <div className="health-track">
+                    {selected.derivedStats.healthBoxes.map((status, index) => (
+                      <button key={`${status}-${index}`} type="button" className={`box ${status.toLowerCase()}`} onClick={() => toggleHealthBox(index)}>
+                        {status === 'BASHING' ? '/' : status === 'LETHAL' ? 'X' : status === 'AGGRAVATED' ? '*' : ''}
+                      </button>
+                    ))}
+                  </div>
+
+                  <p>Willpower</p>
+                  <div className="willpower-track">
+                    {Array.from({ length: selected.derivedStats.willpowerMax }, (_, index) => {
+                      const spent = index < selected.derivedStats.willpowerSpent;
+                      return (
+                        <button
+                          key={`willpower-${index}`}
+                          type="button"
+                          className={`box willpower ${spent ? 'spent' : 'available'}`}
+                          onClick={() => toggleWillpowerBox(index)}
+                          aria-label={`Willpower box ${index + 1}`}
+                        >
+                          {spent ? '✓' : ''}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p>{selected.derivedStats.willpowerSpent}/{selected.derivedStats.willpowerMax} spent</p>
+
+                  <div className="resource-actions">
+                    <button type="button" onClick={addBeat}>Add Beat</button>
+                    <label>
+                      Beats (0-5)
+                      <input
+                        type="number"
+                        min={0}
+                        max={5}
+                        value={selected.beatsTotal}
+                        onChange={(e) => setBeatsWithRollover(Number(e.target.value), false)}
+                      />
+                    </label>
+                  </div>
+                  <p>XP Total: {selected.experienceTotal}</p>
+                  <p>XP Spent: {selected.experienceSpent}</p>
+                  <p>Remaining XP: {remainingXp(selected)}</p>
+                </aside>
+
+                <aside className="sheet-specialties-column">
+                  <h4>Specialties</h4>
+                  {sheetEdit && (
+                    <div className="specialty-editor-row">
+                      <select value={newSheetSpecialtySkill} onChange={(e) => setNewSheetSpecialtySkill(e.target.value)}>
+                        <option value="">Select skill</option>
+                        {skillOptions.map((option) => (
+                          <option key={option.key} value={option.key}>{option.label}</option>
+                        ))}
+                      </select>
+                      <input value={newSheetSpecialtyName} placeholder="Specialty name" onChange={(e) => setNewSheetSpecialtyName(e.target.value)} />
+                      <button type="button" onClick={addSheetSpecialty} disabled={!newSheetSpecialtySkill || !newSheetSpecialtyName.trim()}>
+                        Add
+                      </button>
+                    </div>
+                  )}
+                  <ul className="specialty-list">
+                    {selected.specialties.map((specialty, index) => (
+                      <li key={`${specialty.skill}-${specialty.specialty}-${index}`} className="specialty-item">
+                        <span>{toTitle(specialty.skill)}: {specialty.specialty}</span>
+                        {sheetEdit && (
+                          <button type="button" className="ghost specialty-remove" onClick={() => removeSheetSpecialty(index)}>
+                            Remove
+                          </button>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </aside>
               </section>
             </>
           )}
@@ -2362,49 +2476,107 @@ export default function App() {
                     />
                   </div>
                 )}
-
-                <div className="chips">
-                  {SPLAT_POWER_LIBRARY[selected.splat].map((powerName) => {
-                    const isActive = selected.customPowers.some((power) => power.name === powerName);
-                    return (
-                      <button
-                        key={powerName}
-                        type="button"
-                        className={isActive ? 'active' : ''}
-                        disabled={!sheetEdit}
-                        onClick={() => sheetEdit && toggleSelectedLibraryPower(powerName)}
-                      >
-                        {powerName}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <ul className="specialty-list">
-                  {selected.customPowers.map((power) => (
-                    <li key={power.id} className="specialty-item">
-                      {sheetEdit ? (
-                        <div className="form-grid two">
-                          <input value={power.name} onChange={(e) => updateSelectedCustomPower(power.id, { name: e.target.value })} />
-                          <input type="number" min={1} max={5} value={power.dots} onChange={(e) => updateSelectedCustomPower(power.id, { dots: Number(e.target.value) })} />
-                          <textarea
-                            rows={3}
-                            style={{ gridColumn: '1 / -1' }}
-                            value={power.description}
-                            onChange={(e) => updateSelectedCustomPower(power.id, { description: e.target.value })}
-                          />
-                        </div>
-                      ) : (
-                        <span>{power.name} · {power.dots}</span>
-                      )}
-                      {sheetEdit && (
-                        <button type="button" className="ghost specialty-remove" onClick={() => removeSelectedCustomPower(power.id)}>
-                          Remove
-                        </button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+                {selected.splat === 'VAMPIRE' ? (
+                  <>
+                    <h5>Disciplines</h5>
+                    <div className="discipline-list">
+                      {(sheetEdit ? vampireDisciplines : vampireDisciplines.filter((discipline) => {
+                        const map = (selected.splatData.vampireDisciplines as Record<string, number> | undefined) ?? {};
+                        return (map[discipline.name] ?? 0) > 0;
+                      })).map((discipline) => {
+                        const dotsMap = (selected.splatData.vampireDisciplines as Record<string, number> | undefined) ?? {};
+                        const dots = dotsMap[discipline.name] ?? 0;
+                        const clan = String(selected.splatData.clan ?? '');
+                        const inClan = clan ? isVampireDisciplineInClan(clan, discipline.name, discipline.inClanClans) : false;
+                        const visiblePowers = discipline.powers.filter((power) => power.dot <= dots);
+                        return (
+                          <details key={`sheet-disc-${discipline.id}`} className={`discipline-item ${inClan ? 'in-clan' : ''}`}>
+                            <summary className="expandable-summary">
+                              <span className="expand-summary-left">
+                                <span className="expand-chevron" aria-hidden="true">▶</span>
+                                <span>{discipline.name}</span>
+                              </span>
+                              <span>{dots} dots {inClan ? '· In-clan' : ''}</span>
+                            </summary>
+                            {sheetEdit && (
+                              <div className="discipline-controls">
+                                <button type="button" onClick={() => setSelectedVampireDisciplineDots(discipline.name, dots - 1)} disabled={dots <= 0}>-</button>
+                                <strong>{dots}</strong>
+                                <button type="button" onClick={() => setSelectedVampireDisciplineDots(discipline.name, dots + 1)} disabled={dots >= 5}>+</button>
+                              </div>
+                            )}
+                            <div className="discipline-power-list">
+                              {visiblePowers.length === 0 ? (
+                                <small>No powers unlocked at current dots.</small>
+                              ) : (
+                                visiblePowers.map((power, index) => (
+                                  <article key={`${discipline.id}-${power.name}-${index}`}>
+                                    <strong>Dot {power.dot}: {power.name}</strong>
+                                    {power.description && <p className="whitespace-pre-wrap">{formatTextContent(power.description)}</p>}
+                                  </article>
+                                ))
+                              )}
+                            </div>
+                          </details>
+                        );
+                      })}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {sheetEdit && (
+                      <div className="chips">
+                        {SPLAT_POWER_LIBRARY[selected.splat].map((powerName) => {
+                          const isActive = selected.customPowers.some((power) => power.name === powerName);
+                          return (
+                            <button
+                              key={powerName}
+                              type="button"
+                              className={isActive ? 'active' : ''}
+                              onClick={() => toggleSelectedLibraryPower(powerName)}
+                            >
+                              {powerName}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                    <div className="discipline-list">
+                      {selected.customPowers.map((power) => (
+                        <details key={power.id} className="expandable-card">
+                          <summary className="expandable-summary">
+                            <span className="expand-summary-left">
+                              <span className="expand-chevron" aria-hidden="true">▶</span>
+                              <span>{power.name}</span>
+                            </span>
+                            <span>{power.dots} dots</span>
+                          </summary>
+                          <div className="expandable-content">
+                            {sheetEdit ? (
+                              <div className="form-grid two">
+                                <input value={power.name} onChange={(e) => updateSelectedCustomPower(power.id, { name: e.target.value })} />
+                                <input type="number" min={1} max={5} value={power.dots} onChange={(e) => updateSelectedCustomPower(power.id, { dots: Number(e.target.value) })} />
+                                <textarea
+                                  rows={3}
+                                  style={{ gridColumn: '1 / -1' }}
+                                  value={power.description}
+                                  onChange={(e) => updateSelectedCustomPower(power.id, { description: e.target.value })}
+                                />
+                              </div>
+                            ) : (
+                              <p className="whitespace-pre-wrap">{formatTextContent(power.description)}</p>
+                            )}
+                            {sheetEdit && (
+                              <button type="button" className="ghost specialty-remove" onClick={() => removeSelectedCustomPower(power.id)}>
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        </details>
+                      ))}
+                    </div>
+                  </>
+                )}
               </section>
             </div>
           )}
@@ -2416,14 +2588,6 @@ export default function App() {
                 <label>XP Total<input type="number" min={0} value={selected.experienceTotal} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, experienceTotal: clamp(Number(e.target.value), 0, 999) } : p))} /></label>
                 <label>XP Spent<input type="number" min={0} value={selected.experienceSpent} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, experienceSpent: clamp(Number(e.target.value), 0, 999) } : p))} /></label>
               </div>
-              <label>
-                Splat Data (JSON)
-                <textarea
-                  rows={8}
-                  value={JSON.stringify(selected.splatData, null, 2)}
-                  disabled
-                />
-              </label>
               <label>
                 Notes
                 <textarea
@@ -2486,58 +2650,63 @@ export default function App() {
                   Add Note
                 </button>
               </div>
-
-              <div className="chronicle-note-controls form-grid three">
-                <label>
-                  Filter by Character
-                  <select value={chronicleCharacterFilter} onChange={(e) => setChronicleCharacterFilter(e.target.value)}>
-                    <option value="">All characters</option>
-                    {chronicleCharacterOptions.map((character) => (
-                      <option key={character.id} value={character.id}>{character.name}</option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Sort
-                  <select value={chronicleSort} onChange={(e) => setChronicleSort(e.target.value as ChronicleSort)}>
-                    <option value="updated">Last Updated</option>
-                    <option value="name">Name</option>
-                    <option value="character">Character</option>
-                  </select>
-                </label>
-                <label>
-                  Group
-                  <select value={chronicleGroup} onChange={(e) => setChronicleGroup(e.target.value as ChronicleGroup)}>
-                    <option value="none">None</option>
-                    <option value="character">Character</option>
-                    <option value="date">Date</option>
-                  </select>
-                </label>
-              </div>
-
-              <div className="chronicle-note-groups">
-                {groupedChronicleNotes.map((group) => (
-                  <div key={group.key} className="chronicle-note-group">
-                    {chronicleGroup !== 'none' && <small>{group.key}</small>}
-                    {group.notes.map((note) => {
-                      const selected = note.id === selectedChronicleNoteId;
-                      const characterLabel = characters.find((c) => c.id === note.characterId)?.name ?? 'Unassigned';
-                      return (
-                        <button
-                          key={note.id}
-                          type="button"
-                          className={`chronicle-note-card ${selected ? 'active' : ''}`}
-                          onClick={() => selectChronicleNote(note.id)}
-                        >
-                          <strong>{note.title}</strong>
-                          <small>{characterLabel}</small>
-                          <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
-                        </button>
-                      );
-                    })}
+              {!selectedChronicle ? (
+                <p>Select or create a chronicle to view and add notes.</p>
+              ) : (
+                <>
+                  <div className="chronicle-note-controls form-grid three">
+                    <label>
+                      Filter by Character
+                      <select value={chronicleCharacterFilter} onChange={(e) => setChronicleCharacterFilter(e.target.value)}>
+                        <option value="">All characters</option>
+                        {chronicleCharacterOptions.map((character) => (
+                          <option key={character.id} value={character.id}>{character.name}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      Sort
+                      <select value={chronicleSort} onChange={(e) => setChronicleSort(e.target.value as ChronicleSort)}>
+                        <option value="updated">Last Updated</option>
+                        <option value="name">Name</option>
+                        <option value="character">Character</option>
+                      </select>
+                    </label>
+                    <label>
+                      Group
+                      <select value={chronicleGroup} onChange={(e) => setChronicleGroup(e.target.value as ChronicleGroup)}>
+                        <option value="none">None</option>
+                        <option value="character">Character</option>
+                        <option value="date">Date</option>
+                      </select>
+                    </label>
                   </div>
-                ))}
-              </div>
+
+                  <div className="chronicle-note-groups">
+                    {groupedChronicleNotes.map((group) => (
+                      <div key={group.key} className="chronicle-note-group">
+                        {chronicleGroup !== 'none' && <small>{group.key}</small>}
+                        {group.notes.map((note) => {
+                          const selected = note.id === selectedChronicleNoteId;
+                          const characterLabel = characters.find((c) => c.id === note.characterId)?.name ?? 'Unassigned';
+                          return (
+                            <button
+                              key={note.id}
+                              type="button"
+                              className={`chronicle-note-card ${selected ? 'active' : ''}`}
+                              onClick={() => selectChronicleNote(note.id)}
+                            >
+                              <strong>{note.title}</strong>
+                              <small>{characterLabel}</small>
+                              <span>{new Date(note.updatedAt).toLocaleDateString()}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </article>
 
             <article className="panel chronicle-editor-panel">
@@ -2547,37 +2716,42 @@ export default function App() {
                   Save Note
                 </button>
               </div>
+              {!selectedChronicle ? (
+                <p>Select a chronicle first to edit notes.</p>
+              ) : (
+                <>
+                  <div className="form-grid two">
+                    <label>
+                      Note Title
+                      <input value={noteDraft.title} onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, title: e.target.value })} />
+                    </label>
+                    <label>
+                      Character Link
+                      <select
+                        value={noteDraft.characterId}
+                        onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, characterId: e.target.value })}
+                      >
+                        <option value="">None / Storyteller note</option>
+                        {characters.map((character) => (
+                          <option key={character.id} value={character.id}>
+                            {character.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
 
-              <div className="form-grid two">
-                <label>
-                  Note Title
-                  <input value={noteDraft.title} onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, title: e.target.value })} />
-                </label>
-                <label>
-                  Character Link
-                  <select
-                    value={noteDraft.characterId}
-                    onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, characterId: e.target.value })}
-                  >
-                    <option value="">None / Storyteller note</option>
-                    {characters.map((character) => (
-                      <option key={character.id} value={character.id}>
-                        {character.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              </div>
-
-              <label className="chronicle-notes-label">
-                Notes
-                <textarea
-                  rows={10}
-                  value={noteDraft.body}
-                  onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, body: e.target.value })}
-                  placeholder="Write chronicle notes here..."
-                />
-              </label>
+                  <label className="chronicle-notes-label">
+                    Notes
+                    <textarea
+                      rows={10}
+                      value={noteDraft.body}
+                      onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, body: e.target.value })}
+                      placeholder="Write chronicle notes here..."
+                    />
+                  </label>
+                </>
+              )}
             </article>
           </div>
 

@@ -899,6 +899,16 @@ details[open] > summary .expand-chevron {
 
 .merit-card {
   overflow: hidden;
+  padding: 0.2rem 0.45rem;
+}
+
+.merit-card .expandable-summary {
+  font-size: 0.9rem;
+  padding: 0.05rem 0;
+}
+
+.merit-card .expandable-content {
+  margin-top: 0.4rem;
 }
 
 .merit-card[open],
@@ -1006,6 +1016,103 @@ details[open] > summary .expand-chevron {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
+}
+
+.resource-actions label {
+  min-width: 120px;
+}
+
+.health-penalties {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
+  gap: 0.35rem;
+  max-width: 380px;
+}
+
+.health-penalties span {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+  min-height: 1rem;
+}
+
+.willpower-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.box.willpower {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.box.willpower.available {
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.box.willpower.spent {
+  background: color-mix(in srgb, var(--primary) 24%, var(--surface));
+  border-color: color-mix(in srgb, var(--primary) 65%, var(--border));
+}
+
+.portrait-upload-wrap {
+  margin-top: 0.4rem;
+}
+
+.portrait-upload-button {
+  width: 140px;
+  height: 140px;
+  padding: 0;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+}
+
+.portrait-upload-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sheet-traits-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr) minmax(240px, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.sheet-main-column,
+.sheet-resource-column,
+.sheet-specialties-column {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sheet-attributes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.sheet-skills-stack {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.sheet-group-block {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--surface-2) 75%, transparent);
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.sheet-group-block h5 {
+  margin: 0;
 }
 
 .powers-editor-grid {
@@ -1290,6 +1397,14 @@ details[open] > summary .expand-chevron {
   }
 
   .powers-editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sheet-traits-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sheet-attributes-grid {
     grid-template-columns: 1fr;
   }
 

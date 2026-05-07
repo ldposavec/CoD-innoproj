@@ -68,6 +68,7 @@ const DICE_RULE_LABELS: Record<string, string> = {
   none: 'No explode'
 };
 const DEFAULT_SEVEN_TRAIT_KEYS = ['humanity', 'integrity', 'harmony', 'wisdom', 'clarity', 'synergy'] as const;
+const CORE_MORALITY_KEYS = ['integrity', 'humanity', 'harmony', 'wisdom', 'clarity', 'synergy', 'satiety'] as const;
 const SPLAT_ARCHETYPE_LABELS: Partial<Record<Splat, ArchetypeLabels>> = {
   VAMPIRE: { first: 'Mask', second: 'Dirge' },
   BEAST: { first: 'Legend', second: 'Life' }
@@ -2287,7 +2288,7 @@ export default function App() {
                   <li>Wound Penalty: {woundPenalty(selected.derivedStats.healthBoxes)}</li>
                   <li>
                     Integrity / Humanity / Harmony / Wisdom / Clarity / Synergy / Satiety:{' '}
-                    {['integrity', 'humanity', 'harmony', 'satiety', 'wisdom', 'clarity', 'synergy']
+                    {CORE_MORALITY_KEYS
                       .map((key) => (typeof selected.splatData[key] === 'number' ? `${toTitle(key)} ${selected.splatData[key]}` : null))
                       .filter(Boolean)
                       .join(' · ') || 'Not set'}
@@ -2581,7 +2582,18 @@ export default function App() {
           </div>
 
           {showCreateChronicleModal && (
-            <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Create chronicle">
+            <div
+              className="modal-backdrop"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Create chronicle"
+              tabIndex={-1}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setShowCreateChronicleModal(false);
+                }
+              }}
+            >
               <article className="modal-card panel">
                 <h4>Create Chronicle</h4>
                 <label>

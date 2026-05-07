@@ -2761,7 +2761,6 @@ export default function App() {
               role="dialog"
               aria-modal="true"
               aria-label="Create chronicle"
-              tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Escape') {
                   setShowCreateChronicleModal(false);
@@ -2779,7 +2778,6 @@ export default function App() {
                 <label>
                   Chronicle Name
                   <input
-                    autoFocus
                     value={newChronicleName}
                     placeholder="Enter chronicle name"
                     onChange={(e) => setNewChronicleName(e.target.value)}

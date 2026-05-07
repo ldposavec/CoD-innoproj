@@ -2380,7 +2380,7 @@ export default function App() {
                           type="button"
                           className={`box willpower ${spent ? 'spent' : 'available'}`}
                           onClick={() => toggleWillpowerBox(index)}
-                          aria-label={`Willpower box ${index + 1}`}
+                          aria-label={`Willpower box ${index + 1}, ${spent ? 'spent' : 'available'}`}
                         >
                           {spent ? '✓' : ''}
                         </button>
@@ -2412,7 +2412,7 @@ export default function App() {
                   {sheetEdit && (
                     <div className="specialty-editor-row">
                       <select aria-label="Specialty skill" value={newSheetSpecialtySkill} onChange={(e) => setNewSheetSpecialtySkill(e.target.value)}>
-                        <option value="">Select skill</option>
+                        <option value="" disabled>Select skill</option>
                         {skillOptions.map((option) => (
                           <option key={option.key} value={option.key}>{option.label}</option>
                         ))}

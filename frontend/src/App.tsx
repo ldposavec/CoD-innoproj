@@ -2287,7 +2287,7 @@ export default function App() {
                   <li>Willpower Max: {recalculateDerivedStats(selected).willpowerMax}</li>
                   <li>Wound Penalty: {woundPenalty(selected.derivedStats.healthBoxes)}</li>
                   <li>
-                    {CORE_MORALITY_KEYS.map((key) => toTitle(key)).join(' / ')}:{' '}
+                    Morality:{' '}
                     {CORE_MORALITY_KEYS
                       .map((key) => (typeof selected.splatData[key] === 'number' ? `${toTitle(key)} ${selected.splatData[key]}` : null))
                       .filter(Boolean)
@@ -2594,7 +2594,13 @@ export default function App() {
                 }
               }}
             >
-              <article className="modal-card panel">
+              <form
+                className="modal-card panel"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  createChronicle(newChronicleName);
+                }}
+              >
                 <h4>Create Chronicle</h4>
                 <label>
                   Chronicle Name
@@ -2603,21 +2609,15 @@ export default function App() {
                     value={newChronicleName}
                     placeholder="Enter chronicle name"
                     onChange={(e) => setNewChronicleName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        createChronicle(newChronicleName);
-                      }
-                    }}
                   />
                 </label>
                 <div className="toolbar">
                   <button type="button" onClick={() => setShowCreateChronicleModal(false)}>Cancel</button>
-                  <button type="button" className="primary" onClick={() => createChronicle(newChronicleName)}>
+                  <button type="submit" className="primary">
                     Create
                   </button>
                 </div>
-              </article>
+              </form>
             </div>
           )}
         </section>

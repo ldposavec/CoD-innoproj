@@ -68,7 +68,7 @@ const DICE_RULE_LABELS: Record<string, string> = {
   none: 'No explode'
 };
 const DEFAULT_SEVEN_TRAIT_KEYS = ['humanity', 'integrity', 'harmony', 'wisdom', 'clarity', 'synergy'] as const;
-const CORE_MORALITY_KEYS = ['integrity', 'humanity', 'harmony', 'wisdom', 'clarity', 'synergy', 'satiety'] as const;
+const CORE_MORALITY_KEYS = [...DEFAULT_SEVEN_TRAIT_KEYS, 'satiety'] as const;
 const SPLAT_ARCHETYPE_LABELS: Partial<Record<Splat, ArchetypeLabels>> = {
   VAMPIRE: { first: 'Mask', second: 'Dirge' },
   BEAST: { first: 'Legend', second: 'Life' }
@@ -2287,7 +2287,7 @@ export default function App() {
                   <li>Willpower Max: {recalculateDerivedStats(selected).willpowerMax}</li>
                   <li>Wound Penalty: {woundPenalty(selected.derivedStats.healthBoxes)}</li>
                   <li>
-                    Integrity / Humanity / Harmony / Wisdom / Clarity / Synergy / Satiety:{' '}
+                    {CORE_MORALITY_KEYS.map((key) => toTitle(key)).join(' / ')}:{' '}
                     {CORE_MORALITY_KEYS
                       .map((key) => (typeof selected.splatData[key] === 'number' ? `${toTitle(key)} ${selected.splatData[key]}` : null))
                       .filter(Boolean)
@@ -2587,7 +2587,7 @@ export default function App() {
               role="dialog"
               aria-modal="true"
               aria-label="Create chronicle"
-              tabIndex={-1}
+              tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Escape') {
                   setShowCreateChronicleModal(false);

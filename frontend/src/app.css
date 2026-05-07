@@ -881,6 +881,18 @@ details[open] > summary .expand-chevron {
   width: fit-content;
 }
 
+.merit-adjust-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.merit-adjust-row button {
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+}
+
 .merit-selected-list {
   gap: 0.65rem;
 }
@@ -990,6 +1002,22 @@ details[open] > summary .expand-chevron {
   background: color-mix(in srgb, #ff5858 26%, var(--surface));
 }
 
+.resource-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.powers-editor-grid {
+  display: grid;
+  grid-template-columns: minmax(170px, 1fr) 90px auto;
+  gap: 0.5rem;
+}
+
+.powers-editor-grid textarea {
+  grid-column: 1 / -1;
+}
+
 .chronicle-page {
   gap: 1rem;
 }
@@ -1083,6 +1111,20 @@ details[open] > summary .expand-chevron {
 .chronicle-note-card span,
 .chronicle-note-group > small {
   color: var(--muted);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, #000 45%, transparent);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: min(500px, 100%);
 }
 
 @keyframes toast-in {
@@ -1244,6 +1286,10 @@ details[open] > summary .expand-chevron {
   }
 
   .specialty-editor-row {
+    grid-template-columns: 1fr;
+  }
+
+  .powers-editor-grid {
     grid-template-columns: 1fr;
   }
 

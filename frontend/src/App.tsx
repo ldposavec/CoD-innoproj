@@ -25,7 +25,7 @@ import {
 type Page = 'auth' | 'dashboard' | 'wizard' | 'sheet' | 'chronicle' | 'settings';
 type SortMode = 'created' | 'name' | 'splat';
 type AuthMode = 'login' | 'register';
-type SheetTab = 'info' | 'traits' | 'merits' | 'powers' | 'notes';
+type SheetTab = 'overview' | 'features' | 'details';
 
 type Session = { username: string; token: string | null };
 type ChronicleNote = { id: string; title: string; body: string; characterId: string; createdAt: number; updatedAt: number };
@@ -348,7 +348,7 @@ export default function App() {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [selected, setSelected] = useState<Character | null>(null);
   const [sheetEdit, setSheetEdit] = useState(false);
-  const [sheetTab, setSheetTab] = useState<SheetTab>('info');
+  const [sheetTab, setSheetTab] = useState<SheetTab>('overview');
 
   const [draft, setDraft] = useState<Character>(() => ({ ...defaultCharacter(), derivedStats: recalculateDerivedStats(defaultCharacter()) }));
   const [wizardStep, setWizardStep] = useState(0);
@@ -392,12 +392,19 @@ export default function App() {
   const [diceHistory, setDiceHistory] = useState<DiceHistoryItem[]>([]);
 
   const [chronicleDirectories, setChronicleDirectories] = useState<ChronicleDirectory[]>([]);
+  const [showCreateChronicleModal, setShowCreateChronicleModal] = useState(false);
+  const [newChronicleName, setNewChronicleName] = useState('');
   const [selectedChronicleId, setSelectedChronicleId] = useState('');
   const [selectedChronicleNoteId, setSelectedChronicleNoteId] = useState('');
   const [noteDraft, setNoteDraft] = useState({ title: '', body: '', characterId: '' });
   const [chronicleSort, setChronicleSort] = useState<ChronicleSort>('updated');
   const [chronicleGroup, setChronicleGroup] = useState<ChronicleGroup>('none');
   const [chronicleCharacterFilter, setChronicleCharacterFilter] = useState('');
+  const [newSheetSpecialtySkill, setNewSheetSpecialtySkill] = useState('');
+  const [newSheetSpecialtyName, setNewSheetSpecialtyName] = useState('');
+  const [newCustomPowerName, setNewCustomPowerName] = useState('');
+  const [newCustomPowerDots, setNewCustomPowerDots] = useState(1);
+  const [newCustomPowerDescription, setNewCustomPowerDescription] = useState('');
   const diceTimerHandles = useRef<Array<ReturnType<typeof setTimeout>>>([]);
   const toastTimerHandles = useRef<Array<ReturnType<typeof setTimeout>>>([]);
 
@@ -1024,7 +1031,7 @@ export default function App() {
       setCharacters((prev) => [next, ...prev]);
       setSelected(next);
       setPage('sheet');
-      setSheetTab('info');
+      setSheetTab('overview');
       setSheetEdit(false);
       showToast('Character created.', 'success');
     } catch (error) {
@@ -1037,7 +1044,7 @@ export default function App() {
     setSelected(cloneCharacter(character));
     setPage('sheet');
     setSheetEdit(false);
-    setSheetTab('info');
+    setSheetTab('overview');
   }
 
   function updateSelected(section: 'attributes' | 'skills', key: string, value: number, min: number, max: number) {
@@ -1090,6 +1097,9 @@ export default function App() {
       if (next.beatsTotal >= 5) {
         next.experienceTotal += 1;
         next.beatsTotal = 0;
+        showToast('5 Beats converted to 1 Experience.', 'success');
+      } else {
+        showToast(`Beats increased to ${next.beatsTotal}/5.`, 'info');
       }
       return next;
     });
@@ -1100,7 +1110,142 @@ export default function App() {
       if (!prev) return prev;
       const next = cloneCharacter(prev);
       next.derivedStats.healthBoxes[index] = cycleHealth(next.derivedStats.healthBoxes[index]);
+      showToast('Health track updated.', 'info');
       return next;
+    });
+  }
+
+  function spendWillpower() {
+    setSelected((prev) => {
+      if (!prev) return prev;
+      const max = prev.derivedStats.willpowerMax;
+      if (prev.derivedStats.willpowerSpent >= max) {
+        showToast('No unspent Willpower remaining.', 'error');
+        return prev;
+      }
+      const next = cloneCharacter(prev);
+      next.derivedStats.willpowerSpent = clamp(next.derivedStats.willpowerSpent + 1, 0, max);
+      showToast(`Spent Willpower (${next.derivedStats.willpowerSpent}/${max}).`, 'info');
+      return next;
+    });
+  }
+
+  function recoverWillpower() {
+    setSelected((prev) => {
+      if (!prev) return prev;
+      if (prev.derivedStats.willpowerSpent <= 0) {
+        showToast('Willpower is already fully available.', 'error');
+        return prev;
+      }
+      const next = cloneCharacter(prev);
+      next.derivedStats.willpowerSpent = clamp(next.derivedStats.willpowerSpent - 1, 0, next.derivedStats.willpowerMax);
+      showToast(`Recovered Willpower (${next.derivedStats.willpowerSpent}/${next.derivedStats.willpowerMax} spent).`, 'success');
+      return next;
+    });
+  }
+
+  function updateSelectedSplatData(key: string, value: string | number) {
+    setSelected((prev) => (prev ? { ...prev, splatData: { ...prev.splatData, [key]: value } } : prev));
+  }
+
+  function addSheetSpecialty() {
+    const specialtyName = newSheetSpecialtyName.trim();
+    if (!newSheetSpecialtySkill || !specialtyName) return;
+    setSelected((prev) => {
+      if (!prev) return prev;
+      const duplicate = prev.specialties.some(
+        (entry) => entry.skill === newSheetSpecialtySkill && entry.specialty.toLowerCase() === specialtyName.toLowerCase()
+      );
+      if (duplicate) {
+        showToast('That specialty already exists.', 'error');
+        return prev;
+      }
+      const next = cloneCharacter(prev);
+      next.specialties.push({ skill: newSheetSpecialtySkill, specialty: specialtyName });
+      showToast('Specialty added.', 'success');
+      return next;
+    });
+    setNewSheetSpecialtyName('');
+  }
+
+  function removeSheetSpecialty(index: number) {
+    setSelected((prev) => {
+      if (!prev) return prev;
+      const next = cloneCharacter(prev);
+      next.specialties = next.specialties.filter((_, itemIndex) => itemIndex !== index);
+      showToast('Specialty removed.', 'info');
+      return next;
+    });
+  }
+
+  function addSelectedCustomPower() {
+    const cleanName = newCustomPowerName.trim();
+    if (!cleanName) return;
+    setSelected((prev) => {
+      if (!prev) return prev;
+      const next = cloneCharacter(prev);
+      next.customPowers.push({
+        id: createId(),
+        name: cleanName,
+        dots: clamp(newCustomPowerDots, 1, 5),
+        description: newCustomPowerDescription.trim()
+      });
+      showToast('Power added.', 'success');
+      return next;
+    });
+    setNewCustomPowerName('');
+    setNewCustomPowerDots(1);
+    setNewCustomPowerDescription('');
+  }
+
+  function toggleSelectedLibraryPower(name: string) {
+    setSelected((prev) => {
+      if (!prev) return prev;
+      const existing = prev.customPowers.find((power) => power.name === name);
+      if (existing) {
+        showToast('Power removed.', 'info');
+        return { ...prev, customPowers: prev.customPowers.filter((power) => power.id !== existing.id) };
+      }
+      showToast('Power added.', 'success');
+      return {
+        ...prev,
+        customPowers: [
+          ...prev.customPowers,
+          {
+            id: createId(),
+            name,
+            dots: 1,
+            description: ''
+          }
+        ]
+      };
+    });
+  }
+
+  function updateSelectedCustomPower(id: string, patch: { name?: string; dots?: number; description?: string }) {
+    setSelected((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        customPowers: prev.customPowers.map((power) =>
+          power.id === id
+            ? {
+                ...power,
+                name: patch.name ?? power.name,
+                dots: patch.dots === undefined ? power.dots : clamp(patch.dots, 1, 5),
+                description: patch.description ?? power.description
+              }
+            : power
+        )
+      };
+    });
+  }
+
+  function removeSelectedCustomPower(id: string) {
+    setSelected((prev) => {
+      if (!prev) return prev;
+      showToast('Power removed.', 'info');
+      return { ...prev, customPowers: prev.customPowers.filter((power) => power.id !== id) };
     });
   }
 
@@ -1283,9 +1428,9 @@ export default function App() {
     );
   }
 
-  function createChronicle() {
+  function createChronicle(inputName?: string) {
     const nextId = createId();
-    const name = normalizeChronicleTitle('', chronicleDirectories.length);
+    const name = normalizeChronicleTitle(inputName ?? '', chronicleDirectories.length);
     const record: ChronicleDirectory = {
       id: nextId,
       name,
@@ -1297,6 +1442,8 @@ export default function App() {
     setSelectedChronicleId(nextId);
     setSelectedChronicleNoteId('');
     setNoteDraft({ title: '', body: '', characterId: '' });
+    setShowCreateChronicleModal(false);
+    setNewChronicleName('');
     showToast(`Created ${name}.`, 'success');
   }
 
@@ -2034,60 +2181,102 @@ export default function App() {
           </div>
 
           <nav className="tabs">
-            <button type="button" className={sheetTab === 'info' ? 'active' : ''} onClick={() => setSheetTab('info')}>Info</button>
-            <button type="button" className={sheetTab === 'traits' ? 'active' : ''} onClick={() => setSheetTab('traits')}>Attributes & Skills</button>
-            <button type="button" className={sheetTab === 'merits' ? 'active' : ''} onClick={() => setSheetTab('merits')}>Merits</button>
-            <button type="button" className={sheetTab === 'powers' ? 'active' : ''} onClick={() => setSheetTab('powers')}>Powers</button>
-            <button type="button" className={sheetTab === 'notes' ? 'active' : ''} onClick={() => setSheetTab('notes')}>Notes</button>
+            <button type="button" className={sheetTab === 'overview' ? 'active' : ''} onClick={() => setSheetTab('overview')}>Overview</button>
+            <button type="button" className={sheetTab === 'features' ? 'active' : ''} onClick={() => setSheetTab('features')}>Features</button>
+            <button type="button" className={sheetTab === 'details' ? 'active' : ''} onClick={() => setSheetTab('details')}>Details</button>
           </nav>
 
-          {sheetTab === 'info' && (
-            <div className="form-grid two">
-              <label>Name<input value={selected.name} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, name: e.target.value } : p))} /></label>
-              <label>Player<input value={selected.player} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, player: e.target.value } : p))} /></label>
-              <label>Chronicle<input value={selected.chronicle} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, chronicle: e.target.value } : p))} /></label>
-              <label>Concept<input value={selected.concept} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, concept: e.target.value } : p))} /></label>
-              <label>Virtue<input value={selected.virtue} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, virtue: e.target.value } : p))} /></label>
-              <label>Vice<input value={selected.vice} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, vice: e.target.value } : p))} /></label>
-              <label>Portrait URL<input value={selected.portraitUri ?? ''} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, portraitUri: e.target.value || null } : p))} /></label>
-              <label>Size<input type="number" min={1} max={15} value={selected.derivedStats.size} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, derivedStats: { ...p.derivedStats, size: clamp(Number(e.target.value), 1, 15) } } : p))} /></label>
-              <label>XP Total<input type="number" min={0} value={selected.experienceTotal} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, experienceTotal: clamp(Number(e.target.value), 0, 999) } : p))} /></label>
-              <label>XP Spent<input type="number" min={0} value={selected.experienceSpent} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, experienceSpent: clamp(Number(e.target.value), 0, 999) } : p))} /></label>
-            </div>
-          )}
+          {sheetTab === 'overview' && (
+            <>
+              <section className="panel">
+                <h4>Basic Character Info</h4>
+                <div className="form-grid two">
+                  <label>Name<input value={selected.name} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, name: e.target.value } : p))} /></label>
+                  <label>Player<input value={selected.player} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, player: e.target.value } : p))} /></label>
+                  <label>Chronicle<input value={selected.chronicle} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, chronicle: e.target.value } : p))} /></label>
+                  <label>Concept<input value={selected.concept} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, concept: e.target.value } : p))} /></label>
+                  <label>Virtue<input value={selected.virtue} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, virtue: e.target.value } : p))} /></label>
+                  <label>Vice<input value={selected.vice} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, vice: e.target.value } : p))} /></label>
+                  <label>Portrait URL<input value={selected.portraitUri ?? ''} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, portraitUri: e.target.value || null } : p))} /></label>
+                  <label>Size<input type="number" min={1} max={15} value={selected.derivedStats.size} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, derivedStats: { ...p.derivedStats, size: clamp(Number(e.target.value), 1, 15) } } : p))} /></label>
+                  {selected.splat === 'VAMPIRE' && (
+                    <>
+                      <label>Clan<input value={String(selected.splatData.clan ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('clan', e.target.value)} /></label>
+                      <label>Covenant<input value={String(selected.splatData.covenant ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('covenant', e.target.value)} /></label>
+                    </>
+                  )}
+                  {selected.splat === 'BEAST' && (
+                    <>
+                      <label>Family<input value={String(selected.splatData.family ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('family', e.target.value)} /></label>
+                      <label>Hunger<input value={String(selected.splatData.hunger ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('hunger', e.target.value)} /></label>
+                    </>
+                  )}
+                </div>
+              </section>
 
-          {sheetTab === 'traits' && (
-            <div className="split">
+              <div className="split">
+                <section className="panel">
+                  <h4>Attributes</h4>
+                  {Object.values(ATTRIBUTE_GROUPS).flat().map((key) => (
+                    <DotField
+                      key={key}
+                      label={toTitle(key)}
+                      value={selected.attributes[key]}
+                      min={1}
+                      max={5}
+                      disabled={!sheetEdit}
+                      onChange={(value) => updateSelected('attributes', key, value, 1, 5)}
+                    />
+                  ))}
+                </section>
+                <section className="panel">
+                  <h4>Skills</h4>
+                  {Object.values(SKILL_GROUPS).flat().map((key) => (
+                    <DotField
+                      key={key}
+                      label={toTitle(key)}
+                      value={selected.skills[key]}
+                      min={0}
+                      max={5}
+                      disabled={!sheetEdit}
+                      onChange={(value) => updateSelected('skills', key, value, 0, 5)}
+                    />
+                  ))}
+                </section>
+              </div>
+
               <section className="panel">
-                <h4>Attributes</h4>
-                {Object.values(ATTRIBUTE_GROUPS).flat().map((key) => (
-                  <DotField
-                    key={key}
-                    label={toTitle(key)}
-                    value={selected.attributes[key]}
-                    min={1}
-                    max={5}
-                    disabled={!sheetEdit}
-                    onChange={(value) => updateSelected('attributes', key, value, 1, 5)}
-                  />
-                ))}
+                <h4>Specialties</h4>
+                {sheetEdit && (
+                  <div className="specialty-editor-row">
+                    <select value={newSheetSpecialtySkill} onChange={(e) => setNewSheetSpecialtySkill(e.target.value)}>
+                      <option value="">Select skill</option>
+                      {skillOptions.map((option) => (
+                        <option key={option.key} value={option.key}>{option.label}</option>
+                      ))}
+                    </select>
+                    <input value={newSheetSpecialtyName} placeholder="Specialty name" onChange={(e) => setNewSheetSpecialtyName(e.target.value)} />
+                    <button type="button" onClick={addSheetSpecialty} disabled={!newSheetSpecialtySkill || !newSheetSpecialtyName.trim()}>
+                      Add
+                    </button>
+                  </div>
+                )}
+                <ul className="specialty-list">
+                  {selected.specialties.map((specialty, index) => (
+                    <li key={`${specialty.skill}-${specialty.specialty}-${index}`} className="specialty-item">
+                      <span>{toTitle(specialty.skill)}: {specialty.specialty}</span>
+                      {sheetEdit && (
+                        <button type="button" className="ghost specialty-remove" onClick={() => removeSheetSpecialty(index)}>
+                          Remove
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </section>
+
               <section className="panel">
-                <h4>Skills</h4>
-                {Object.values(SKILL_GROUPS).flat().map((key) => (
-                  <DotField
-                    key={key}
-                    label={toTitle(key)}
-                    value={selected.skills[key]}
-                    min={0}
-                    max={5}
-                    disabled={!sheetEdit}
-                    onChange={(value) => updateSelected('skills', key, value, 0, 5)}
-                  />
-                ))}
-              </section>
-              <section className="panel">
-                <h4>Derived Stats</h4>
+                <h4>Health, Willpower & Other Resources</h4>
                 <ul className="history">
                   <li>Speed: {recalculateDerivedStats(selected).speed}</li>
                   <li>Defense: {recalculateDerivedStats(selected).defense}</li>
@@ -2096,52 +2285,148 @@ export default function App() {
                   <li>Health Max: {recalculateDerivedStats(selected).healthMax}</li>
                   <li>Willpower Max: {recalculateDerivedStats(selected).willpowerMax}</li>
                   <li>Wound Penalty: {woundPenalty(selected.derivedStats.healthBoxes)}</li>
+                  <li>
+                    Integrity / Humanity / Harmony / Satiety:{' '}
+                    {['integrity', 'humanity', 'harmony', 'satiety', 'wisdom', 'clarity', 'synergy']
+                      .map((key) => (typeof selected.splatData[key] === 'number' ? `${toTitle(key)} ${selected.splatData[key]}` : null))
+                      .filter(Boolean)
+                      .join(' · ') || 'Not set'}
+                  </li>
+                  {typeof selected.splatData.vitae === 'number' && <li>Vitae: {Number(selected.splatData.vitae)}</li>}
                 </ul>
+                <p>Click health boxes to cycle: empty → bashing → lethal → aggravated.</p>
                 <div className="health-track">
                   {selected.derivedStats.healthBoxes.map((status, index) => (
-                    <button key={`${status}-${index}`} type="button" className={`box ${status.toLowerCase()}`} onClick={() => toggleHealthBox(index)} disabled={!sheetEdit}>
+                    <button key={`${status}-${index}`} type="button" className={`box ${status.toLowerCase()}`} onClick={() => toggleHealthBox(index)}>
                       {status === 'BASHING' ? '/' : status === 'LETHAL' ? 'X' : status === 'AGGRAVATED' ? '*' : ''}
                     </button>
                   ))}
                 </div>
+                <div className="resource-actions">
+                  <button type="button" onClick={spendWillpower}>Spend Willpower</button>
+                  <button type="button" onClick={recoverWillpower}>Recover Willpower</button>
+                  <button type="button" onClick={addBeat}>Add Beat</button>
+                </div>
+                <p>Willpower Spent: {selected.derivedStats.willpowerSpent} / {selected.derivedStats.willpowerMax}</p>
                 <p>Beats: {selected.beatsTotal} / 5</p>
-                <button type="button" onClick={addBeat} disabled={!sheetEdit}>Add Beat</button>
+                <p>XP Total: {selected.experienceTotal}</p>
+                <p>XP Spent: {selected.experienceSpent}</p>
                 <p>Remaining XP: {remainingXp(selected)}</p>
+              </section>
+            </>
+          )}
+
+          {sheetTab === 'features' && (
+            <div className="split">
+              <section className="panel">
+                <h4>Merits</h4>
+                {sheetEdit ? (
+                  <MeritPicker
+                    merits={selected.merits}
+                    setMerits={(merits) => setSelected((prev) => (prev ? { ...prev, merits } : prev))}
+                    professionalTrainingSkills={selected.professionalTrainingSkills}
+                    setProfessionalTrainingSkills={(professionalTrainingSkills) =>
+                      setSelected((prev) => (prev ? { ...prev, professionalTrainingSkills } : prev))
+                    }
+                    meritLibrary={meritsLibrary}
+                    skillOptions={skillOptions}
+                    character={selected}
+                    createId={createId}
+                    meritDotBudget={50}
+                    onValidationError={(reason) => showToast(reason, 'error')}
+                  />
+                ) : (
+                  <ul className="history">
+                    {selected.merits.map((merit) => (
+                      <li key={merit.id}>{merit.name} ({merit.category}) · {merit.dots}</li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+
+              <section className="panel">
+                <h4>Powers</h4>
+                {sheetEdit && (
+                  <div className="powers-editor-grid">
+                    <input placeholder="Power name" value={newCustomPowerName} onChange={(e) => setNewCustomPowerName(e.target.value)} />
+                    <input type="number" min={1} max={5} value={newCustomPowerDots} onChange={(e) => setNewCustomPowerDots(clamp(Number(e.target.value), 1, 5))} />
+                    <button type="button" onClick={addSelectedCustomPower} disabled={!newCustomPowerName.trim()}>
+                      Add Power
+                    </button>
+                    <textarea
+                      rows={3}
+                      placeholder="Description"
+                      value={newCustomPowerDescription}
+                      onChange={(e) => setNewCustomPowerDescription(e.target.value)}
+                    />
+                  </div>
+                )}
+
+                <div className="chips">
+                  {SPLAT_POWER_LIBRARY[selected.splat].map((powerName) => {
+                    const isActive = selected.customPowers.some((power) => power.name === powerName);
+                    return (
+                      <button
+                        key={powerName}
+                        type="button"
+                        className={isActive ? 'active' : ''}
+                        disabled={!sheetEdit}
+                        onClick={() => sheetEdit && toggleSelectedLibraryPower(powerName)}
+                      >
+                        {powerName}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <ul className="specialty-list">
+                  {selected.customPowers.map((power) => (
+                    <li key={power.id} className="specialty-item">
+                      {sheetEdit ? (
+                        <div className="form-grid two">
+                          <input value={power.name} onChange={(e) => updateSelectedCustomPower(power.id, { name: e.target.value })} />
+                          <input type="number" min={1} max={5} value={power.dots} onChange={(e) => updateSelectedCustomPower(power.id, { dots: Number(e.target.value) })} />
+                          <textarea rows={3} value={power.description} onChange={(e) => updateSelectedCustomPower(power.id, { description: e.target.value })} />
+                        </div>
+                      ) : (
+                        <span>{power.name} · {power.dots}</span>
+                      )}
+                      {sheetEdit && (
+                        <button type="button" className="ghost specialty-remove" onClick={() => removeSelectedCustomPower(power.id)}>
+                          Remove
+                        </button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </section>
             </div>
           )}
 
-          {sheetTab === 'merits' && (
+          {sheetTab === 'details' && (
             <section className="panel">
-              <ul className="history">
-                {selected.merits.map((merit) => (
-                  <li key={merit.id}>{merit.name} ({merit.category}) · {merit.dots}</li>
-                ))}
-              </ul>
+              <h4>Other Details</h4>
+              <div className="form-grid two">
+                <label>XP Total<input type="number" min={0} value={selected.experienceTotal} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, experienceTotal: clamp(Number(e.target.value), 0, 999) } : p))} /></label>
+                <label>XP Spent<input type="number" min={0} value={selected.experienceSpent} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, experienceSpent: clamp(Number(e.target.value), 0, 999) } : p))} /></label>
+              </div>
+              <label>
+                Splat Data (JSON)
+                <textarea
+                  rows={8}
+                  value={JSON.stringify(selected.splatData, null, 2)}
+                  disabled
+                />
+              </label>
+              <label>
+                Notes
+                <textarea
+                  rows={12}
+                  value={selected.notes}
+                  onChange={(e) => setSelected((prev) => (prev ? { ...prev, notes: e.target.value } : prev))}
+                />
+              </label>
             </section>
-          )}
-
-          {sheetTab === 'powers' && (
-            <label>
-              Powers / Splat Data
-              <textarea
-                rows={10}
-                value={String(selected.splatData.powers ?? '')}
-                disabled={!sheetEdit}
-                onChange={(e) => setSelected((prev) => (prev ? { ...prev, splatData: { ...prev.splatData, powers: e.target.value } } : prev))}
-              />
-            </label>
-          )}
-
-          {sheetTab === 'notes' && (
-            <label>
-              Notes
-              <textarea
-                rows={12}
-                value={selected.notes}
-                onChange={(e) => setSelected((prev) => (prev ? { ...prev, notes: e.target.value } : prev))}
-              />
-            </label>
           )}
         </section>
       )}
@@ -2150,7 +2435,14 @@ export default function App() {
         <section className="page chronicle-page">
           <div className="toolbar chronicle-toolbar">
             <h3>Chronicles</h3>
-            <button type="button" className="primary" onClick={createChronicle}>
+            <button
+              type="button"
+              className="primary"
+              onClick={() => {
+                setShowCreateChronicleModal(true);
+                setNewChronicleName('');
+              }}
+            >
               Add New Chronicle
             </button>
           </div>
@@ -2282,6 +2574,35 @@ export default function App() {
               </label>
             </article>
           </div>
+
+          {showCreateChronicleModal && (
+            <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="Create chronicle">
+              <article className="modal-card panel">
+                <h4>Create Chronicle</h4>
+                <label>
+                  Chronicle Name
+                  <input
+                    autoFocus
+                    value={newChronicleName}
+                    placeholder="Enter chronicle name"
+                    onChange={(e) => setNewChronicleName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        createChronicle(newChronicleName);
+                      }
+                    }}
+                  />
+                </label>
+                <div className="toolbar">
+                  <button type="button" onClick={() => setShowCreateChronicleModal(false)}>Cancel</button>
+                  <button type="button" className="primary" onClick={() => createChronicle(newChronicleName)}>
+                    Create
+                  </button>
+                </div>
+              </article>
+            </div>
+          )}
         </section>
       )}
 

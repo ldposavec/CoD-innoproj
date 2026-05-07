@@ -73,6 +73,19 @@ export function MeritPicker({
 
   const categories = useMemo(() => ['All', ...new Set(meritLibrary.map((m) => m.category))], [meritLibrary]);
   const selectedDots = useMemo(() => merits.reduce((sum, merit) => sum + merit.dots, 0), [merits]);
+  const prereqStateKey = useMemo(
+    () =>
+      JSON.stringify({
+        attributes: character.attributes,
+        skills: character.skills,
+        merits: character.merits.map((merit) => ({ name: merit.name, dots: merit.dots })),
+        splat: character.splat,
+        splatData: character.splatData,
+        specialties: character.specialties,
+        customPowers: character.customPowers
+      }),
+    [character.attributes, character.customPowers, character.merits, character.skills, character.specialties, character.splat, character.splatData]
+  );
   const hasProfessionalTraining = useMemo(
     () => merits.some((merit) => merit.name.toLowerCase().includes('professional training')),
     [merits]
@@ -100,7 +113,7 @@ export function MeritPicker({
         
         return true;
       }),
-    [filterCat, meritLibrary, search, isCreationMode, merits, showOnlyQualified, character]
+    [filterCat, meritLibrary, search, isCreationMode, merits, showOnlyQualified, prereqStateKey]
   );
 
   useEffect(() => {
@@ -112,7 +125,7 @@ export function MeritPicker({
   useEffect(() => {
     // Keep stale validation errors from lingering after character edits update prerequisites.
     setValidationMessage('');
-  }, [character]);
+  }, [prereqStateKey]);
 
   function addMerit(entry: LibraryMerit, dots: number) {
     const prereq = evaluateMeritPrerequisites(entry.prerequisites, character);
@@ -158,6 +171,15 @@ export function MeritPicker({
     setMerits(merits.filter((merit) => merit.id !== id));
   }
 
+  function adjustMeritDots(id: string, nextDots: number) {
+    const current = merits.find((merit) => merit.id === id);
+    if (!current) return;
+    const safeDots = Math.min(5, Math.max(1, nextDots));
+    const nextTotal = selectedDots - current.dots + safeDots;
+    if (nextTotal > meritDotBudget) return;
+    setMerits(merits.map((merit) => (merit.id === id ? { ...merit, dots: safeDots } : merit)));
+  }
+
   function toggleProfessionalSkill(skillKey: string) {
     const selected = professionalTrainingSkills.includes(skillKey);
     if (selected) {
@@ -197,6 +219,15 @@ export function MeritPicker({
                   {merit.prerequisites && <small>Requires: {merit.prerequisites}</small>}
                   {!prereq.met && <small className="merit-validation-error">{prereqText}</small>}
                   {merit.description && <p className="whitespace-pre-wrap">{formatTextContent(merit.description)}</p>}
+                  <div className="merit-adjust-row">
+                    <button type="button" onClick={() => adjustMeritDots(merit.id, merit.dots - 1)} disabled={merit.dots <= 1}>
+                      -
+                    </button>
+                    <strong>{merit.dots}</strong>
+                    <button type="button" onClick={() => adjustMeritDots(merit.id, merit.dots + 1)} disabled={selectedDots - merit.dots + merit.dots + 1 > meritDotBudget || merit.dots >= 5}>
+                      +
+                    </button>
+                  </div>
                   <button type="button" className="ghost merit-remove" onClick={() => removeMerit(merit.id)}>
                     Remove
                   </button>
@@ -323,4 +354,3 @@ export function MeritPicker({
     </div>
   );
 }
-

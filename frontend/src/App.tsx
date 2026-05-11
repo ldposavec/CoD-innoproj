@@ -66,6 +66,7 @@ const DICE_RULE_LABELS: Record<string, string> = {
   '8again': '8-again',
   none: 'No explode'
 };
+const HEALTH_PENALTY_LABELS: Record<number, string> = { 3: '-1', 2: '-2', 1: '-3' };
 const DEFAULT_SEVEN_TRAIT_KEYS = ['humanity', 'integrity', 'harmony', 'wisdom', 'clarity', 'synergy'] as const;
 const MORALITY_TRAIT_BY_SPLAT: Record<Splat, { key: string; label: string }> = {
   MORTAL: { key: 'integrity', label: 'Integrity' },
@@ -193,17 +194,21 @@ function normalizeVampireDisciplines(raw: unknown): VampireDiscipline[] {
     return `Discipline ${fallbackIndex + 1}`;
   }
 
-  function ensureDiscipline(discName: string, clans?: unknown[]) {
+  function ensureDiscipline(discName: string, clans?: unknown[], isDevotion = false) {
     const finalName = toTitle(discName.trim());
     if (!disciplinesMap.has(finalName)) {
       disciplinesMap.set(finalName, {
         id: finalName.toLowerCase().replace(/\s+/g, '-'),
         name: finalName,
         inClanClans: [],
-        powers: []
+        powers: [],
+        isDevotion
       });
     }
     const disc = disciplinesMap.get(finalName)!;
+    if (isDevotion) {
+      disc.isDevotion = true;
+    }
 
     if (Array.isArray(clans)) {
       clans.forEach((c) => {
@@ -216,8 +221,8 @@ function normalizeVampireDisciplines(raw: unknown): VampireDiscipline[] {
     return disc;
   }
 
-  function addPower(discName: string, dot: number, powerName: string, description?: string, effect?: string, clans?: unknown[]) {
-    const disc = ensureDiscipline(discName, clans);
+  function addPower(discName: string, dot: number, powerName: string, description?: string, effect?: string, clans?: unknown[], isDevotion = false) {
+    const disc = ensureDiscipline(discName, clans, isDevotion);
 
     let finalDesc = description ?? '';
     if (effect) {
@@ -232,6 +237,7 @@ function normalizeVampireDisciplines(raw: unknown): VampireDiscipline[] {
 
     const clansRaw = record.inClanClans ?? record.clans;
     const recordDiscipline = inferDisciplineName(record, index);
+    const isDevotionRecord = typeof record.type === 'string' && record.type.toLowerCase() === 'devotion';
 
     if (Array.isArray(record.powers)) {
       const discName = recordDiscipline;
@@ -243,7 +249,7 @@ function normalizeVampireDisciplines(raw: unknown): VampireDiscipline[] {
         const description = typeof powerRecord.description === 'string' ? powerRecord.description : undefined;
         const effect = typeof powerRecord.effect === 'string' ? powerRecord.effect : undefined;
         const powerDiscipline = typeof powerRecord.discipline === 'string' && powerRecord.discipline.trim() !== '' ? powerRecord.discipline : discName;
-        addPower(powerDiscipline, dot, powerName, description, effect, clansRaw as unknown[]);
+        addPower(powerDiscipline, dot, powerName, description, effect, clansRaw as unknown[], isDevotionRecord);
       });
     } else if (Array.isArray(record.dotLevels)) {
       const fallbackDiscName = recordDiscipline;
@@ -254,7 +260,7 @@ function normalizeVampireDisciplines(raw: unknown): VampireDiscipline[] {
         const description = typeof dl.description === 'string' ? dl.description : (typeof record.description === 'string' ? record.description : undefined);
         const effect = typeof dl.effect === 'string' ? dl.effect : (typeof record.effect === 'string' ? record.effect : undefined);
         const disciplineName = typeof dl.discipline === 'string' && dl.discipline.trim() !== '' ? dl.discipline : fallbackDiscName;
-        addPower(disciplineName, dot, powerName, description, effect, clansRaw as unknown[]);
+        addPower(disciplineName, dot, powerName, description, effect, clansRaw as unknown[], isDevotionRecord);
       });
     } else {
       const discName = recordDiscipline;
@@ -262,7 +268,7 @@ function normalizeVampireDisciplines(raw: unknown): VampireDiscipline[] {
       const powerName = typeof record.name === 'string' ? record.name : `Power ${index + 1}`;
       const description = typeof record.description === 'string' ? record.description : undefined;
       const effect = typeof record.effect === 'string' ? record.effect : undefined;
-      addPower(discName, dot, powerName, description, effect, clansRaw as unknown[]);
+      addPower(discName, dot, powerName, description, effect, clansRaw as unknown[], isDevotionRecord);
     }
   });
 
@@ -418,6 +424,7 @@ export default function App() {
   const [newChronicleName, setNewChronicleName] = useState('');
   const [selectedChronicleId, setSelectedChronicleId] = useState('');
   const [selectedChronicleNoteId, setSelectedChronicleNoteId] = useState('');
+  const [showChronicleNoteModal, setShowChronicleNoteModal] = useState(false);
   const [noteDraft, setNoteDraft] = useState({ title: '', body: '', characterId: '' });
   const [chronicleSort, setChronicleSort] = useState<ChronicleSort>('updated');
   const [chronicleGroup, setChronicleGroup] = useState<ChronicleGroup>('none');
@@ -614,6 +621,10 @@ export default function App() {
     [skillGroupCaps, skillSpentByGroup]
   );
   const selectedVampireClan = useMemo(() => String(draft.splatData.clan ?? '').trim(), [draft.splatData.clan]);
+  const creationVampireDisciplines = useMemo(
+    () => vampireDisciplines.filter((discipline) => !discipline.isDevotion),
+    [vampireDisciplines]
+  );
   const vampireDisciplineDots = useMemo(() => {
     const raw = draft.splatData.vampireDisciplines;
     if (!raw || typeof raw !== 'object') return {} as Record<string, number>;
@@ -1429,11 +1440,16 @@ export default function App() {
     });
     return Array.from(groups.entries()).map(([key, notes]) => ({ key, notes }));
   }, [characters, chronicleGroup, chronicleNotesView]);
+  const diceCritCount = useMemo(
+    () => (diceResult ? diceResult.dice.filter((die) => Number(die) === 10).length : 0),
+    [diceResult]
+  );
 
   useEffect(() => {
     if (!selectedChronicle) {
       setSelectedChronicleNoteId('');
       setNoteDraft({ title: '', body: '', characterId: '' });
+      setShowChronicleNoteModal(false);
       return;
     }
     if (!selectedChronicleNoteId || !selectedChronicle.notes.some((note) => note.id === selectedChronicleNoteId)) {
@@ -1452,6 +1468,7 @@ export default function App() {
     setSelectedChronicleId(id);
     setSelectedChronicleNoteId('');
     setNoteDraft({ title: '', body: '', characterId: '' });
+    setShowChronicleNoteModal(false);
   }
 
   function selectChronicleNote(noteId: string) {
@@ -1460,6 +1477,7 @@ export default function App() {
     if (!note) return;
     setSelectedChronicleNoteId(note.id);
     setNoteDraft({ title: note.title, body: note.body, characterId: note.characterId });
+    setShowChronicleNoteModal(true);
   }
 
   function syncChronicleNoteDraft(nextDraft: typeof noteDraft) {
@@ -1513,35 +1531,20 @@ export default function App() {
       return;
     }
     const nextIndex = selectedChronicle.notes.length + 1;
-    const note: ChronicleNote = {
-      id: createId(),
-      title: `Note ${nextIndex}`,
-      body: '',
-      characterId: '',
-      createdAt: Date.now(),
-      updatedAt: Date.now()
-    };
-    setChronicleDirectories((prev) =>
-      prev.map((dir) =>
-        dir.id === selectedChronicle.id
-          ? { ...dir, notes: [note, ...dir.notes], updatedAt: Date.now() }
-          : dir
-      )
-    );
-    setSelectedChronicleNoteId(note.id);
-    setNoteDraft({ title: note.title, body: note.body, characterId: note.characterId });
-    showToast('Chronicle note created.', 'success');
+    setSelectedChronicleNoteId('');
+    setNoteDraft({ title: `Note ${nextIndex}`, body: '', characterId: '' });
+    setShowChronicleNoteModal(true);
   }
 
   function saveChronicleNoteDraft() {
     if (!selectedChronicle) {
       showToast('Select a chronicle first.', 'error');
-      return;
+      return false;
     }
     const cleanBody = noteDraft.body.trim();
     if (!cleanBody) {
       showToast('Write some notes before saving.', 'error');
-      return;
+      return false;
     }
     if (!selectedChronicleNoteId) {
       const created: ChronicleNote = {
@@ -1562,10 +1565,11 @@ export default function App() {
       setSelectedChronicleNoteId(created.id);
       setNoteDraft({ title: created.title, body: created.body, characterId: created.characterId });
       showToast('Chronicle note saved.', 'success');
-      return;
+      return true;
     }
     syncChronicleNoteDraft({ ...noteDraft, body: cleanBody });
     showToast('Chronicle note saved.', 'success');
+    return true;
   }
 
   const splatFields: Record<Exclude<Splat, 'MORTAL'>, SplatField[]> = {
@@ -1758,10 +1762,13 @@ export default function App() {
               <div className="dice-tray-3d" role="img" aria-label={diceRolling ? 'Dice are rolling' : 'Dice result'}>
                 {(diceResult?.dice ?? Array.from({ length: diceGhostCount }, (_, ghostDie) => ghostDie + 1)).map((die, index) => {
                   const isRevealed = Boolean(diceResult) && index < diceRevealCount;
+                  const dieValue = Number(die);
+                  const isSuccess = isRevealed && dieValue >= 8;
+                  const isCrit = isRevealed && dieValue === 10;
                   return (
                   <div
                     key={diceResult ? `${diceVisualKey}-${die}-${index}` : `ghost-${index}`}
-                    className={`die-3d ${isRevealed ? 'revealed' : 'rolling'} ${isRevealed && Number(die) >= 8 ? 'success' : ''} ${isRevealed && Number(die) === 1 && diceChance ? 'dramatic' : ''}`}
+                    className={`die-3d ${isRevealed ? 'revealed' : 'rolling'} ${isSuccess ? 'success' : ''} ${isCrit ? 'crit' : ''} ${isRevealed && dieValue === 1 && diceChance ? 'dramatic' : ''}`}
                   >
                     {isRevealed && <span className="die-value">{die}</span>}
                   </div>
@@ -1772,7 +1779,7 @@ export default function App() {
                 {diceRolling
                   ? 'Rolling dice...'
                   : diceResult
-                    ? `${diceResult.successes} ${diceResult.successes === 1 ? 'Success' : 'Successes'}`
+                    ? `${diceResult.successes} ${diceResult.successes === 1 ? 'Success' : 'Successes'}${diceCritCount > 0 ? ` · ${diceCritCount} Crit${diceCritCount === 1 ? '' : 's'}` : ''}`
                     : 'No roll yet.'}
               </p>
             </div>
@@ -2131,7 +2138,7 @@ export default function App() {
                         Assigned: {vampireDisciplineTotals.total}/3 dots · In-clan: {vampireDisciplineTotals.inClan}/2 minimum
                       </p>
                       <div className="discipline-list">
-                        {vampireDisciplines.map((discipline) => {
+                        {creationVampireDisciplines.map((discipline) => {
                           const currentDots = vampireDisciplineDots[discipline.name] ?? 0;
                           let inClan = false;
                           if (selectedVampireClan) {
@@ -2351,11 +2358,13 @@ export default function App() {
                     {typeof selected.splatData.vitae === 'number' && <li>Vitae: {Number(selected.splatData.vitae)}</li>}
                   </ul>
 
-                  <div className="health-penalties">
+                  <div
+                    className="health-penalties"
+                    style={{ gridTemplateColumns: `repeat(${selected.derivedStats.healthBoxes.length}, 2rem)` }}
+                  >
                     {selected.derivedStats.healthBoxes.map((_, index, arr) => {
                       const offset = arr.length - index;
-                      const penaltyLabels: Record<number, string> = { 3: '-1', 2: '-2', 1: '-3' };
-                      const label = penaltyLabels[offset] ?? '';
+                      const label = HEALTH_PENALTY_LABELS[offset] ?? '';
                       return (
                         <span key={`penalty-${index}`}>{label}</span>
                       );
@@ -2673,7 +2682,7 @@ export default function App() {
                 <p>Select or create a chronicle to view and add notes.</p>
               ) : (
                 <>
-                  <div className="chronicle-note-controls form-grid three">
+                  <div className="chronicle-note-controls chronicle-note-controls-row">
                     <label>
                       Filter by Character
                       <select value={chronicleCharacterFilter} onChange={(e) => setChronicleCharacterFilter(e.target.value)}>
@@ -2728,50 +2737,6 @@ export default function App() {
               )}
             </article>
 
-            <article className="panel chronicle-editor-panel">
-              <div className="chronicle-editor-header">
-                <h4>{selectedChronicleNote ? selectedChronicleNote.title : 'Note Editor'}</h4>
-                <button type="button" className="ghost" onClick={saveChronicleNoteDraft}>
-                  Save Note
-                </button>
-              </div>
-              {!selectedChronicle ? (
-                <p>Select a chronicle first to edit notes.</p>
-              ) : (
-                <>
-                  <div className="form-grid two">
-                    <label>
-                      Note Title
-                      <input value={noteDraft.title} onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, title: e.target.value })} />
-                    </label>
-                    <label>
-                      Character Link
-                      <select
-                        value={noteDraft.characterId}
-                        onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, characterId: e.target.value })}
-                      >
-                        <option value="">None / Storyteller note</option>
-                        {characters.map((character) => (
-                          <option key={character.id} value={character.id}>
-                            {character.name}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
-
-                  <label className="chronicle-notes-label">
-                    Notes
-                    <textarea
-                      rows={10}
-                      value={noteDraft.body}
-                      onChange={(e) => syncChronicleNoteDraft({ ...noteDraft, body: e.target.value })}
-                      placeholder="Write chronicle notes here..."
-                    />
-                  </label>
-                </>
-              )}
-            </article>
           </div>
 
           {showCreateChronicleModal && (
@@ -2812,6 +2777,70 @@ export default function App() {
                   <button type="submit" className="primary">
                     Create
                   </button>
+                </div>
+              </form>
+            </div>
+          )}
+          {showChronicleNoteModal && selectedChronicle && (
+            <div
+              className="modal-backdrop"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Chronicle note editor"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  setShowChronicleNoteModal(false);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  setShowChronicleNoteModal(false);
+                }
+              }}
+            >
+              <form
+                className="modal-card panel"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (saveChronicleNoteDraft()) {
+                    setShowChronicleNoteModal(false);
+                  }
+                }}
+              >
+                <h4>{selectedChronicleNote ? selectedChronicleNote.title : 'New Note'}</h4>
+                <div className="form-grid two">
+                  <label>
+                    Note Title
+                    <input value={noteDraft.title} onChange={(e) => setNoteDraft({ ...noteDraft, title: e.target.value })} />
+                  </label>
+                  <label>
+                    Character Link
+                    <select
+                      value={noteDraft.characterId}
+                      onChange={(e) => setNoteDraft({ ...noteDraft, characterId: e.target.value })}
+                    >
+                      <option value="">None / Storyteller note</option>
+                      {characters.map((character) => (
+                        <option key={character.id} value={character.id}>
+                          {character.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                <label className="chronicle-notes-label">
+                  Notes
+                  <textarea
+                    rows={10}
+                    value={noteDraft.body}
+                    onChange={(e) => setNoteDraft({ ...noteDraft, body: e.target.value })}
+                    placeholder="Write chronicle notes here..."
+                  />
+                </label>
+                <div className="toolbar">
+                  <button type="button" onClick={() => setShowChronicleNoteModal(false)}>Cancel</button>
+                  <button type="submit" className="primary">Save Note</button>
                 </div>
               </form>
             </div>

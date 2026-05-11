@@ -48,6 +48,12 @@ function parseMeritCostOptions(entry: LibraryMerit): number[] {
   return entry.allowedDots;
 }
 
+function formatMissingPrerequisites(unmet: string[]): string {
+  if (unmet.length <= 1) return unmet[0] ?? '';
+  if (unmet.length === 2) return `${unmet[0]} and ${unmet[1]}`;
+  return `${unmet.slice(0, -1).join(', ')}, and ${unmet[unmet.length - 1]}`;
+}
+
 export function MeritPicker({
   merits,
   setMerits,
@@ -130,7 +136,7 @@ export function MeritPicker({
   function addMerit(entry: LibraryMerit, dots: number) {
     const prereq = evaluateMeritPrerequisites(entry.prerequisites, character);
     if (!prereq.met) {
-      const reason = `Cannot add ${entry.name}. Missing prerequisites: ${prereq.unmet.join(', ')}`;
+      const reason = `Cannot add ${entry.name}. Missing prerequisites: ${formatMissingPrerequisites(prereq.unmet)}`;
       setValidationMessage(reason);
       onValidationError?.(reason);
       return;
@@ -193,7 +199,7 @@ export function MeritPicker({
   return (
     <div className="split merit-picker-grid">
       <section className="panel">
-        <h4>Selected Merits ({selectedDots}/{meritDotBudget} dots)</h4>
+        <h4>Selected Merits ({selectedDots} dots)</h4>
         {validationMessage && <small className="merit-validation-error">{validationMessage}</small>}
         {merits.length === 0 ? (
           <p>No merits selected yet.</p>
@@ -203,7 +209,7 @@ export function MeritPicker({
               <details key={merit.id} className="expandable-card merit-card">
                 {(() => {
                   const prereq = merit.isCustom ? { met: true, unmet: [] as string[] } : evaluateMeritPrerequisites(merit.prerequisites, character);
-                  const prereqText = prereq.met ? '' : `Missing: ${prereq.unmet.join(', ')}`;
+                  const prereqText = prereq.met ? '' : `Missing: ${formatMissingPrerequisites(prereq.unmet)}`;
                   return (
                     <>
                 <summary className="expandable-summary merit-summary">
@@ -281,7 +287,7 @@ export function MeritPicker({
             <article key={entry.id}>
               {(() => {
                 const prereq = evaluateMeritPrerequisites(entry.prerequisites, character);
-                const prereqMessage = prereq.met ? '' : `Missing: ${prereq.unmet.join(', ')}`;
+                const prereqMessage = prereq.met ? '' : `Missing: ${formatMissingPrerequisites(prereq.unmet)}`;
                 return (
                   <div className={prereq.met ? 'opacity-100' : 'opacity-50 grayscale'}>
                     <h4>

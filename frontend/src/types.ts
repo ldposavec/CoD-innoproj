@@ -108,5 +108,5 @@ export interface VampireDiscipline {
   name: string;
   inClanClans: string[];
   powers: VampireDisciplinePower[];
+  isDevotion?: boolean;
 }
-

@@ -515,6 +515,10 @@ label {
   gap: 0.8rem;
 }
 
+.merit-picker-grid {
+  align-items: start;
+}
+
 .chips {
   display: flex;
   flex-wrap: wrap;
@@ -894,21 +898,21 @@ details[open] > summary .expand-chevron {
 }
 
 .merit-selected-list {
-  gap: 0.65rem;
+  gap: 0.45rem;
 }
 
 .merit-card {
   overflow: hidden;
-  padding: 0.2rem 0.45rem;
+  padding: 0.08rem 0.4rem;
 }
 
 .merit-card .expandable-summary {
-  font-size: 0.9rem;
-  padding: 0.05rem 0;
+  font-size: 0.88rem;
+  padding: 0;
 }
 
 .merit-card .expandable-content {
-  margin-top: 0.4rem;
+  margin-top: 0.3rem;
 }
 
 .merit-card[open],
@@ -1024,9 +1028,8 @@ details[open] > summary .expand-chevron {
 
 .health-penalties {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
-  gap: 0.35rem;
-  max-width: 380px;
+  gap: 0.5rem;
+  width: max-content;
 }
 
 .health-penalties span {
@@ -1159,14 +1162,16 @@ details[open] > summary .expand-chevron {
 }
 
 .chronicle-list-panel,
-.chronicle-notes-panel,
-.chronicle-editor-panel {
+.chronicle-notes-panel {
   min-height: 560px;
 }
 
 .chronicle-list {
   display: grid;
   gap: 0.7rem;
+  max-height: 500px;
+  overflow: auto;
+  padding-right: 0.2rem;
 }
 
 .chronicle-card {
@@ -1208,6 +1213,11 @@ details[open] > summary .expand-chevron {
 .chronicle-notes-label {
   display: grid;
   gap: 0.5rem;
+}
+
+.chronicle-note-controls-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
 }
 
 .chronicle-note-groups {
@@ -1340,6 +1350,9 @@ details[open] > summary .expand-chevron {
   position: relative;
   z-index: 2;
   transform: translateZ(18px);
+  width: 100%;
+  text-align: center;
+  line-height: 1;
   font-weight: 800;
   font-size: 0.95rem;
   text-shadow: 0 1px 2px color-mix(in srgb, #000 75%, transparent);
@@ -1357,6 +1370,11 @@ details[open] > summary .expand-chevron {
 .die-3d.revealed.success {
   border-color: color-mix(in srgb, var(--primary) 65%, var(--border));
   background: linear-gradient(155deg, color-mix(in srgb, var(--primary-2) 20%, var(--surface-2)), color-mix(in srgb, var(--primary) 32%, var(--surface-2)));
+}
+
+.die-3d.revealed.crit {
+  border-color: color-mix(in srgb, #ffd56a 78%, var(--border));
+  background: linear-gradient(155deg, color-mix(in srgb, #ffe58c 35%, var(--surface-2)), color-mix(in srgb, #c9921b 34%, var(--surface-2)));
 }
 
 .die-3d.revealed.dramatic {
@@ -1394,8 +1412,7 @@ details[open] > summary .expand-chevron {
   }
 
   .chronicle-list-panel,
-  .chronicle-notes-panel,
-  .chronicle-editor-panel {
+  .chronicle-notes-panel {
     min-height: auto;
   }
 
@@ -1407,6 +1424,10 @@ details[open] > summary .expand-chevron {
 
   .chronicle-editor-header {
     flex-wrap: wrap;
+  }
+
+  .chronicle-note-controls-row {
+    grid-template-columns: 1fr;
   }
 
   .specialty-editor-row {

@@ -26,7 +26,6 @@ export function woundPenalty(boxes: HealthStatus[]): string {
   const filled = boxes.filter((b) => b !== 'EMPTY').length;
   const max = boxes.length;
   if (filled === 0) return '0';
-  if (filled >= max) return 'Incapacitated';
   if (filled >= max - 1) return '-3';
   if (filled >= max - 2) return '-2';
   if (filled >= max - 3) return '-1';
@@ -173,6 +172,6 @@ export function evaluateMeritPrerequisites(
     allUnmetGroups.push(unmet);
   }
 
-  const unmet = Array.from(new Set(allUnmetGroups.flatMap((group) => group)));
-  return { met: false, unmet: unmet.length > 0 ? unmet : [text] };
+  const uniqueUnmet = Array.from(new Set(allUnmetGroups.flatMap((group) => group)));
+  return { met: false, unmet: uniqueUnmet.length > 0 ? uniqueUnmet : [text] };
 }

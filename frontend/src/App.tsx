@@ -18,8 +18,7 @@ import {
   evaluateMeritPrerequisites,
   recalculateDerivedStats,
   remainingXp,
-  skillDotsSpent,
-  woundPenalty
+  skillDotsSpent
 } from './utils';
 
 type Page = 'auth' | 'dashboard' | 'wizard' | 'sheet' | 'chronicle' | 'settings';
@@ -1114,7 +1113,7 @@ export default function App() {
     }
   }
 
-  function setBeatsWithRollover(nextBeatsRaw: number, notify = true) {
+  function setBeatsWithExperienceConversion(nextBeatsRaw: number, notify = true) {
     setSelected((prev) => {
       if (!prev) return prev;
       const next = cloneCharacter(prev);
@@ -1131,9 +1130,9 @@ export default function App() {
     });
   }
 
-  function addBeat() {
+  function addBeats() {
     if (!selected) return;
-    setBeatsWithRollover(selected.beatsTotal + 1, true);
+    setBeatsWithExperienceConversion(selected.beatsTotal + 1, true);
   }
 
   function toggleHealthBox(index: number) {
@@ -2352,11 +2351,11 @@ export default function App() {
                     {typeof selected.splatData.vitae === 'number' && <li>Vitae: {Number(selected.splatData.vitae)}</li>}
                   </ul>
 
-                  <p>Wound Penalty: {woundPenalty(selected.derivedStats.healthBoxes)}</p>
                   <div className="health-penalties">
                     {selected.derivedStats.healthBoxes.map((_, index, arr) => {
                       const offset = arr.length - index;
-                      const label = offset === 3 ? '-1' : offset === 2 ? '-2' : offset === 1 ? '-3' : '';
+                      const penaltyLabels: Record<number, string> = { 3: '-1', 2: '-2', 1: '-3' };
+                      const label = penaltyLabels[offset] ?? '';
                       return (
                         <span key={`penalty-${index}`}>{label}</span>
                       );
@@ -2375,22 +2374,28 @@ export default function App() {
                     {Array.from({ length: selected.derivedStats.willpowerMax }, (_, index) => {
                       const spent = index < selected.derivedStats.willpowerSpent;
                       return (
-                        <button
+                        <label
                           key={`willpower-${index}`}
-                          type="button"
-                          className={`box willpower ${spent ? 'spent' : 'available'}`}
-                          onClick={() => toggleWillpowerBox(index)}
-                          aria-label={`Willpower box ${index + 1}, ${spent ? 'spent' : 'available'}`}
+                          className="willpower-box"
                         >
-                          {spent ? '✓' : ''}
-                        </button>
+                          <input
+                            type="checkbox"
+                            checked={spent}
+                            className="willpower-checkbox"
+                            onChange={() => toggleWillpowerBox(index)}
+                            aria-label={`Willpower box ${index + 1}, ${spent ? 'spent' : 'available'}`}
+                          />
+                          <span className={`box willpower ${spent ? 'spent' : 'available'}`} aria-hidden="true">
+                            {spent ? '✓' : ''}
+                          </span>
+                        </label>
                       );
                     })}
                   </div>
                   <p>{selected.derivedStats.willpowerSpent}/{selected.derivedStats.willpowerMax} spent</p>
 
                   <div className="resource-actions">
-                    <button type="button" onClick={addBeat}>Add Beat</button>
+                    <button type="button" onClick={addBeats}>Add Beats</button>
                     <label>
                       Beats (0-5)
                       <input
@@ -2398,7 +2403,7 @@ export default function App() {
                         min={0}
                         max={5}
                         value={selected.beatsTotal}
-                        onChange={(e) => setBeatsWithRollover(Number(e.target.value), false)}
+                        onChange={(e) => setBeatsWithExperienceConversion(Number(e.target.value), false)}
                       />
                     </label>
                   </div>

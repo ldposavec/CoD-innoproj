@@ -1042,6 +1042,23 @@ details[open] > summary .expand-chevron {
   gap: 0.45rem;
 }
 
+.willpower-box {
+  position: relative;
+  display: inline-grid;
+}
+
+.willpower-checkbox {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.willpower-checkbox:focus-visible + .box.willpower {
+  outline: 2px solid color-mix(in srgb, var(--primary) 70%, white);
+  outline-offset: 1px;
+}
+
 .box.willpower {
   width: 1.8rem;
   height: 1.8rem;

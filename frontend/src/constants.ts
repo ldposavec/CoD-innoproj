@@ -15,6 +15,36 @@ export const SPLATS: Splat[] = [
   'DEVIANT'
 ];
 
+export const SPLAT_LABELS: Record<Splat, string> = {
+  MORTAL: 'Mortal',
+  VAMPIRE: 'Vampire',
+  WEREWOLF: 'Werewolf',
+  MAGE: 'Mage',
+  PROMETHEAN: 'Promethean',
+  CHANGELING: 'Changeling',
+  HUNTER: 'Hunter',
+  GEIST: 'Geist',
+  MUMMY: 'Mummy',
+  DEMON: 'Demon',
+  BEAST: 'Beast',
+  DEVIANT: 'Deviant'
+};
+
+export const SPLAT_SUBTITLES: Record<Splat, string> = {
+  MORTAL: 'Everyday survivor',
+  VAMPIRE: 'Predator of the night',
+  WEREWOLF: 'Hunter between worlds',
+  MAGE: 'Awakened willworker',
+  PROMETHEAN: 'Pilgrim of humanity',
+  CHANGELING: 'Escapee of Arcadia',
+  HUNTER: 'Defiant mortal',
+  GEIST: 'Bound to the dead',
+  MUMMY: 'Arisen judge',
+  DEMON: 'Renegade machine-spirit',
+  BEAST: 'Incarnate nightmare',
+  DEVIANT: 'Broken experiment'
+};
+
 export const ATTRIBUTE_GROUPS = {
   Physical: ['strength', 'dexterity', 'stamina'],
   Social: ['presence', 'manipulation', 'composure'],

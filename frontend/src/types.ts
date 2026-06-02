@@ -92,6 +92,21 @@ export interface LibraryMerit {
   name: string;
   category: string;
   allowedDots: number[];
+  cost?: string;
   description: string;
   prerequisites: string;
+}
+
+export interface VampireDisciplinePower {
+  name: string;
+  dot: number;
+  description?: string;
+}
+
+export interface VampireDiscipline {
+  id: string;
+  name: string;
+  inClanClans: string[];
+  powers: VampireDisciplinePower[];
+  isDevotion?: boolean;
 }

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - The Eldritch Editorial</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&amp;family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#ffb3b1",
+                        "tertiary": "#7bd1f8",
+                        "inverse-on-surface": "#313030",
+                        "primary": "#ffb3b1",
+                        "on-secondary": "#00344c",
+                        "on-tertiary-fixed-variant": "#004d65",
+                        "primary-fixed": "#ffdad8",
+                        "on-primary-fixed-variant": "#92001c",
+                        "outline": "#ab8985",
+                        "surface-dim": "#131313",
+                        "on-tertiary": "#003546",
+                        "primary-container": "#d42b3b",
+                        "error-container": "#93000a",
+                        "tertiary-container": "#00799c",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary-fixed-dim": "#7bd1f8",
+                        "secondary-container": "#0b4e6e",
+                        "on-secondary-container": "#8abfe4",
+                        "secondary": "#98cdf2",
+                        "on-tertiary-fixed": "#001f2a",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed": "#bee9ff",
+                        "surface-variant": "#353534",
+                        "surface-container-highest": "#353534",
+                        "on-background": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-secondary-fixed-variant": "#064c6b",
+                        "error": "#ffb4ab",
+                        "background": "#131313",
+                        "on-primary-fixed": "#410007",
+                        "on-surface-variant": "#e4beba",
+                        "outline-variant": "#5b403d",
+                        "on-secondary-fixed": "#001e2e",
+                        "surface-container-low": "#1c1b1b",
+                        "secondary-fixed-dim": "#98cdf2",
+                        "on-primary-container": "#fff2f1",
+                        "on-error": "#690005",
+                        "on-surface": "#e5e2e1",
+                        "on-error-container": "#ffdad6",
+                        "secondary-fixed": "#c7e7ff",
+                        "inverse-primary": "#bb152c",
+                        "surface-container": "#201f1f",
+                        "inverse-surface": "#e5e2e1",
+                        "primary-fixed-dim": "#ffb3b1",
+                        "surface": "#131313",
+                        "on-tertiary-container": "#e9f7ff",
+                        "on-primary": "#680011"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Noto Serif"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .glass-overlay {
+            background: linear-gradient(135deg, rgba(255, 179, 177, 0.1), rgba(212, 43, 59, 0.05));
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar Shell -->
+<nav class="fixed left-0 top-0 h-full flex flex-col py-8 bg-[#131313] shadow-[40px_0px_40px_0px_rgba(255,255,255,0.06)] w-64 z-50">
+<div class="px-6 mb-12">
+<h1 class="text-2xl font-bold text-[#D32F2F] font-['Noto_Serif'] uppercase tracking-wider">The Eldritch Editorial</h1>
+<p class="text-[10px] text-on-surface-variant font-label tracking-[0.2em] mt-1">CHRONICLES OF DARKNESS</p>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<!-- Active: Dashboard -->
+<a class="flex items-center gap-4 py-3 text-[#FFB3B1] font-bold border-l-4 border-[#D32F2F] pl-4 transition-all scale-98 active:opacity-80" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label text-sm uppercase tracking-widest">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 py-3 text-[#353534] hover:text-[#FFB3B1] hover:bg-[#1C1B1B] transition-colors duration-300 pl-4" href="#">
+<span class="material-symbols-outlined">auto_fix_high</span>
+<span class="font-label text-sm uppercase tracking-widest">Character Creator</span>
+</a>
+<a class="flex items-center gap-4 py-3 text-[#353534] hover:text-[#FFB3B1] hover:bg-[#1C1B1B] transition-colors duration-300 pl-4" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-label text-sm uppercase tracking-widest">Grimoire</span>
+</a>
+<a class="flex items-center gap-4 py-3 text-[#353534] hover:text-[#FFB3B1] hover:bg-[#1C1B1B] transition-colors duration-300 pl-4" href="#">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label text-sm uppercase tracking-widest">Chronicle Log</span>
+</a>
+<a class="flex items-center gap-4 py-3 text-[#353534] hover:text-[#FFB3B1] hover:bg-[#1C1B1B] transition-colors duration-300 pl-4" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label text-sm uppercase tracking-widest">Settings</span>
+</a>
+</div>
+<div class="mt-auto px-6 pt-6 border-t border-outline-variant/10 flex flex-col gap-4">
+<a class="flex items-center gap-4 text-[#353534] hover:text-[#FFB3B1] transition-all" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-label text-xs uppercase">Support</span>
+</a>
+<a class="flex items-center gap-4 text-[#353534] hover:text-[#FFB3B1] transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label text-xs uppercase">Logout</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 flex justify-between items-center px-8 h-16 bg-[#131313]/60 backdrop-blur-xl">
+<div class="flex items-center gap-8">
+<nav class="flex gap-6">
+<a class="text-[#353534] hover:text-[#FFB3B1] transition-all font-['Inter'] text-sm font-medium tracking-tight" href="#">Attributes</a>
+<a class="text-[#353534] hover:text-[#FFB3B1] transition-all font-['Inter'] text-sm font-medium tracking-tight" href="#">Skills</a>
+<a class="text-[#353534] hover:text-[#FFB3B1] transition-all font-['Inter'] text-sm font-medium tracking-tight" href="#">Merits</a>
+<a class="text-[#353534] hover:text-[#FFB3B1] transition-all font-['Inter'] text-sm font-medium tracking-tight" href="#">Powers</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-low border-none focus:ring-1 focus:ring-[#D42B3B] text-xs font-label uppercase tracking-widest pl-10 pr-4 py-2 w-48 rounded-sm placeholder:text-outline-variant" placeholder="Search Archives..." type="text"/>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a person with dramatic moody lighting and dark aesthetic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF6p0QY1PPxWUHnkbcT0fepd1ZDgXD1RoYyxKk9A05JnjeEtqQNKXqXTRYvnC7ubToYb3CZt-3WV23sxl_c1Az8-Y06d4QsreKuNk5Ki2Bh0jkHhBlxLBE4A6feZUQUXgCNPQT7GpHry6crj0r8dp_EhM9dXG9lAdptUa6Y_k-qBRSmbPGcezlgNA767IE-BVEXP61oO5H3bU6y56CvpPqWhTlb3umi71KxSik5eerd0VIst9NcHUbJV-CMgnsYZg52raI25pO-iqr"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="ml-64 pt-24 px-12 pb-12 min-h-screen">
+<!-- Header Section -->
+<section class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-headline text-5xl font-bold text-on-surface mb-2 italic">Character Dossiers</h2>
+<p class="text-on-surface-variant font-label text-sm tracking-widest uppercase">Chronicles of Darkness • Active Roster</p>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-3 font-label text-sm uppercase font-bold tracking-widest flex items-center gap-3 rounded-sm shadow-xl transition-all active:scale-95 hover:brightness-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                New Character
+            </button>
+</section>
+<!-- Bento Grid Characters -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Character Card: Vampire -->
+<div class="group relative flex flex-col bg-surface-container-low rounded-none overflow-hidden transition-all hover:bg-surface-bright">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-alt="dramatic cinematic shot of a person in a Victorian coat standing in a dark foggy alleyway at night" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV_6smrgUVJWaHkbQ02GAyzLAZ0lM8linXJaNSDIz4CrhH2I8WSY46JV_nAAaJfCrpeAHxliuhy6ISeN8zKmJngvBMGXcMIbvcOveBEStGDwT0knlKQuvpIcJm3rspDAKbR4Dwh_gfVbkPGy8mh9HgtVzI_U79Y5Ed7dZZZSdqylw751yiwb5nQucQLEwv1qCrBAPMJLw8ixllVtMgDjam3aoap5hqO1DlXbbhwrsbc7GLOeQCV6hQmp-WForoZdH8hu8jFgVotOWa"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="bg-primary-container/20 text-primary text-[10px] font-label font-bold tracking-[0.2em] px-2 py-1 uppercase rounded-sm border border-primary/20">Vampire: The Requiem</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline text-2xl font-bold mb-1">Julian Vane</h3>
+<p class="text-on-surface-variant font-body text-sm mb-6 italic">"A relic of the Gilded Age seeking modern vengeance."</p>
+<!-- Stats Bars -->
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-end mb-1">
+<span class="font-label text-[10px] text-primary uppercase tracking-widest font-bold">Health</span>
+<span class="text-[10px] text-on-surface-variant">7/7</span>
+</div>
+<div class="h-1 bg-surface-container-highest w-full rounded-full overflow-hidden">
+<div class="h-full bg-primary relative" style="width: 100%">
+<div class="absolute right-0 top-0 h-full w-1 bg-white/40 blur-[1px]"></div>
+</div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-1">
+<span class="font-label text-[10px] text-tertiary uppercase tracking-widest font-bold">Willpower</span>
+<span class="text-[10px] text-on-surface-variant">4/6</span>
+</div>
+<div class="h-1 bg-surface-container-highest w-full rounded-full overflow-hidden">
+<div class="h-full bg-tertiary relative" style="width: 66%">
+<div class="absolute right-0 top-0 h-full w-1 bg-white/40 blur-[1px]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Character Card: Beast -->
+<div class="group relative flex flex-col bg-surface-container-low rounded-none overflow-hidden transition-all hover:bg-surface-bright">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-alt="mysterious figure emerging from thick neon-lit swamp fog with ancient ruins in the distance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdtKlCOtiANO0vL4vNCdlaB8WNCuUf3eSaptfiZ3FSJhfwWseqDxn48yA8gxdo_FfBryeAXpRTRNGHln-jfBR5SJnPas6UrvEwz3EVRFqZEZ_CU7m8pIcSRgH2l26vfSMfaLKZCQnx6zSa6A9puLOrUseKno4sdVUc_SfbzJXYIfxhLSzSXPJu6VKSLyeaAtYVOMeKl--4yliGLNlUU5Zv1XV0WJLDnMz7-woaQF6HGTfFSR0W3OfmRLcqKgWUG6AKJYdtLgb-pDWC"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="bg-secondary-container/20 text-secondary text-[10px] font-label font-bold tracking-[0.2em] px-2 py-1 uppercase rounded-sm border border-secondary/20">Beast: The Primordial</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline text-2xl font-bold mb-1">Cora Thorne</h3>
+<p class="text-on-surface-variant font-body text-sm mb-6 italic">"The hunger of the deep places, wearing a human skin."</p>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-end mb-1">
+<span class="font-label text-[10px] text-primary uppercase tracking-widest font-bold">Health</span>
+<span class="text-[10px] text-on-surface-variant">6/9</span>
+</div>
+<div class="h-1 bg-surface-container-highest w-full rounded-full overflow-hidden">
+<div class="h-full bg-primary relative" style="width: 66%">
+<div class="absolute right-0 top-0 h-full w-1 bg-white/40 blur-[1px]"></div>
+</div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-1">
+<span class="font-label text-[10px] text-tertiary uppercase tracking-widest font-bold">Willpower</span>
+<span class="text-[10px] text-on-surface-variant">8/8</span>
+</div>
+<div class="h-1 bg-surface-container-highest w-full rounded-full overflow-hidden">
+<div class="h-full bg-tertiary relative" style="width: 100%">
+<div class="absolute right-0 top-0 h-full w-1 bg-white/40 blur-[1px]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Character Card: Deviant -->
+<div class="group relative flex flex-col bg-surface-container-low rounded-none overflow-hidden transition-all hover:bg-surface-bright">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-alt="cybernetic futuristic laboratory with broken glass and sparks flying from exposed wires in high contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7-qKIIl_CDlWKV4IEXQDGK9odRLFexJmAcz99hfUY-6Mdw53XNAfCO17sVd0UMUvdRXeYv7JakrizdLUdhAeg7V9lLNNEZSRsufL6IuXeWhG5IwXv-0wPe1Efw-VxnRz0c6xOLzwjaAwYP7ahF_mOH0KVz5NVra9xO4Y89NcsN0_OWD0c0gyfw9iPOKWs_UEVMAdjbNGbNcdlPSAah5_1cjqLnbWIt0SUw-WPj0Xj9XV-5x-4ZTqROniuut2c1F2z-v2E6qtmiWIa"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="bg-tertiary-container/20 text-tertiary text-[10px] font-label font-bold tracking-[0.2em] px-2 py-1 uppercase rounded-sm border border-tertiary/20">Deviant: The Renegades</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="font-headline text-2xl font-bold mb-1">Subject 402</h3>
+<p class="text-on-surface-variant font-body text-sm mb-6 italic">"A shattered biological weapon on a quest for its soul."</p>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between items-end mb-1">
+<span class="font-label text-[10px] text-primary uppercase tracking-widest font-bold">Health</span>
+<span class="text-[10px] text-on-surface-variant">4/8</span>
+</div>
+<div class="h-1 bg-surface-container-highest w-full rounded-full overflow-hidden">
+<div class="h-full bg-primary relative" style="width: 50%">
+<div class="absolute right-0 top-0 h-full w-1 bg-white/40 blur-[1px]"></div>
+</div>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-end mb-1">
+<span class="font-label text-[10px] text-tertiary uppercase tracking-widest font-bold">Willpower</span>
+<span class="text-[10px] text-on-surface-variant">2/5</span>
+</div>
+<div class="h-1 bg-surface-container-highest w-full rounded-full overflow-hidden">
+<div class="h-full bg-tertiary relative" style="width: 40%">
+<div class="absolute right-0 top-0 h-full w-1 bg-white/40 blur-[1px]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- New Character Blueprint Card (Empty State) -->
+<button class="flex flex-col items-center justify-center border-2 border-dashed border-outline-variant/30 bg-surface-container-lowest p-12 hover:bg-surface-container-low transition-all hover:border-primary/50 group">
+<span class="material-symbols-outlined text-outline-variant text-5xl mb-4 group-hover:text-primary transition-colors">add_circle</span>
+<span class="font-headline text-xl text-on-surface-variant group-hover:text-on-surface">Forge New Identity</span>
+<span class="font-label text-[10px] uppercase tracking-widest text-outline-variant mt-2">Start a new chronicle</span>
+</button>
+</div>
+<!-- System Stats / Global Context Asymmetric Section -->
+<section class="mt-20 grid grid-cols-12 gap-8">
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low p-8 relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="font-label text-xs uppercase tracking-[0.3em] text-primary mb-6">Recent Activity</h4>
+<div class="space-y-6">
+<div class="flex gap-6 items-start">
+<span class="text-[10px] font-label text-outline-variant uppercase mt-1">2h ago</span>
+<div>
+<p class="text-sm font-medium">Julian Vane gained the <span class="text-secondary">Celerity</span> power level 3.</p>
+<p class="text-xs text-on-surface-variant mt-1">Modified in 'The Midnight Gala' scene.</p>
+</div>
+</div>
+<div class="flex gap-6 items-start">
+<span class="text-[10px] font-label text-outline-variant uppercase mt-1">1d ago</span>
+<div>
+<p class="text-sm font-medium">Cora Thorne suffered <span class="text-primary-container">4 Aggravated Damage</span>.</p>
+<p class="text-xs text-on-surface-variant mt-1">Updated via 'Combat Tracker'.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute top-0 right-0 p-8">
+<span class="material-symbols-outlined text-8xl text-outline-variant/10 select-none">history</span>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-primary-container p-8 text-on-primary-container flex flex-col justify-between">
+<div>
+<h4 class="font-label text-xs uppercase tracking-[0.3em] opacity-70 mb-4">The Editorial Note</h4>
+<p class="font-headline text-xl leading-relaxed">"The shadows are deepening. Three new chronicles have been observed in the local sector."</p>
+</div>
+<div class="flex justify-between items-end mt-12">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a man with spectacles in moody low light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjJhtulkysZ7BdSkNZ4u_mhHyHFafZgx4zcGr0a9vnsMcOtNqC6NOhAATEXU2SG0jMA9axjUckuo-FONaYowLUxmEHxeKMxm3ffYzv4d6PNZJt01cSpbYNK_lQqoyR4fZTkE5sXjcFCFZDbSSTrG-Ql5C2U4OC_nLLAJdOXZaGvQ9Y7z_kszYBt6QZ-5is6Vk4WYH8QK8wp3sFPe1FILbu13U0H3Aw2A4BTk28c1uphTZntnCRBj7Os1-Uu32S3fu3Pu5ufkgmB2Ig"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="portrait of a woman with dark hair in a shadowy library setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkIJriawxSdxDmjisiqESZWqhFy10y2p_WkAGLLKvguuiACuq1atMyNQI0hh_Tqd_mzSHSkXuMZDpLnoIYATwkuPPPlEFQ1YyfqLX4pij7yJ0QUublBUNoGQ3r79J_vpxBFnlJ4miW1vq0BbEPhXB7aivzo40SQI5Cm_vqfCMuJr0261LUuwajf_-SlckcDlc0gJvWk7UomOutUxfRvFDffYjj-pcBDJbfAtsAlFdEh3zFW3d9dWBSvMNc1SPNjb_dXiBQNrwGnbsH"/>
+</div>
+<div class="w-8 h-8 rounded-full border-2 border-primary-container bg-surface flex items-center justify-center text-[10px] font-bold">+5</div>
+</div>
+<span class="font-label text-[10px] uppercase tracking-widest">Active Narrators</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB (Hidden on Dashboard based on prompt but included for completeness of UI kit if needed elsewhere) -->
+<!-- Suppressed per instructions: suppress the FAB on Dashboard/Settings/etc -->
+</body></html>

@@ -1453,6 +1453,10 @@ export default function App() {
       return;
     }
     if (!selectedChronicleNoteId || !selectedChronicle.notes.some((note) => note.id === selectedChronicleNoteId)) {
+      // Don't auto-select if we're creating a new note (modal is open with empty noteId)
+      if (showChronicleNoteModal) {
+        return;
+      }
       const first = selectedChronicle.notes[0];
       if (first) {
         setSelectedChronicleNoteId(first.id);
@@ -1462,7 +1466,7 @@ export default function App() {
         setNoteDraft({ title: '', body: '', characterId: '' });
       }
     }
-  }, [selectedChronicle, selectedChronicleNoteId]);
+  }, [selectedChronicle, selectedChronicleNoteId, showChronicleNoteModal]);
 
   function selectChronicle(id: string) {
     setSelectedChronicleId(id);
@@ -2257,47 +2261,55 @@ export default function App() {
             <>
               <section className="panel">
                 <h4>Basic Character Info</h4>
-                <div className="form-grid two">
-                  <label>Name<input value={selected.name} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, name: e.target.value } : p))} /></label>
-                  <label>Player<input value={selected.player} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, player: e.target.value } : p))} /></label>
-                  <label>Chronicle<input value={selected.chronicle} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, chronicle: e.target.value } : p))} /></label>
-                  <label>Concept<input value={selected.concept} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, concept: e.target.value } : p))} /></label>
-                  <label>Virtue<input value={selected.virtue} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, virtue: e.target.value } : p))} /></label>
-                  <label>Vice<input value={selected.vice} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, vice: e.target.value } : p))} /></label>
-                  <label>Size<input type="number" min={1} max={15} value={selected.derivedStats.size} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, derivedStats: { ...p.derivedStats, size: clamp(Number(e.target.value), 1, 15) } } : p))} /></label>
-                  {selected.splat === 'VAMPIRE' && (
-                    <>
-                      <label>Clan<input value={String(selected.splatData.clan ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('clan', e.target.value)} /></label>
-                      <label>Covenant<input value={String(selected.splatData.covenant ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('covenant', e.target.value)} /></label>
-                    </>
-                  )}
-                  {selected.splat === 'BEAST' && (
-                    <>
-                      <label>Family<input value={String(selected.splatData.family ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('family', e.target.value)} /></label>
-                      <label>Hunger<input value={String(selected.splatData.hunger ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('hunger', e.target.value)} /></label>
-                    </>
-                  )}
-                </div>
-                <div className="portrait-upload-wrap">
-                  <input
-                    ref={portraitInputRef}
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      uploadPortrait(file);
-                      e.currentTarget.value = '';
-                    }}
-                  />
-                  <button type="button" className="portrait-upload-button" onClick={() => portraitInputRef.current?.click()}>
-                    {selected.portraitUri ? (
-                      <img src={selected.portraitUri} alt={`${selected.name || 'Character'} portrait`} className="portrait-upload-image" />
-                    ) : (
-                      <span>Click to upload portrait</span>
-                    )}
-                  </button>
+                <div className="basic-info-layout">
+                  <div className="basic-info-fields">
+                    <div className="basic-info-row">
+                      <label>Name<input value={selected.name} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, name: e.target.value } : p))} /></label>
+                      <label>Virtue<input value={selected.virtue} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, virtue: e.target.value } : p))} /></label>
+                      {selected.splat === 'VAMPIRE' && (
+                        <label>Clan<input value={String(selected.splatData.clan ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('clan', e.target.value)} /></label>
+                      )}
+                      {selected.splat === 'BEAST' && (
+                        <label>Family<input value={String(selected.splatData.family ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('family', e.target.value)} /></label>
+                      )}
+                    </div>
+                    <div className="basic-info-row">
+                      <label>Player<input value={selected.player} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, player: e.target.value } : p))} /></label>
+                      <label>Vice<input value={selected.vice} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, vice: e.target.value } : p))} /></label>
+                      {selected.splat === 'VAMPIRE' && (
+                        <label>Covenant<input value={String(selected.splatData.covenant ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('covenant', e.target.value)} /></label>
+                      )}
+                      {selected.splat === 'BEAST' && (
+                        <label>Hunger<input value={String(selected.splatData.hunger ?? '')} disabled={!sheetEdit} onChange={(e) => updateSelectedSplatData('hunger', e.target.value)} /></label>
+                      )}
+                    </div>
+                    <div className="basic-info-row">
+                      <label>Chronicle<input value={selected.chronicle} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, chronicle: e.target.value } : p))} /></label>
+                      <label>Concept<input value={selected.concept} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, concept: e.target.value } : p))} /></label>
+                      <label>Size<input type="number" min={1} max={15} value={selected.derivedStats.size} disabled={!sheetEdit} onChange={(e) => setSelected((p) => (p ? { ...p, derivedStats: { ...p.derivedStats, size: clamp(Number(e.target.value), 1, 15) } } : p))} /></label>
+                    </div>
+                  </div>
+                  <div className="basic-info-portrait">
+                    <input
+                      ref={portraitInputRef}
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        uploadPortrait(file);
+                        e.currentTarget.value = '';
+                      }}
+                    />
+                    <button type="button" className="portrait-upload-button" onClick={() => portraitInputRef.current?.click()}>
+                      {selected.portraitUri ? (
+                        <img src={selected.portraitUri} alt={`${selected.name || 'Character'} portrait`} className="portrait-upload-image" />
+                      ) : (
+                        <span>Click to upload portrait</span>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </section>
 
@@ -2475,7 +2487,7 @@ export default function App() {
                     skillOptions={skillOptions}
                     character={selected}
                     createId={createId}
-                    meritDotBudget={50}
+                    meritDotBudget={1000}
                     onValidationError={(reason) => showToast(reason, 'error')}
                   />
                 ) : (

@@ -98,6 +98,7 @@ button.primary {
 
 button.ghost {
   background: transparent;
+    margin-top: 1rem;
 }
 
 input,
@@ -433,7 +434,8 @@ textarea {
   border-radius: 0.9rem;
   background: var(--surface);
   padding: 1rem;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.8rem;
 }
 
@@ -515,8 +517,42 @@ label {
   gap: 0.8rem;
 }
 
-.merit-picker-grid {
+.basic-info-layout {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
   align-items: start;
+}
+
+.basic-info-fields {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.basic-info-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+}
+
+.basic-info-portrait {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.merit-picker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.merit-picker-grid .panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: calc(100vh - 18rem);
 }
 
 .chips {
@@ -710,6 +746,7 @@ label {
   padding: 0.6rem;
   display: grid;
   gap: 0.55rem;
+    margin-top: 1rem;
 }
 
 .aspiration-term {
@@ -720,6 +757,10 @@ label {
 
 .powers-module .chips {
   gap: 0.45rem;
+}
+
+.powers-module {
+    margin-top: 1rem;
 }
 
 .specialty-editor-row {
@@ -767,10 +808,12 @@ label {
 }
 
 .merit-list {
-  max-height: 380px;
-  overflow: auto;
   display: grid;
   gap: 0.7rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  padding-right: 0.2rem;
 }
 
 .merit-list article {
@@ -793,11 +836,17 @@ label {
 
 .expandable-card,
 .discipline-item {
+  border: none;
+  border-radius: 0.65rem;
+  background: transparent;
+  padding: 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.discipline-item {
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
   background: var(--surface-2);
   padding: 0.35rem 0.55rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .discipline-item.in-clan {
@@ -864,8 +913,12 @@ details[open] > summary .expand-chevron {
   margin-top: 0.6rem;
 }
 
-.expandable-content,
 .merit-details {
+  padding-left: 0;
+  border-left: none;
+}
+
+.expandable-content {
   padding-left: 1.2rem;
   border-left: 2px solid color-mix(in srgb, var(--primary) 28%, transparent);
 }
@@ -873,6 +926,10 @@ details[open] > summary .expand-chevron {
 .merit-summary,
 .discipline-item summary {
   padding: 0.15rem 0.1rem;
+}
+
+.merit-summary span:last-child {
+  flex-shrink: 0;
 }
 
 .merit-dots {
@@ -883,6 +940,17 @@ details[open] > summary .expand-chevron {
 .merit-remove {
   align-self: start;
   width: fit-content;
+  background: color-mix(in srgb, var(--danger) 14%, var(--surface));
+  border-color: color-mix(in srgb, var(--danger) 50%, var(--border));
+  color: color-mix(in srgb, var(--danger) 80%, var(--text));
+  font-weight: 600;
+  margin-top: 0.3rem;
+  transition: all 0.2s ease;
+}
+
+.merit-remove:hover {
+  background: color-mix(in srgb, var(--danger) 24%, var(--surface));
+  border-color: color-mix(in srgb, var(--danger) 70%, var(--border));
 }
 
 .merit-adjust-row {
@@ -898,21 +966,53 @@ details[open] > summary .expand-chevron {
 }
 
 .merit-selected-list {
-  gap: 0.45rem;
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  gap: 0.35rem;
+  overflow-y: auto;
+  padding-right: 0.2rem;
 }
 
 .merit-card {
-  overflow: hidden;
-  padding: 0.08rem 0.4rem;
+  overflow: visible;
+  padding: 0;
+  flex: 0 0 auto;
 }
 
 .merit-card .expandable-summary {
   font-size: 0.88rem;
-  padding: 0;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.2rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  width: 100%;
+}
+
+.merit-card .expandable-summary:hover {
+  background: color-mix(in srgb, var(--surface) 50%, var(--surface-2));
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+}
+
+.merit-card[open] .expandable-summary {
+  background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+  border-color: color-mix(in srgb, var(--primary) 50%, var(--border));
 }
 
 .merit-card .expandable-content {
-  margin-top: 0.3rem;
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  background: var(--surface-2);
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  border-radius: 0.65rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .merit-card[open],
@@ -1001,7 +1101,7 @@ details[open] > summary .expand-chevron {
   height: 2rem;
   border-radius: 0.45rem;
   display: grid;
-  place-items: center;
+  place-items: baseline;
 }
 
 .box.bashing {
@@ -1308,6 +1408,7 @@ details[open] > summary .expand-chevron {
   border-radius: 0.65rem;
   padding: 0.35rem 0.5rem;
   background: var(--surface);
+    margin-bottom: 1rem;
 }
 
 .modern-checkbox:has(input:checked) {

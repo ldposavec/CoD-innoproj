@@ -98,6 +98,7 @@ button.primary {
 
 button.ghost {
   background: transparent;
+    margin-top: 1rem;
 }
 
 input,
@@ -433,7 +434,8 @@ textarea {
   border-radius: 0.9rem;
   background: var(--surface);
   padding: 1rem;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.8rem;
 }
 
@@ -513,6 +515,44 @@ label {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 0.8rem;
+}
+
+.basic-info-layout {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: start;
+}
+
+.basic-info-fields {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.basic-info-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.6rem;
+}
+
+.basic-info-portrait {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.merit-picker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.merit-picker-grid .panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: calc(100vh - 18rem);
 }
 
 .chips {
@@ -706,6 +746,7 @@ label {
   padding: 0.6rem;
   display: grid;
   gap: 0.55rem;
+    margin-top: 1rem;
 }
 
 .aspiration-term {
@@ -716,6 +757,10 @@ label {
 
 .powers-module .chips {
   gap: 0.45rem;
+}
+
+.powers-module {
+    margin-top: 1rem;
 }
 
 .specialty-editor-row {
@@ -763,10 +808,12 @@ label {
 }
 
 .merit-list {
-  max-height: 380px;
-  overflow: auto;
   display: grid;
   gap: 0.7rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  padding-right: 0.2rem;
 }
 
 .merit-list article {
@@ -789,11 +836,17 @@ label {
 
 .expandable-card,
 .discipline-item {
+  border: none;
+  border-radius: 0.65rem;
+  background: transparent;
+  padding: 0;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.discipline-item {
   border: 1px solid var(--border);
-  border-radius: 0.75rem;
   background: var(--surface-2);
   padding: 0.35rem 0.55rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
 .discipline-item.in-clan {
@@ -860,8 +913,12 @@ details[open] > summary .expand-chevron {
   margin-top: 0.6rem;
 }
 
-.expandable-content,
 .merit-details {
+  padding-left: 0;
+  border-left: none;
+}
+
+.expandable-content {
   padding-left: 1.2rem;
   border-left: 2px solid color-mix(in srgb, var(--primary) 28%, transparent);
 }
@@ -869,6 +926,10 @@ details[open] > summary .expand-chevron {
 .merit-summary,
 .discipline-item summary {
   padding: 0.15rem 0.1rem;
+}
+
+.merit-summary span:last-child {
+  flex-shrink: 0;
 }
 
 .merit-dots {
@@ -879,14 +940,79 @@ details[open] > summary .expand-chevron {
 .merit-remove {
   align-self: start;
   width: fit-content;
+  background: color-mix(in srgb, var(--danger) 14%, var(--surface));
+  border-color: color-mix(in srgb, var(--danger) 50%, var(--border));
+  color: color-mix(in srgb, var(--danger) 80%, var(--text));
+  font-weight: 600;
+  margin-top: 0.3rem;
+  transition: all 0.2s ease;
+}
+
+.merit-remove:hover {
+  background: color-mix(in srgb, var(--danger) 24%, var(--surface));
+  border-color: color-mix(in srgb, var(--danger) 70%, var(--border));
+}
+
+.merit-adjust-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.merit-adjust-row button {
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
 }
 
 .merit-selected-list {
-  gap: 0.65rem;
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  gap: 0.35rem;
+  overflow-y: auto;
+  padding-right: 0.2rem;
 }
 
 .merit-card {
-  overflow: hidden;
+  overflow: visible;
+  padding: 0;
+  flex: 0 0 auto;
+}
+
+.merit-card .expandable-summary {
+  font-size: 0.88rem;
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.2rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  width: 100%;
+}
+
+.merit-card .expandable-summary:hover {
+  background: color-mix(in srgb, var(--surface) 50%, var(--surface-2));
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+}
+
+.merit-card[open] .expandable-summary {
+  background: color-mix(in srgb, var(--primary) 12%, var(--surface));
+  border-color: color-mix(in srgb, var(--primary) 50%, var(--border));
+}
+
+.merit-card .expandable-content {
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  background: var(--surface-2);
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  border-radius: 0.65rem;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .merit-card[open],
@@ -975,7 +1101,7 @@ details[open] > summary .expand-chevron {
   height: 2rem;
   border-radius: 0.45rem;
   display: grid;
-  place-items: center;
+  place-items: baseline;
 }
 
 .box.bashing {
@@ -988,6 +1114,135 @@ details[open] > summary .expand-chevron {
 
 .box.aggravated {
   background: color-mix(in srgb, #ff5858 26%, var(--surface));
+}
+
+.resource-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.resource-actions label {
+  min-width: 120px;
+}
+
+.health-penalties {
+  display: grid;
+  gap: 0.5rem;
+  width: max-content;
+}
+
+.health-penalties span {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.78rem;
+  min-height: 1rem;
+}
+
+.willpower-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.willpower-box {
+  position: relative;
+  display: inline-grid;
+}
+
+.willpower-checkbox {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.willpower-checkbox:focus-visible + .box.willpower {
+  outline: 2px solid color-mix(in srgb, var(--primary) 70%, white);
+  outline-offset: 1px;
+}
+
+.box.willpower {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.box.willpower.available {
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+}
+
+.box.willpower.spent {
+  background: color-mix(in srgb, var(--primary) 24%, var(--surface));
+  border-color: color-mix(in srgb, var(--primary) 65%, var(--border));
+}
+
+.portrait-upload-wrap {
+  margin-top: 0.4rem;
+}
+
+.portrait-upload-button {
+  width: 140px;
+  height: 140px;
+  padding: 0;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--surface-2);
+}
+
+.portrait-upload-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sheet-traits-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr) minmax(240px, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.sheet-main-column,
+.sheet-resource-column,
+.sheet-specialties-column {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sheet-attributes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.sheet-skills-stack {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.sheet-group-block {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--surface-2) 75%, transparent);
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.sheet-group-block h5 {
+  margin: 0;
+}
+
+.powers-editor-grid {
+  display: grid;
+  grid-template-columns: minmax(170px, 1fr) 90px auto;
+  gap: 0.5rem;
+}
+
+.powers-editor-grid textarea {
+  grid-column: 1 / -1;
 }
 
 .chronicle-page {
@@ -1007,14 +1262,16 @@ details[open] > summary .expand-chevron {
 }
 
 .chronicle-list-panel,
-.chronicle-notes-panel,
-.chronicle-editor-panel {
+.chronicle-notes-panel {
   min-height: 560px;
 }
 
 .chronicle-list {
   display: grid;
   gap: 0.7rem;
+  max-height: 500px;
+  overflow: auto;
+  padding-right: 0.2rem;
 }
 
 .chronicle-card {
@@ -1058,6 +1315,11 @@ details[open] > summary .expand-chevron {
   gap: 0.5rem;
 }
 
+.chronicle-note-controls-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+}
+
 .chronicle-note-groups {
   max-height: 320px;
   overflow: auto;
@@ -1083,6 +1345,20 @@ details[open] > summary .expand-chevron {
 .chronicle-note-card span,
 .chronicle-note-group > small {
   color: var(--muted);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, #000 45%, transparent);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.modal-card {
+  width: min(500px, 100%);
 }
 
 @keyframes toast-in {
@@ -1132,6 +1408,7 @@ details[open] > summary .expand-chevron {
   border-radius: 0.65rem;
   padding: 0.35rem 0.5rem;
   background: var(--surface);
+    margin-bottom: 1rem;
 }
 
 .modern-checkbox:has(input:checked) {
@@ -1174,6 +1451,9 @@ details[open] > summary .expand-chevron {
   position: relative;
   z-index: 2;
   transform: translateZ(18px);
+  width: 100%;
+  text-align: center;
+  line-height: 1;
   font-weight: 800;
   font-size: 0.95rem;
   text-shadow: 0 1px 2px color-mix(in srgb, #000 75%, transparent);
@@ -1191,6 +1471,11 @@ details[open] > summary .expand-chevron {
 .die-3d.revealed.success {
   border-color: color-mix(in srgb, var(--primary) 65%, var(--border));
   background: linear-gradient(155deg, color-mix(in srgb, var(--primary-2) 20%, var(--surface-2)), color-mix(in srgb, var(--primary) 32%, var(--surface-2)));
+}
+
+.die-3d.revealed.crit {
+  border-color: color-mix(in srgb, #ffd56a 78%, var(--border));
+  background: linear-gradient(155deg, color-mix(in srgb, #ffe58c 35%, var(--surface-2)), color-mix(in srgb, #c9921b 34%, var(--surface-2)));
 }
 
 .die-3d.revealed.dramatic {
@@ -1228,8 +1513,7 @@ details[open] > summary .expand-chevron {
   }
 
   .chronicle-list-panel,
-  .chronicle-notes-panel,
-  .chronicle-editor-panel {
+  .chronicle-notes-panel {
     min-height: auto;
   }
 
@@ -1243,7 +1527,23 @@ details[open] > summary .expand-chevron {
     flex-wrap: wrap;
   }
 
+  .chronicle-note-controls-row {
+    grid-template-columns: 1fr;
+  }
+
   .specialty-editor-row {
+    grid-template-columns: 1fr;
+  }
+
+  .powers-editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sheet-traits-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sheet-attributes-grid {
     grid-template-columns: 1fr;
   }
 

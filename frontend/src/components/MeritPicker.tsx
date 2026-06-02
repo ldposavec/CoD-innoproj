@@ -48,6 +48,12 @@ function parseMeritCostOptions(entry: LibraryMerit): number[] {
   return entry.allowedDots;
 }
 
+function formatMissingPrerequisites(unmet: string[]): string {
+  if (unmet.length <= 1) return unmet[0] ?? '';
+  if (unmet.length === 2) return `${unmet[0]} and ${unmet[1]}`;
+  return `${unmet.slice(0, -1).join(', ')}, and ${unmet[unmet.length - 1]}`;
+}
+
 export function MeritPicker({
   merits,
   setMerits,
@@ -73,6 +79,19 @@ export function MeritPicker({
 
   const categories = useMemo(() => ['All', ...new Set(meritLibrary.map((m) => m.category))], [meritLibrary]);
   const selectedDots = useMemo(() => merits.reduce((sum, merit) => sum + merit.dots, 0), [merits]);
+  const prereqStateKey = useMemo(
+    () =>
+      JSON.stringify({
+        attributes: character.attributes,
+        skills: character.skills,
+        merits: character.merits.map((merit) => ({ name: merit.name, dots: merit.dots })),
+        splat: character.splat,
+        splatData: character.splatData,
+        specialties: character.specialties,
+        customPowers: character.customPowers
+      }),
+    [character.attributes, character.customPowers, character.merits, character.skills, character.specialties, character.splat, character.splatData]
+  );
   const hasProfessionalTraining = useMemo(
     () => merits.some((merit) => merit.name.toLowerCase().includes('professional training')),
     [merits]
@@ -100,7 +119,7 @@ export function MeritPicker({
         
         return true;
       }),
-    [filterCat, meritLibrary, search, isCreationMode, merits, showOnlyQualified, character]
+    [filterCat, meritLibrary, search, isCreationMode, merits, showOnlyQualified, prereqStateKey]
   );
 
   useEffect(() => {
@@ -112,12 +131,12 @@ export function MeritPicker({
   useEffect(() => {
     // Keep stale validation errors from lingering after character edits update prerequisites.
     setValidationMessage('');
-  }, [character]);
+  }, [prereqStateKey]);
 
   function addMerit(entry: LibraryMerit, dots: number) {
     const prereq = evaluateMeritPrerequisites(entry.prerequisites, character);
     if (!prereq.met) {
-      const reason = `Cannot add ${entry.name}. Missing prerequisites: ${prereq.unmet.join(', ')}`;
+      const reason = `Cannot add ${entry.name}. Missing prerequisites: ${formatMissingPrerequisites(prereq.unmet)}`;
       setValidationMessage(reason);
       onValidationError?.(reason);
       return;
@@ -158,6 +177,15 @@ export function MeritPicker({
     setMerits(merits.filter((merit) => merit.id !== id));
   }
 
+  function adjustMeritDots(id: string, nextDots: number) {
+    const current = merits.find((merit) => merit.id === id);
+    if (!current) return;
+    const safeDots = Math.min(5, Math.max(1, nextDots));
+    const nextTotal = selectedDots - current.dots + safeDots;
+    if (nextTotal > meritDotBudget) return;
+    setMerits(merits.map((merit) => (merit.id === id ? { ...merit, dots: safeDots } : merit)));
+  }
+
   function toggleProfessionalSkill(skillKey: string) {
     const selected = professionalTrainingSkills.includes(skillKey);
     if (selected) {
@@ -171,7 +199,7 @@ export function MeritPicker({
   return (
     <div className="split merit-picker-grid">
       <section className="panel">
-        <h4>Selected Merits ({selectedDots}/{meritDotBudget} dots)</h4>
+        <h4>Selected Merits ({selectedDots} dots)</h4>
         {validationMessage && <small className="merit-validation-error">{validationMessage}</small>}
         {merits.length === 0 ? (
           <p>No merits selected yet.</p>
@@ -181,7 +209,7 @@ export function MeritPicker({
               <details key={merit.id} className="expandable-card merit-card">
                 {(() => {
                   const prereq = merit.isCustom ? { met: true, unmet: [] as string[] } : evaluateMeritPrerequisites(merit.prerequisites, character);
-                  const prereqText = prereq.met ? '' : `Missing: ${prereq.unmet.join(', ')}`;
+                  const prereqText = prereq.met ? '' : `Missing: ${formatMissingPrerequisites(prereq.unmet)}`;
                   return (
                     <>
                 <summary className="expandable-summary merit-summary">
@@ -197,6 +225,15 @@ export function MeritPicker({
                   {merit.prerequisites && <small>Requires: {merit.prerequisites}</small>}
                   {!prereq.met && <small className="merit-validation-error">{prereqText}</small>}
                   {merit.description && <p className="whitespace-pre-wrap">{formatTextContent(merit.description)}</p>}
+                  <div className="merit-adjust-row">
+                    <button type="button" onClick={() => adjustMeritDots(merit.id, merit.dots - 1)} disabled={merit.dots <= 1}>
+                      -
+                    </button>
+                    <strong>{merit.dots}</strong>
+                    <button type="button" onClick={() => adjustMeritDots(merit.id, merit.dots + 1)} disabled={selectedDots + 1 > meritDotBudget || merit.dots >= 5}>
+                      +
+                    </button>
+                  </div>
                   <button type="button" className="ghost merit-remove" onClick={() => removeMerit(merit.id)}>
                     Remove
                   </button>
@@ -250,7 +287,7 @@ export function MeritPicker({
             <article key={entry.id}>
               {(() => {
                 const prereq = evaluateMeritPrerequisites(entry.prerequisites, character);
-                const prereqMessage = prereq.met ? '' : `Missing: ${prereq.unmet.join(', ')}`;
+                const prereqMessage = prereq.met ? '' : `Missing: ${formatMissingPrerequisites(prereq.unmet)}`;
                 return (
                   <div className={prereq.met ? 'opacity-100' : 'opacity-50 grayscale'}>
                     <h4>
@@ -323,4 +360,3 @@ export function MeritPicker({
     </div>
   );
 }
-

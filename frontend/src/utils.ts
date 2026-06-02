@@ -26,7 +26,6 @@ export function woundPenalty(boxes: HealthStatus[]): string {
   const filled = boxes.filter((b) => b !== 'EMPTY').length;
   const max = boxes.length;
   if (filled === 0) return '0';
-  if (filled >= max) return 'Incapacitated';
   if (filled >= max - 1) return '-3';
   if (filled >= max - 2) return '-2';
   if (filled >= max - 3) return '-1';
@@ -100,6 +99,29 @@ function normalizeTraitKey(input: string): string {
   return input.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
+function parseRequiredDots(condition: string): { name: string; requiredDots: number } | null {
+  const text = condition.trim();
+  if (!text) return null;
+
+  const bulletMatch = text.match(/^(.+?)\s*([●•]+)$/u);
+  if (bulletMatch) {
+    return {
+      name: bulletMatch[1].trim(),
+      requiredDots: bulletMatch[2].length
+    };
+  }
+
+  const numberMatch = text.match(/^(.+?)\s+(?:at\s+least\s+|minimum\s+)?(\d+)$/i);
+  if (numberMatch) {
+    return {
+      name: numberMatch[1].trim(),
+      requiredDots: Number(numberMatch[2])
+    };
+  }
+
+  return null;
+}
+
 export function formatTextContent(text: string | undefined): string {
   if (!text) return '';
   return text
@@ -128,6 +150,11 @@ export function evaluateMeritPrerequisites(
     traitValues.set(normalizeTraitKey('specialty ' + s.skill), 1);
     traitValues.set(normalizeTraitKey('specialty ' + s.specialty), 1);
   });
+  if (character.specialties.length > 0) {
+    traitValues.set(normalizeTraitKey('skill specialty'), 1);
+    traitValues.set(normalizeTraitKey('one skill specialty'), 1);
+    traitValues.set(normalizeTraitKey('specialty'), 1);
+  }
   character.customPowers.forEach(cp => traitValues.set(normalizeTraitKey(cp.name), cp.dots));
 
   if (character.splat === 'VAMPIRE' && character.splatData.vampireDisciplines) {
@@ -149,14 +176,12 @@ export function evaluateMeritPrerequisites(
     const unmet: string[] = [];
 
     for (const cond of andConditions) {
-      const match = cond.match(/^(.+?)\s+(\d+)$/);
-      if (match) {
-        const rawName = match[1].trim();
-        const requiredDots = Number(match[2]);
-        const normalized = normalizeTraitKey(rawName);
+      const parsed = parseRequiredDots(cond);
+      if (parsed) {
+        const normalized = normalizeTraitKey(parsed.name);
         const val = traitValues.get(normalized) || 0;
-        if (val < requiredDots) {
-          unmet.push(`${rawName} ${requiredDots}`);
+        if (val < parsed.requiredDots) {
+          unmet.push(cond);
         }
       } else {
         const normalized = normalizeTraitKey(cond);
@@ -173,7 +198,6 @@ export function evaluateMeritPrerequisites(
     allUnmetGroups.push(unmet);
   }
 
-  const formattedUnmet = allUnmetGroups.map(unmets => unmets.join(' AND ')).join(' OR ');
-  return { met: false, unmet: [formattedUnmet] };
+  const uniqueUnmet = Array.from(new Set(allUnmetGroups.flatMap((group) => group)));
+  return { met: false, unmet: uniqueUnmet.length > 0 ? uniqueUnmet : [text] };
 }
-

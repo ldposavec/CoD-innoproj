@@ -34,7 +34,7 @@ Start backend and frontend in separate terminals.
 ### 1) Backend
 
 ```bash
-cd /tmp/workspace/ldposavec/CoD-innoproj/backend
+cd backend
 mvn spring-boot:run
 ```
 
@@ -43,7 +43,7 @@ Backend: `http://localhost:8080`
 ### 2) Frontend
 
 ```bash
-cd /tmp/workspace/ldposavec/CoD-innoproj/frontend
+cd frontend
 npm install
 npm run dev
 ```
@@ -57,7 +57,7 @@ Frontend: `http://localhost:5173`
 Package the backend and run the generated jar directly:
 
 ```bash
-cd /tmp/workspace/ldposavec/CoD-innoproj/backend
+cd backend
 mvn clean package
 java -jar target/backend-0.0.1-SNAPSHOT.jar
 ```
@@ -65,7 +65,7 @@ java -jar target/backend-0.0.1-SNAPSHOT.jar
 Then run the frontend with:
 
 ```bash
-cd /tmp/workspace/ldposavec/CoD-innoproj/frontend
+cd frontend
 npm install
 npm run dev
 ```
@@ -77,7 +77,7 @@ npm run dev
 Build and serve the frontend in preview mode:
 
 ```bash
-cd /tmp/workspace/ldposavec/CoD-innoproj/frontend
+cd frontend
 npm install
 npm run build
 npm run preview -- --host --port 4173
@@ -98,6 +98,6 @@ Use this with either backend start method above.
 ## Validate
 
 ```bash
-cd /tmp/workspace/ldposavec/CoD-innoproj/backend && mvn test
-cd /tmp/workspace/ldposavec/CoD-innoproj/frontend && npm run check && npm run build
+cd backend && mvn test
+cd ../frontend && npm run check && npm run build
 ```
